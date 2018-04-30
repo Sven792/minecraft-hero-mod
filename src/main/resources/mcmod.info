@@ -2,7 +2,7 @@
   {
     "modid": "heroreactions",
     "name": "Hero Reactions",
-    "description": "Hero Feedback in Minecraft",
+    "description": "Hero Feedback/Reactions in Minecraft!",
     "version": "${version}",
     "mcversion": "${mcversion}",
     "url": "",

@@ -1,4 +1,4 @@
-package gr8pefish.heroreactions.common.event;
+package gr8pefish.heroreactions.event;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;

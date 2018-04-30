@@ -1,27 +1,30 @@
-package gr8pefish.heroreactions.common;
+package gr8pefish.heroreactions;
 
-
-import gr8pefish.heroreactions.common.config.ConfigHandler;
-import gr8pefish.heroreactions.common.event.ServerEventHandler;
-import gr8pefish.heroreactions.common.lib.ModInfo;
-import gr8pefish.heroreactions.common.network.PacketHandler;
-import gr8pefish.heroreactions.common.proxy.IProxy;
+import gr8pefish.heroreactions.event.ServerEventHandler;
+import gr8pefish.heroreactions.lib.ModInfo;
+import gr8pefish.heroreactions.network.PacketHandler;
+import gr8pefish.heroreactions.proxy.CommonProxy;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import org.apache.logging.log4j.Logger;
 
 import static gr8pefish.heroreactions.api.HeroReactionsInfo.MODID;
 import static gr8pefish.heroreactions.api.HeroReactionsInfo.MOD_NAME;
 
-@Mod(modid = MODID, name = MOD_NAME, version = ModInfo.VERSION, guiFactory = ModInfo.GUI_FACTORY)
+@Mod(modid = MODID, name = MOD_NAME, version = ModInfo.VERSION, acceptedMinecraftVersions = "[1.12,1.13)")
 public class HeroReactions {
+
+    public static Logger LOGGER;
+    public static final SimpleNetworkWrapper NETWORK = new SimpleNetworkWrapper(MODID);
 
     //Proxies
     @SidedProxy(clientSide = ModInfo.CLIENT_PROXY, serverSide = ModInfo.COMMON_PROXY)
-    public static IProxy proxy;
+    public static CommonProxy proxy;
 
     //Mod Instance
     @Mod.Instance (MODID)
@@ -31,13 +34,13 @@ public class HeroReactions {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
 
-        //config
-//        ConfigHandler.init(event.getSuggestedConfigurationFile());
+        //init logger
+        LOGGER = event.getModLog();
 
-        //packets
+        //init packets
         PacketHandler.init();
 
-        //init renderers and client event handlers
+        //init other
         proxy.preInit(event);
     }
 
@@ -47,8 +50,6 @@ public class HeroReactions {
 
         //register server events
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
-        //register config changed event
-        MinecraftForge.EVENT_BUS.register(new ConfigHandler());
 
         proxy.init(event);
     }
