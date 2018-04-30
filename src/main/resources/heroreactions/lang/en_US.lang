@@ -1,0 +1,8 @@
+# Item Localizations
+item.heroreactions:item_debug.name=Hang Glider
+
+# Creative tab Localization
+itemGroup.heroreactions=Hero Reactions
+
+# Other
+heroreactions.tooltip.itemdebug=Right click to open the overlay options menu

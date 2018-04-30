@@ -14,3 +14,10 @@ https://docs.google.com/document/d/1528iFO5U9Mi8379oDrzrlxgvYxmy_EmyzHAejXu-XYU/
 
 [Coming soon]
 
+
+### Setup
+
+1) Clone
+2) Run `gradlew setupDecompWorkspace`
+3) Enjoy
+

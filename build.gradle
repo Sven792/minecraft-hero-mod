@@ -11,47 +11,160 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.matthewprenger.cursegradle' version '1.0.9'
+}
+
 apply plugin: "net.minecraftforge.gradle.forge"
 
-version = modVersion
-group= modGroup
-archivesBaseName = modBaseName
+//Require Java 8
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
+//Set base data
+group = package_group
+archivesBaseName = mod_name
+version = "${mc_version}-${major_version}.${minor_version}.${patch_number}"
+
+//Any additional repositories needed to pull from
+repositories {
+    mavenCentral()
+}
+
+//Any dependencies (JEI is a common one)
+dependencies {
+}
+
+//Task for setting Minecraft specific data
 minecraft {
-    version = project.forgeVersion
+    //Minecraft version appended with forge version
+    version = "${mc_version}-${forge_version}"
+    //Run directory (stuff other mods in here for integration testing in dev)
     runDir = "run"
 
+    //Update version in code
+    replace "@VERSION@", project.version
+    replaceIn "HeroReactions.java"
+
+    //Mappings for minecraft source
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = project.mcpVersion
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    mappings = project.mappings_version
+    // makeObfSourceJar = false //A Srg named sources jar is made by default. Uncomment this to disable.
 }
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-}
-
+//Task for updating versioning when processing changes
 processResources {
-    // this will ensure that this task is redone when the versions change.
+    //Ensure the task is redone when versions change
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
-    // replace stuff in mcmod.info, nothing else
+    //Only replace data in relevant files (e.g. mcmod.info and gradle.properties)
     from(sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"
+        include '**/*.info'
+        include '**/*.properties'
 
-        // replace version and mcversion
-        expand "version":project.version, "mcversion":project.minecraft.version
+        //Replace version and mc version
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
 
-    // copy everything else, thats not the mcmod.info
+    //Cope everything else
     from(sourceSets.main.resources.srcDirs) {
-        exclude "mcmod.info"
+        exclude '**/*.info'
+        exclude '**/*.properties'
     }
 }
+
+//Build jar with metadata
+jar {
+    classifier = ''
+    manifest.mainAttributes(
+            "Built-By": System.getProperty('user.name'),
+            "Created-By": "${System.getProperty('java.vm.version')} + (${System.getProperty('java.vm.vendor')})",
+            "Implementation-Title": project.name,
+            "Implementation-Version": project.version
+    )
+}
+
+//API jar
+task apiJar(type: Jar) {
+    from sourceSets.main.allSource
+    from sourceSets.main.output
+    include 'gr8pefish/ironbackpacks/api/**/*'
+    classifier = 'api'
+}
+
+//Ensure correct encoding explicitly
+tasks.withType(JavaCompile) { task ->
+    task.options.encoding = 'UTF-8'
+}
+
+//Get text from the changelog
+String getChangelogText() {
+    def changelogFile = new File('changelog.txt')
+    String str = ''
+    String separator = '---'
+    int lineCount = 0
+    boolean done = false
+    changelogFile.eachLine {
+        if (done || it == null) {
+            return
+        }
+        if (lineCount < 3) {
+            lineCount++
+            if (it.startsWith(separator)) {return}
+        }
+        if (!it.startsWith(separator)) {
+            str += "$it" + (lineCount < 3 ? ':\n\n' : '\n')
+            return
+        }
+        done = true // once we go past the first version block, parse no more
+    }
+    return str
+}
+
+//Upload to CurseForge
+curseforge {
+    if (project.hasProperty('curse_key_hero_reactions'))
+        apiKey = project.curse_key_hero_reactions
+
+    project {
+        id = "${curse_id}"
+        changelog = getChangelogText()
+        releaseType = "${release_type}"
+    }
+}
+
+//Increment patch number
+task incrementVersionNumber {
+    ant.replace(file: "gradle.properties", token: "patch_number=${patch_number}", value: "patch_number=${patch_number.toString().toInteger() + 1}")
+}
+
+//Populate a new blank changelog for the next version
+task makeNewChangelog {
+    def changelogFile = new File('changelog.txt')
+    String newText = '------------------------------------------------------\n' +
+            'Version '+mc_version+" - "+major_version+"."+minor_version+"."+(patch_number.toString().toInteger() + 1)+"\n" +
+            '------------------------------------------------------\n' +
+            'Additions\n' +
+            '- None\n' +
+            '\n' +
+            'Changes\n' +
+            '- None\n' +
+            '\n' +
+            'Bug Fixes\n' +
+            '- None\n'
+    String oldText = changelogFile.getText()
+    changelogFile.setText(newText + oldText);
+}
+
+//Enforce correct order of tasks run
+tasks.build.mustRunAfter clean
+tasks.incrementVersionNumber.mustRunAfter build
+tasks.makeNewChangelog.mustRunAfter incrementVersionNumber
+
+//Curseforge uses these tasks
+tasks.curseforge.dependsOn clean, build, incrementVersionNumber, makeNewChangelog
