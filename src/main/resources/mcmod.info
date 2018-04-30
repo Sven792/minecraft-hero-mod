@@ -1,0 +1,20 @@
+[
+  {
+    "modid": "heroreactions",
+    "name": "Hero Reactions",
+    "description": "Hero Feedback in Minecraft",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "gr8pefish"
+    ],
+    "credits": "Outpost Games",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": [
+      ""
+    ]
+  }
+]
