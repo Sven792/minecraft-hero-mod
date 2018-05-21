@@ -3,7 +3,9 @@ package gr8pefish.heroreactions;
 import gr8pefish.heroreactions.event.ServerEventHandler;
 import gr8pefish.heroreactions.lib.ModInfo;
 import gr8pefish.heroreactions.network.PacketHandler;
+import gr8pefish.heroreactions.network.hero.message.CommandHeroMessage;
 import gr8pefish.heroreactions.proxy.CommonProxy;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -50,6 +52,9 @@ public class HeroReactions {
 
         //register server events
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
+
+        //register client command
+        ClientCommandHandler.instance.registerCommand(new CommandHeroMessage());
 
         proxy.init(event);
     }
