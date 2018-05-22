@@ -9,9 +9,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
 import io.netty.handler.ssl.SslContext;
@@ -22,32 +20,59 @@ import javax.annotation.Nonnull;
 import java.net.URI;
 
 /**
- * This is an example of a WebSocket client.
- * <p>
- * In order to run this example you need a compatible WebSocket server.
- * Therefore you can either start the WebSocket server from the examples
- * or connect to an existing WebSocket server such as
- * <a href="http://www.websocket.org/echo.html">ws://echo.websocket.org.
- * <p>
- * The client will attempt to connect to the URI passed to it as the first argument.
- * You don't have to specify any arguments if you want to connect to the example WebSocket server,
- * as this is the default.
+ * This WebSocket client attempts to establish a connection to a valid WebSocket server.
+ * The {@link Channel} and {@link EventLoopGroup} are provided as public static fields for other classes to access the connection from.
+ * Use {@link WebSocketClient#establishConnection()} to initialize the connection.
  */
 public final class WebSocketClient {
 
-//    static final String URL = System.getProperty("url", "ws://127.0.0.1:8080/websocket");
-    private static final String URL = System.getProperty("url", "ws://echo.websocket.org/"); //echo useful :)
+    // Publicly accessible fields
 
+    /** A {@link Channel} that is connected to the server. */
     @Nonnull
     public static Channel WEBSOCKET_CHANNEL;
 
+    /** A {@link EventLoopGroup}, available so the connection can be fully closed. */
     @Nonnull
     public static EventLoopGroup GROUP;
 
-    public static void main(String[] args) throws Exception {
+    // Public methods
+
+    /**
+     * Establishes a WebSocket connection to a server.
+     *
+     * This is a wrapper method that has error handling. The internal class is {@link WebSocketClient#establishWebSocketConnection()}.
+     */
+    public static void establishConnection() {
+        try {
+            HeroReactions.LOGGER.info("Starting WebSocket connection...");
+            WebSocketClient.establishWebSocketConnection();
+            HeroReactions.LOGGER.info("WebSocket connection completed successfully!");
+        } catch (Exception e) {
+            HeroReactions.LOGGER.error("WebSocket connection failed!");
+            e.printStackTrace();
+        }
+    }
+
+    // Start internal code
+
+    /**
+     * Establishes a WebSocket connection to a server.
+     * Uses wss if available.
+     *
+     * @throws Exception - any error (note it is logged)
+     */
+    private static void establishWebSocketConnection() throws Exception {
+
+        //URL format example: ("url", "ws://127.0.0.1:8080/websocket");
+        final String URL = System.getProperty("url", "ws://echo.websocket.org/"); //echo server used for testing
+
+        //setup base data (ws at correct host and URL)
         URI uri = new URI(URL);
         String scheme = uri.getScheme() == null? "ws" : uri.getScheme();
         final String host = uri.getHost() == null? "127.0.0.1" : uri.getHost();
+
+        //determine correct port
         final int port;
         if (uri.getPort() == -1) {
             if ("ws".equalsIgnoreCase(scheme)) {
@@ -61,12 +86,13 @@ public final class WebSocketClient {
             port = uri.getPort();
         }
 
+        //confirm websocket connections only
         if (!"ws".equalsIgnoreCase(scheme) && !"wss".equalsIgnoreCase(scheme)) {
             System.err.println("Only WS(S) is supported.");
             return;
         }
 
-        //comment out to simplify for testing
+        //utilize wss for secure connection
         final boolean ssl = "wss".equalsIgnoreCase(scheme);
         final SslContext sslCtx;
         if (ssl) {
@@ -76,7 +102,10 @@ public final class WebSocketClient {
             sslCtx = null;
         }
 
+        //create event group to bind everything together
         EventLoopGroup group = new NioEventLoopGroup();
+
+        //start the connection process
         try {
             // Connect with V13 (RFC 6455 aka HyBi-17).
             final WebSocketClientHandlerOld handler =
@@ -84,14 +113,16 @@ public final class WebSocketClient {
                             WebSocketClientHandshakerFactory.newHandshaker(
                                     uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders()));
 
+            //create a Bootstrap to easily establish the connection via helper methods
             Bootstrap b = new Bootstrap();
+            //initialize all the data (through a channel)
             b.group(group)
                     .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {
                             ChannelPipeline p = ch.pipeline();
-                            if (sslCtx != null) {
+                            if (sslCtx != null) { //add secure connection if possible
                                 p.addLast(sslCtx.newHandler(ch.alloc(), host, port));
                             }
                             p.addLast(
@@ -102,49 +133,21 @@ public final class WebSocketClient {
                         }
                     });
 
+            //finally connect to the server via the established channel
             Channel ch = b.connect(uri.getHost(), port).sync().channel();
-            ChannelFuture f = handler.handshakeFuture().sync(); //wait, ensure connection okay
+            ChannelFuture f = handler.handshakeFuture().sync(); //waits and ensures the connection is okay
 
-            //setup data for access via other classes/methods (e.g. commands)
+            //instantiate fields with valid data (for messaging via other classes)
             WEBSOCKET_CHANNEL = ch;
             GROUP = group;
 
-            //can ask Ryan with some specific questions
-
-            HeroReactions.LOGGER.info(f.isSuccess());
-            HeroReactions.LOGGER.info("GOT THERE");
-
-//            BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
-
-            WebSocketFrame framez = new TextWebSocketFrame("hello from the other side");
-            ch.writeAndFlush(framez);
-
-            if (ch.isOpen()) HeroReactions.LOGGER.info(ch.remoteAddress());
-            if (ch.isOpen()) HeroReactions.LOGGER.info(ch.localAddress());
-
-//            HeroReactions.LOGGER.info(ch.read().frame);
-
-
-//            while (true) {
-//                String msg = console.readLine();
-//                if (msg == null) {
-//                    break;
-//                } else if ("bye".equals(msg.toLowerCase())) {
-//                    ch.writeAndFlush(new CloseWebSocketFrame());
-//                    ch.closeFuture().sync();
-//                    break;
-//                } else if ("ping".equals(msg.toLowerCase())) {
-//                    WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[] { 8, 1, 8, 1 }));
-//                    ch.writeAndFlush(frame);
-//                } else {
-//                    WebSocketFrame frame = new TextWebSocketFrame(msg);
-//                    ch.writeAndFlush(frame);
-//                }
-//            }
-
-        } catch(Exception e) {
-            HeroReactions.LOGGER.warn("Exception caught: "+e);
+        //catch any errors and propagate them to the main log
+        } catch (Exception e) {
+            HeroReactions.LOGGER.error("Exception caught during connection: "+e);
             group.shutdownGracefully();
         }
     }
+
+
+
 }
