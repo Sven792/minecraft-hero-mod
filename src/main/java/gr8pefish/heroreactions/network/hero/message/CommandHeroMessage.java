@@ -20,9 +20,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 //Registered on the client, in the main init phase
+
+/**
+ * Command to test the {@link WebSocketClient} connection in-game easily.
+ *
+ * Format: `hero send [ping/close/{message}]`
+ * Where:
+ *  ping - sends a ping to the server
+ *  close - closes the connection
+ *  {message} - sends a text message to the server containing whatever {message} is
+ */
 public class CommandHeroMessage extends CommandBase {
 
-    // The strings used in the command in one place
+    // The strings used for the command, all in one place
     private final String HERO = "hero";
     private final String SEND = "send";
     private final String MESSAGE = "[message]";
@@ -40,29 +50,33 @@ public class CommandHeroMessage extends CommandBase {
 
     @Override
     public int getRequiredPermissionLevel(){
-        return 2; //Best guess, not sure on the perfect level
+        return 4; //Has to be op-ed
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] params) throws CommandException {
         if (params.length > 0 && params.length <= 2) {
             if (params[0].equalsIgnoreCase(SEND)) { //send command
-                if (params.length == 2) { //message supplied
+                if (params.length == 2) { //message supplied (contained in params[1])
                     try {
-                        if (!WebSocketClient.WEBSOCKET_CHANNEL.isOpen()) { //closed channel, can'ty do anything
+                        //check if connection is open first
+                        if (!WebSocketClient.WEBSOCKET_CHANNEL.isOpen()) { //closed channel, can't do anything
                             sender.sendMessage(new TextComponentString("Can't send message, connection not open!"));
                             HeroReactions.LOGGER.warn("Couldn't process command to send a message (closed channel)!");
-                        } else if ("bye".equals(params[1].toLowerCase())) {
+                        //close - close connection
+                        } else if ("close".equals(params[1].toLowerCase())) {
                             sender.sendMessage(new TextComponentString("Closing connection."));
                             //close connection
                             WebSocketClient.WEBSOCKET_CHANNEL.writeAndFlush(new CloseWebSocketFrame());
                             WebSocketClient.WEBSOCKET_CHANNEL.closeFuture().sync();
                             //shutdown group
                             WebSocketClient.GROUP.shutdownGracefully();
+                        //ping - send ping
                         } else if ("ping".equals(params[1].toLowerCase())) {
                             sender.sendMessage(new TextComponentString("Sending ping message."));
                             WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}));
                             WebSocketClient.WEBSOCKET_CHANNEL.writeAndFlush(frame);
+                        //message - send text (whatever was contained in the message)
                         } else {
                             sender.sendMessage(new TextComponentString("Sending text message."));
                             WebSocketFrame frame = new TextWebSocketFrame(params[1]);
@@ -86,7 +100,7 @@ public class CommandHeroMessage extends CommandBase {
         if (args.length <= 1) //no name, match string
             tabCompletion.addAll(getListOfStringsMatchingLastWord(args, SEND));
         else //match name
-            tabCompletion.addAll(getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()));
+            tabCompletion.addAll(getListOfStringsMatchingLastWord(args, "ping", "close"));
         return tabCompletion;
     }
 

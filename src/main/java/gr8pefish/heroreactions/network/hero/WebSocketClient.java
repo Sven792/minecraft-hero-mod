@@ -148,6 +148,4 @@ public final class WebSocketClient {
         }
     }
 
-
-
 }
