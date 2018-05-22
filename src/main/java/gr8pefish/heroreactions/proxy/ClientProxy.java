@@ -1,7 +1,7 @@
 package gr8pefish.heroreactions.proxy;
 
 import gr8pefish.heroreactions.client.ClientEventHandler;
-import gr8pefish.heroreactions.network.hero.WebSocketClient;
+import gr8pefish.heroreactions.network.hero.websocket.WebSocketClient;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

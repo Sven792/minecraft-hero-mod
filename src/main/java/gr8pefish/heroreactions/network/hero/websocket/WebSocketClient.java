@@ -1,4 +1,4 @@
-package gr8pefish.heroreactions.network.hero;
+package gr8pefish.heroreactions.network.hero.websocket;
 
 import gr8pefish.heroreactions.HeroReactions;
 import io.netty.bootstrap.Bootstrap;
@@ -54,16 +54,17 @@ public final class WebSocketClient {
         }
     }
 
-    // Start internal code
+    // Internal code
 
     /**
      * Establishes a WebSocket connection to a server.
-     * Uses wss if available.
+     * Uses the {@link WebSocketClientHandler}.
      *
      * @throws Exception - any error (note it is logged)
      */
     private static void establishWebSocketConnection() throws Exception {
 
+        //Hero -> wss://stream.outpostgames.com/ws/account/<account-id>
         //URL format example: ("url", "ws://127.0.0.1:8080/websocket");
         final String URL = System.getProperty("url", "ws://echo.websocket.org/"); //echo server used for testing
 
@@ -105,13 +106,13 @@ public final class WebSocketClient {
         //create event group to bind everything together
         EventLoopGroup group = new NioEventLoopGroup();
 
-        //start the connection process
+        //start the connection process (uses the
         try {
             // Connect with V13 (RFC 6455 aka HyBi-17).
-            final WebSocketClientHandlerOld handler =
-                    new WebSocketClientHandlerOld(
+            final WebSocketClientHandler handler =
+                    new WebSocketClientHandler(
                             WebSocketClientHandshakerFactory.newHandshaker(
-                                    uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders()));
+                                    uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders())); //.add for more custom headers
 
             //create a Bootstrap to easily establish the connection via helper methods
             Bootstrap b = new Bootstrap();
@@ -135,7 +136,7 @@ public final class WebSocketClient {
 
             //finally connect to the server via the established channel
             Channel ch = b.connect(uri.getHost(), port).sync().channel();
-            ChannelFuture f = handler.handshakeFuture().sync(); //waits and ensures the connection is okay
+            handler.handshakeFuture().sync(); //waits and ensures the connection is okay
 
             //instantiate fields with valid data (for messaging via other classes)
             WEBSOCKET_CHANNEL = ch;
