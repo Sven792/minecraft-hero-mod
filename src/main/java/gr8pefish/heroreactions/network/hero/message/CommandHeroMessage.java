@@ -59,6 +59,7 @@ public class CommandHeroMessage extends CommandBase {
             if (params[0].equalsIgnoreCase(SEND)) { //send command
                 if (params.length == 2) { //message supplied (contained in params[1])
                     try {
+                        //ToDo: Cleanup with helper methods to send the actual frame data and write/flush
                         //check if connection is open first
                         if (!WebSocketClient.WEBSOCKET_CHANNEL.isOpen()) { //closed channel, can't do anything
                             sender.sendMessage(new TextComponentString("Can't send message, connection not open!"));
@@ -76,7 +77,7 @@ public class CommandHeroMessage extends CommandBase {
                             sender.sendMessage(new TextComponentString("Sending ping message."));
                             WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}));
                             WebSocketClient.WEBSOCKET_CHANNEL.writeAndFlush(frame);
-                        //message - send text (whatever was contained in the message)
+                        //message - send text (whatever was contained in the message) //ToDo: Valid format
                         } else {
                             sender.sendMessage(new TextComponentString("Sending text message."));
                             WebSocketFrame frame = new TextWebSocketFrame(params[1]);

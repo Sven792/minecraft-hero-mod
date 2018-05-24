@@ -1,6 +1,7 @@
 package gr8pefish.heroreactions.network.hero.websocket;
 
 import gr8pefish.heroreactions.HeroReactions;
+import gr8pefish.heroreactions.network.hero.HeroConnectionData;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -64,9 +65,12 @@ public final class WebSocketClient {
      */
     private static void establishWebSocketConnection() throws Exception {
 
-        //Hero -> wss://stream.outpostgames.com/ws/account/<account-id>
+
         //URL format example: ("url", "ws://127.0.0.1:8080/websocket");
-        final String URL = System.getProperty("url", "ws://echo.websocket.org/"); //echo server used for testing
+//        final String URL = System.getProperty("url", "ws://echo.websocket.org/"); //echo server used for testing
+
+        //Hero -> wss://stream.outpostgames.com/ws/account/<account-id>
+        final String URL = System.getProperty("url", "wss://stream.outpostgames.com/ws/account/"+HeroConnectionData.ACCOUNT_ID);
 
         //setup base data (ws at correct host and URL)
         URI uri = new URI(URL);
@@ -112,7 +116,9 @@ public final class WebSocketClient {
             final WebSocketClientHandler handler =
                     new WebSocketClientHandler(
                             WebSocketClientHandshakerFactory.newHandshaker(
-                                    uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders())); //.add for more custom headers
+                                    uri, WebSocketVersion.V13, null, false,
+                                    new DefaultHttpHeaders()
+                                            .add("app-id", "2"))); //adds minecraft app id (required) - 2 is random TODO: Correct app id for minecraft
 
             //create a Bootstrap to easily establish the connection via helper methods
             Bootstrap b = new Bootstrap();
