@@ -67,21 +67,19 @@ public class CommandHeroMessage extends CommandBase {
                         //close - close connection
                         } else if ("close".equals(params[1].toLowerCase())) {
                             sender.sendMessage(new TextComponentString("Closing connection."));
-                            //close connection
-                            WebSocketClient.WEBSOCKET_CHANNEL.writeAndFlush(new CloseWebSocketFrame());
-                            WebSocketClient.WEBSOCKET_CHANNEL.closeFuture().sync();
-                            //shutdown group
-                            WebSocketClient.GROUP.shutdownGracefully();
+                            MessageHelper.closeConnection();
                         //ping - send ping
                         } else if ("ping".equals(params[1].toLowerCase())) {
                             sender.sendMessage(new TextComponentString("Sending ping message."));
-                            WebSocketFrame frame = new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}));
-                            WebSocketClient.WEBSOCKET_CHANNEL.writeAndFlush(frame);
+                            MessageHelper.sendPing();
+                        //pong - send pong
+                        } else if ("pong".equals(params[1].toLowerCase())) {
+                            sender.sendMessage(new TextComponentString("Sending pong message."));
+//                            MessageHelper.sendPong(new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}))); //causes loop
                         //message - send text (whatever was contained in the message) //ToDo: Valid format
                         } else {
                             sender.sendMessage(new TextComponentString("Sending text message."));
-                            WebSocketFrame frame = new TextWebSocketFrame(params[1]);
-                            WebSocketClient.WEBSOCKET_CHANNEL.writeAndFlush(frame);
+                            MessageHelper.sendText(params[1]);
                         }
                     } catch (Exception e) {
                         sender.sendMessage(new TextComponentString("Invalid message!"));

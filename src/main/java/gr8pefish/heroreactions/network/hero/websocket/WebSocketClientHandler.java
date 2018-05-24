@@ -1,11 +1,8 @@
 package gr8pefish.heroreactions.network.hero.websocket;
 
 import gr8pefish.heroreactions.HeroReactions;
-import gr8pefish.heroreactions.network.hero.json.HeroJSONMessageHelper;
 import gr8pefish.heroreactions.network.hero.message.MessageHelper;
-import gr8pefish.heroreactions.network.hero.message.types.EnumHeroMessage;
 import gr8pefish.heroreactions.network.hero.message.types.PingMessage;
-import gr8pefish.heroreactions.network.hero.message.types.PongMessage;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.websocketx.*;
@@ -79,14 +76,16 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
         final WebSocketFrame frame = (WebSocketFrame) msg;
         if (frame instanceof PingWebSocketFrame) { //ToDo: Determine why never triggered
             HeroReactions.LOGGER.info("PING received");
-            PingMessage.onMessageReceived(); //send back pong
-        } else if (frame instanceof PongWebSocketFrame) { //ToDo: Why do I get a PongFrame when pinging, but don't get a PingFrame when it is sent to me?
+//            MessageHelper.sendPong((PingWebSocketFrame) frame); //Only use messageHelper, not direct from messages themselves?
+//            PingMessage.onMessageReceived(); //send back pong
+        } else if (frame instanceof PongWebSocketFrame) { //ToDo: Why do I get a PongFrame when pinging, but don't get a PingFrame (a TextFrame) when it is sent to me?
             HeroReactions.LOGGER.info("PONG received");
         } else if (frame instanceof TextWebSocketFrame) {
             final TextWebSocketFrame textFrame = (TextWebSocketFrame) frame;
             HeroReactions.LOGGER.info(textFrame.text()); //uncomment to print request, but do it anyway for testing
             if (MessageHelper.gotPing(textFrame)) { //if got a ping
-                PingMessage.onMessageReceived(); //send pong
+                MessageHelper.sendPong(null); //ToDo: Remove param if just using JSON
+//                PingMessage.onMessageReceived(); //send pong
             }
         } else if (frame instanceof CloseWebSocketFrame)
             ch.close();
