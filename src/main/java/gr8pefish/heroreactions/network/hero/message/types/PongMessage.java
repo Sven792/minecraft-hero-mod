@@ -4,10 +4,10 @@ import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.network.hero.json.JsonMessageHelper;
 import gr8pefish.heroreactions.network.hero.json.types.PingPongJsonMessage;
 import gr8pefish.heroreactions.network.hero.message.MessageHelper;
-import gr8pefish.heroreactions.network.hero.message.core.IHeroMessageReceive;
-import gr8pefish.heroreactions.network.hero.message.core.IHeroMessageSend;
+import gr8pefish.heroreactions.network.hero.message.core.IMessageReceive;
+import gr8pefish.heroreactions.network.hero.message.core.IMessageSend;
 
-public class PongMessage implements IHeroMessageReceive, IHeroMessageSend {
+public class PongMessage implements IMessageReceive, IMessageSend {
 
     //When you get a pong, do nothing
     public static void onMessageReceived() {

@@ -2,7 +2,7 @@ package gr8pefish.heroreactions.network.hero.message;
 
 import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.network.hero.json.JsonMessageHelper;
-import gr8pefish.heroreactions.network.hero.message.types.EnumHeroMessage;
+import gr8pefish.heroreactions.network.hero.message.types.EnumMessage;
 import gr8pefish.heroreactions.network.hero.message.types.PingMessage;
 import gr8pefish.heroreactions.network.hero.message.types.PongMessage;
 import gr8pefish.heroreactions.network.hero.message.types.TextMessage;
@@ -13,11 +13,6 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 
 public class MessageHelper {
-
-    //Check if a ping is received by parsing the data
-    public static boolean gotPing(TextWebSocketFrame frame) {
-        return JsonMessageHelper.getMessageTypeFromJson(frame.text()).equals(EnumHeroMessage.PING);
-    }
 
     //Send json data to server over websocket
     public static void sendJson(String jsonMessage) {

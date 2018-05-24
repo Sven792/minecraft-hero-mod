@@ -1,9 +1,9 @@
 package gr8pefish.heroreactions.network.hero.message.core;
 
-public interface IHeroMessageReceive {
+public interface IMessageReceive {
 
     static void onMessageReceived() {
-        //Do nothing by default
+        //No-op
     }
 
 }
