@@ -3,7 +3,10 @@ package gr8pefish.heroreactions.network.hero.websocket;
 import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.network.hero.HeroConnectionData;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -99,18 +102,18 @@ public final class WebSocketClient {
 
         //utilize wss for secure connection
         final boolean ssl = "wss".equalsIgnoreCase(scheme);
-        final SslContext sslCtx;
+        final SslContext sslContext;
         if (ssl) {
-            sslCtx = SslContextBuilder.forClient()
+            sslContext = SslContextBuilder.forClient()
                     .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
         } else {
-            sslCtx = null;
+            sslContext = null;
         }
 
         //create event group to bind everything together
         EventLoopGroup group = new NioEventLoopGroup();
 
-        //start the connection process (uses the
+        //start the connection process (delegates to the WebSocketClientHandler for handling channel traffic)
         try {
             // Connect with V13 (RFC 6455 aka HyBi-17).
             final WebSocketClientHandler handler =
@@ -121,18 +124,18 @@ public final class WebSocketClient {
                                             .add("app-id", "2"))); //adds minecraft app id (required) - 2 is random TODO: Correct app id for minecraft
 
             //create a Bootstrap to easily establish the connection via helper methods
-            Bootstrap b = new Bootstrap();
+            Bootstrap bootstrap = new Bootstrap();
             //initialize all the data (through a channel)
-            b.group(group)
+            bootstrap.group(group)
                     .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel ch) {
-                            ChannelPipeline p = ch.pipeline();
-                            if (sslCtx != null) { //add secure connection if possible
-                                p.addLast(sslCtx.newHandler(ch.alloc(), host, port));
+                        protected void initChannel(SocketChannel socketChannel) {
+                            ChannelPipeline pipeline = socketChannel.pipeline();
+                            if (sslContext != null) { //add secure connection if possible
+                                pipeline.addLast(sslContext.newHandler(socketChannel.alloc(), host, port));
                             }
-                            p.addLast(
+                            pipeline.addLast(
                                     new HttpClientCodec(),
                                     new HttpObjectAggregator(8192),
                                     WebSocketClientCompressionHandler.INSTANCE,
@@ -141,11 +144,11 @@ public final class WebSocketClient {
                     });
 
             //finally connect to the server via the established channel
-            Channel ch = b.connect(uri.getHost(), port).sync().channel();
+            Channel channel = bootstrap.connect(uri.getHost(), port).sync().channel();
             handler.handshakeFuture().sync(); //waits and ensures the connection is okay
 
             //instantiate fields with valid data (for messaging via other classes)
-            WEBSOCKET_CHANNEL = ch;
+            WEBSOCKET_CHANNEL = channel;
             GROUP = group;
 
         //catch any errors and propagate them to the main log

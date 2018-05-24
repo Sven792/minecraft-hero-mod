@@ -2,12 +2,13 @@ package gr8pefish.heroreactions.network.hero.websocket;
 
 import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.network.hero.json.JsonMessageHelper;
-import gr8pefish.heroreactions.network.hero.message.MessageHelper;
-import gr8pefish.heroreactions.network.hero.message.types.EnumMessage;
-import gr8pefish.heroreactions.network.hero.message.types.PingMessage;
+import gr8pefish.heroreactions.network.hero.message.HeroMessages;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.websocketx.*;
+import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.util.CharsetUtil;
 
 /**
@@ -72,7 +73,7 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
         }
 
         //test (logs message received)
-        HeroReactions.LOGGER.info("Message received from server: "+msg.toString());
+        HeroReactions.LOGGER.info("Message received from server: " + msg.toString());
 
         //cast message to correct WebSocketFrame and perform fitting action (typically just printing for now)
         final WebSocketFrame frame = (WebSocketFrame) msg;
@@ -80,14 +81,17 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
 
             //get frame and print it
             final TextWebSocketFrame textFrame = (TextWebSocketFrame) frame;
-            HeroReactions.LOGGER.info(textFrame.text()); //uncomment to print request, but do it anyway for testing
+            HeroReactions.LOGGER.info("Message contents: "+textFrame.text()); //uncomment to print request, but do it anyway for testing
 
             //handle message
-            EnumMessage messageType = JsonMessageHelper.getMessageTypeFromJson(textFrame.text());
+            HeroMessages messageType = JsonMessageHelper.getMessageTypeFromJson(textFrame.text());
             messageType.onMessageReceived();
 
-        } else if (frame instanceof CloseWebSocketFrame)
+        } else if (frame instanceof CloseWebSocketFrame) {
             ch.close();
+        } else {
+            HeroReactions.LOGGER.warn("New type of frame obtained: "+frame.toString());
+        }
 
     }
 

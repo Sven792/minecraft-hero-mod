@@ -5,13 +5,12 @@ import com.google.gson.GsonBuilder;
 import gr8pefish.heroreactions.network.hero.json.types.AbstractJsonMessage;
 import gr8pefish.heroreactions.network.hero.json.types.PingPongJsonMessage;
 import gr8pefish.heroreactions.network.hero.json.types.TextJsonMessage;
-import gr8pefish.heroreactions.network.hero.message.types.EnumMessage;
+import gr8pefish.heroreactions.network.hero.message.HeroMessages;
 
 public class JsonMessageHelper {
 
+    //Setup gson constructor
     private static final Gson gson = new GsonBuilder().serializeNulls().create();
-
-    //Create valid JSON String representation to send to API from a string "ping" or "pong" passed in
 
     /** Create a serialized string representation of a message */
     private static String createSerializedJsonString(AbstractJsonMessage message){
@@ -47,15 +46,15 @@ public class JsonMessageHelper {
 
 
     //Get type of message based on the contents (currently only ping supported)
-    public static EnumMessage getMessageTypeFromJson(String string) {
+    public static HeroMessages getMessageTypeFromJson(String string) {
         PingPongJsonMessage message = gson.fromJson(string, PingPongJsonMessage.class);
         switch (message.type) {
             case "ping":
-                return EnumMessage.PING;
+                return HeroMessages.PING;
             case "pong":
-                return EnumMessage.PONG;
+                return HeroMessages.PONG;
             default:
-                return EnumMessage.NONE;
+                return HeroMessages.NONE;
         }
     }
 }

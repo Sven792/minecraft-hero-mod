@@ -1,11 +1,7 @@
 package gr8pefish.heroreactions.network.hero.message;
 
 import gr8pefish.heroreactions.HeroReactions;
-import gr8pefish.heroreactions.network.hero.json.JsonMessageHelper;
-import gr8pefish.heroreactions.network.hero.message.types.EnumMessage;
-import gr8pefish.heroreactions.network.hero.message.types.PingMessage;
-import gr8pefish.heroreactions.network.hero.message.types.PongMessage;
-import gr8pefish.heroreactions.network.hero.message.types.TextMessage;
+import gr8pefish.heroreactions.network.hero.json.types.PingPongJsonMessage;
 import gr8pefish.heroreactions.network.hero.websocket.WebSocketClient;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
@@ -22,10 +18,9 @@ public class MessageHelper {
     }
 
     //Helper method to send ping
-    public static void sendPing(){
-
+    public static void sendPing() {
         //Json
-        PingMessage.send();
+        HeroMessages.PING.send(PingPongJsonMessage.PingPongEnum.PING);
 
         //PingFrame
 //        HeroReactions.LOGGER.info("Sending ping - PingFrame");
@@ -34,9 +29,9 @@ public class MessageHelper {
     }
 
     //Helper method to send pong
-    public static void sendPong(PingWebSocketFrame ping){
+    public static void sendPong(PingWebSocketFrame ping) {
         //Json
-        PongMessage.send();
+        HeroMessages.PONG.send(PingPongJsonMessage.PingPongEnum.PONG);
 
         //PongFrame
 //        HeroReactions.LOGGER.info("Sending pong - PongFrame");
@@ -45,9 +40,9 @@ public class MessageHelper {
     }
 
     //Helper method to send text
-    public static void sendText(String text){
+    public static void sendText(String text) {
         //Json
-        TextMessage.send(text);
+        HeroMessages.TEXT.send(text);
 
         //Basic Text
 //        HeroReactions.LOGGER.info("Sending text - no JSON");

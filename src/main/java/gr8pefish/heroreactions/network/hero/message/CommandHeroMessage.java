@@ -2,11 +2,6 @@ package gr8pefish.heroreactions.network.hero.message;
 
 import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.network.hero.websocket.WebSocketClient;
-import io.netty.buffer.Unpooled;
-import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -59,7 +54,6 @@ public class CommandHeroMessage extends CommandBase {
             if (params[0].equalsIgnoreCase(SEND)) { //send command
                 if (params.length == 2) { //message supplied (contained in params[1])
                     try {
-                        //ToDo: Cleanup with helper methods to send the actual frame data and write/flush
                         //check if connection is open first
                         if (!WebSocketClient.WEBSOCKET_CHANNEL.isOpen()) { //closed channel, can't do anything
                             sender.sendMessage(new TextComponentString("Can't send message, connection not open!"));
@@ -76,7 +70,7 @@ public class CommandHeroMessage extends CommandBase {
                         } else if ("pong".equals(params[1].toLowerCase())) {
                             sender.sendMessage(new TextComponentString("Sending pong message."));
 //                            MessageHelper.sendPong(new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}))); //causes loop
-                        //message - send text (whatever was contained in the message) //ToDo: Valid format
+                        //message - send text (whatever was contained in the message)
                         } else {
                             sender.sendMessage(new TextComponentString("Sending text message."));
                             MessageHelper.sendText(params[1]);
