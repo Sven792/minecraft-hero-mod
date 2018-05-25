@@ -1,6 +1,7 @@
 package gr8pefish.heroreactions.network.hero.message;
 
 import gr8pefish.heroreactions.HeroReactions;
+import gr8pefish.heroreactions.network.hero.json.types.SubscribeJsonMessage;
 import gr8pefish.heroreactions.network.hero.websocket.WebSocketClient;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -29,8 +30,8 @@ public class CommandHeroMessage extends CommandBase {
 
     // The strings used for the command, all in one place
     private final String HERO = "hero";
-    private final String SEND = "send";
-    private final String MESSAGE = "[message]";
+    private final String SEND = "[send|sub]";
+    private final String MESSAGE = "[ping|close|message|subtype|help]";
     private final String MESSAGE_COMMAND = "/"+HERO+" "+SEND+" "+MESSAGE;
 
     @Override
@@ -51,7 +52,8 @@ public class CommandHeroMessage extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] params) throws CommandException {
         if (params.length > 0 && params.length <= 2) {
-            if (params[0].equalsIgnoreCase(SEND)) { //send command
+            //Send message
+            if (params[0].equalsIgnoreCase("send")) {
                 if (params.length == 2) { //message supplied (contained in params[1])
                     try {
                         //check if connection is open first
@@ -80,6 +82,34 @@ public class CommandHeroMessage extends CommandBase {
                         HeroReactions.LOGGER.warn("Couldn't process command to send a message!");
                     }
                 }
+            //Subscribe message
+            } else if (params[0].equalsIgnoreCase("sub")) {
+                if (params.length == 2) { //message supplied (contained in params[1])
+                    try {
+                        //check if connection is open first
+                        if (!WebSocketClient.WEBSOCKET_CHANNEL.isOpen()) { //closed channel, can't do anything
+                            sender.sendMessage(new TextComponentString("Can't send message, connection not open!"));
+                            HeroReactions.LOGGER.warn("Couldn't process command to send a message (closed channel)!");
+                        }
+                        //loop through subscription options
+                        for (SubscribeJsonMessage.SubscribeTopics topic : SubscribeJsonMessage.SubscribeTopics.values()) {
+                            if (topic.stringRepresentation.equalsIgnoreCase(params[1])) {
+                                sender.sendMessage(new TextComponentString("Sending subscribe to " + topic + " message."));
+                                MessageHelper.subscribeToEvent(topic);
+                                return;
+                            }
+                        }
+
+                        sender.sendMessage(new TextComponentString("Invalid option. Try one of: "));
+                        for (SubscribeJsonMessage.SubscribeTopics topic : SubscribeJsonMessage.SubscribeTopics.values()) {
+                            sender.sendMessage(new TextComponentString(topic.stringRepresentation));
+                        }
+
+                    } catch (Exception e) {
+                        sender.sendMessage(new TextComponentString("Invalid message!"));
+                        HeroReactions.LOGGER.warn("Couldn't process command to send a message!");
+                    }
+                }
             }
         } else {
             throw new CommandException(getUsage(sender));
@@ -92,9 +122,9 @@ public class CommandHeroMessage extends CommandBase {
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
         List<String> tabCompletion = new ArrayList<String>();
         if (args.length <= 1) //no name, match string
-            tabCompletion.addAll(getListOfStringsMatchingLastWord(args, SEND));
+            tabCompletion.addAll(getListOfStringsMatchingLastWord(args, "send", "sub"));
         else //match name
-            tabCompletion.addAll(getListOfStringsMatchingLastWord(args, "ping", "close"));
+            tabCompletion.addAll(getListOfStringsMatchingLastWord(args, "ping", "close", "text message", "subscription type", "help"));
         return tabCompletion;
     }
 

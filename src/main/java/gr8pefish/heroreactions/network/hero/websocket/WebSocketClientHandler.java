@@ -85,7 +85,7 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
 
             //handle message
             HeroMessages messageType = JsonMessageHelper.getMessageTypeFromJson(textFrame.text());
-            messageType.onMessageReceived();
+            messageType.onMessageReceived(textFrame);
 
         } else if (frame instanceof CloseWebSocketFrame) {
             ch.close();

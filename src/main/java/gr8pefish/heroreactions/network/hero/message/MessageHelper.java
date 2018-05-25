@@ -2,6 +2,7 @@ package gr8pefish.heroreactions.network.hero.message;
 
 import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.network.hero.json.types.PingPongJsonMessage;
+import gr8pefish.heroreactions.network.hero.json.types.SubscribeJsonMessage;
 import gr8pefish.heroreactions.network.hero.websocket.WebSocketClient;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
@@ -48,6 +49,11 @@ public class MessageHelper {
 //        HeroReactions.LOGGER.info("Sending text - no JSON");
 //        WebSocketFrame frame = new TextWebSocketFrame(text);
 //        WebSocketClient.WEBSOCKET_CHANNEL.writeAndFlush(frame);
+    }
+
+    public static void subscribeToEvent(SubscribeJsonMessage.SubscribeTopics topic) {
+        //Json
+        HeroMessages.SUBSCRIBE.send(topic);
     }
 
     //Helper method to close connection
