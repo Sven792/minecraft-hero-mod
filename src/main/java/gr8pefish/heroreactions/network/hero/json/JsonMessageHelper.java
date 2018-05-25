@@ -1,9 +1,6 @@
 package gr8pefish.heroreactions.network.hero.json;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.network.hero.json.types.*;
 import gr8pefish.heroreactions.network.hero.json.types.SubscribeJsonMessage;
@@ -107,8 +104,12 @@ public class JsonMessageHelper {
                 return;
             case FEEDBACK_ACTIVITY:
                 //parse message `data` for "feedback-activity" format
-                //TODO - feedback activity parsing
-                HeroReactions.LOGGER.info("TODO - Feedback Activity");
+                JsonArray jsonArray = JsonUtils.getJsonArray(dataElement.getAsJsonObject(), "options");
+                for (JsonElement element : jsonArray) {
+                    FeedbackTypes feedbackType = FeedbackTypes.getFromString(JsonUtils.getString(element.getAsJsonObject(), "id"));
+                    int count = JsonUtils.getInt(element.getAsJsonObject(), "activity");
+                    StreamData.FeedbackActivity.getFeedbackActivity().put(feedbackType, count);
+                }
                 return;
             case ONLINE:
                 StreamData.Online.isOnline = dataElement.getAsBoolean();

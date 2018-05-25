@@ -4,8 +4,12 @@ import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.network.hero.json.JsonMessageHelper;
 import gr8pefish.heroreactions.network.hero.json.types.PingPongJsonMessage;
 import gr8pefish.heroreactions.network.hero.json.types.SubscribeJsonMessage;
+import gr8pefish.heroreactions.network.hero.message.data.FeedbackTypes;
 import gr8pefish.heroreactions.network.hero.message.data.StreamData;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public enum HeroMessages {
 
@@ -82,7 +86,12 @@ public enum HeroMessages {
             //parse json, retrieving data and storing it in the appropriate location in StreamData
             JsonMessageHelper.setMessageData(message, this);
             //manipulate data uniquely
-            HeroReactions.LOGGER.info("Got FEEDBACK_ACTIVITY message: "); //TODO - feedback activity data output
+            HeroReactions.LOGGER.info("Got FEEDBACK_ACTIVITY message");
+            //get data, iterate through
+            ConcurrentHashMap<FeedbackTypes, Integer> feedback = StreamData.FeedbackActivity.getFeedbackActivity();
+            for (Map.Entry<FeedbackTypes, Integer> entry : feedback.entrySet()) {
+                HeroReactions.LOGGER.info("Feedback: "+entry.getKey().toString()+" - "+entry.getValue()); //feedback type - count
+            }
         }
 
         @Override

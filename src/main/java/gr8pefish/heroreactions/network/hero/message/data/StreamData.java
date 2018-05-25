@@ -1,10 +1,11 @@
 package gr8pefish.heroreactions.network.hero.message.data;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class StreamData {
 
-    private static HashMap<FeedbackTypes, Integer> feedbackActivity = new HashMap<>();
+    //Might as well make it thread safe
+    private static final ConcurrentHashMap<FeedbackTypes, Integer> feedbackActivity = new ConcurrentHashMap<>();
 
     public static class Viewers {
         public static int direct;
@@ -21,7 +22,12 @@ public class StreamData {
     }
 
     public static class FeedbackActivity {
+
         //Use feedbackActivity map
+        public static ConcurrentHashMap<FeedbackTypes, Integer> getFeedbackActivity() {
+            return feedbackActivity;
+        }
+
     }
 
 }
