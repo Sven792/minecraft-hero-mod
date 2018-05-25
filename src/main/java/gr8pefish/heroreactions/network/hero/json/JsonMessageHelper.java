@@ -8,6 +8,7 @@ import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.network.hero.json.types.*;
 import gr8pefish.heroreactions.network.hero.json.types.SubscribeJsonMessage;
 import gr8pefish.heroreactions.network.hero.message.HeroMessages;
+import gr8pefish.heroreactions.network.hero.message.data.FeedbackTypes;
 import gr8pefish.heroreactions.network.hero.message.data.StreamData;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import net.minecraft.util.JsonUtils;
@@ -101,19 +102,21 @@ public class JsonMessageHelper {
         switch (messageType) {
             case FEEDBACK:
                 //parse message `data` for "feedback" format
-                //TODO
+                StreamData.Feedback.feedbackType = FeedbackTypes.getFromString(JsonUtils.getString(dataElement.getAsJsonObject(), "option"));
+                StreamData.Feedback.count = JsonUtils.getInt(dataElement.getAsJsonObject(), "n");
                 return;
             case FEEDBACK_ACTIVITY:
                 //parse message `data` for "feedback-activity" format
-                //TODO
+                //TODO - feedback activity parsing
+                HeroReactions.LOGGER.info("TODO - Feedback Activity");
                 return;
             case ONLINE:
                 StreamData.Online.isOnline = dataElement.getAsBoolean();
                 return;
             case VIEWERS:
                 //parse message `data` for "viewers" format
-                StreamData.Viewers.direct = dataElement.getAsJsonObject().get("direct").getAsInt();
-                StreamData.Viewers.indirect = JsonUtils.getInt(dataElement.getAsJsonObject(), "direct");
+                StreamData.Viewers.direct = JsonUtils.getInt(dataElement.getAsJsonObject(), "direct");
+                StreamData.Viewers.indirect = JsonUtils.getInt(dataElement.getAsJsonObject(), "indirect");
                 return;
             default:
                 HeroReactions.LOGGER.error("Invalid type of message!");

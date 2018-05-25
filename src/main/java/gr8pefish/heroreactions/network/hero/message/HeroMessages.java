@@ -67,7 +67,8 @@ public enum HeroMessages {
             //parse json, retrieving data and storing it in the appropriate location in StreamData
             JsonMessageHelper.setMessageData(message, this);
             //manipulate data uniquely
-            HeroReactions.LOGGER.info("Got FEEDBACK message: "); //TODO
+            HeroReactions.LOGGER.info("Got FEEDBACK message: [type] "+StreamData.Feedback.feedbackType.toString());
+            HeroReactions.LOGGER.info("Got FEEDBACK message: [count] "+StreamData.Feedback.count);
         }
 
         @Override
@@ -81,7 +82,7 @@ public enum HeroMessages {
             //parse json, retrieving data and storing it in the appropriate location in StreamData
             JsonMessageHelper.setMessageData(message, this);
             //manipulate data uniquely
-            HeroReactions.LOGGER.info("Got FEEDBACK_ACTIVITY message: "); //TODO
+            HeroReactions.LOGGER.info("Got FEEDBACK_ACTIVITY message: "); //TODO - feedback activity data output
         }
 
         @Override
