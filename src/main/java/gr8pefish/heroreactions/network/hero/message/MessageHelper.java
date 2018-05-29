@@ -3,19 +3,60 @@ package gr8pefish.heroreactions.network.hero.message;
 import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.network.hero.json.types.PingPongJsonMessage;
 import gr8pefish.heroreactions.network.hero.json.types.SubscribeJsonMessage;
+import gr8pefish.heroreactions.network.hero.message.data.FeedbackTypes;
+import gr8pefish.heroreactions.network.hero.message.data.StreamData;
 import gr8pefish.heroreactions.network.hero.websocket.WebSocketClient;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class MessageHelper {
+
+    //TODO: More error handling for if connection not perfect
 
     //Send json data to server over websocket
     public static void sendJson(String jsonMessage) {
         HeroReactions.LOGGER.info("Sending JSON Message: "+jsonMessage);
         WebSocketFrame frame = new TextWebSocketFrame(jsonMessage);
         WebSocketClient.WEBSOCKET_CHANNEL.writeAndFlush(frame);
+    }
+
+
+    /**
+     * Subscribe to all relevant options.
+     */
+    public static void subscribeAll() {
+        subscribeToEvent(SubscribeJsonMessage.SubscribeTopics.ONLINE);
+        subscribeToEvent(SubscribeJsonMessage.SubscribeTopics.VIEWERS);
+        subscribeToEvent(SubscribeJsonMessage.SubscribeTopics.FEEDBACK_ACTIVITY);
+    }
+
+    //TODO: Optimize data collection/cache
+    /**
+     * Helper method to get data from the stream as an array of strings.
+     *
+     * @return - ArrayList of strings, each entry will display as a new line
+     */
+    public static ArrayList<String> getStreamData() {
+        ArrayList<String> returnList = new ArrayList<>();
+        if (WebSocketClient.WEBSOCKET_CHANNEL.isOpen()) { //connected TODO: Helper method isConnected()
+            //isOnline
+            returnList.add("Online: "+StreamData.Online.isOnline);
+            //viewerCount
+            returnList.add("Viewers [Direct/Indirect]: "+StreamData.Viewers.direct+"/"+ StreamData.Viewers.indirect);
+            //feedback (list)
+            returnList.add("Feedback/Reactions -> Count:");
+            ConcurrentHashMap<FeedbackTypes, Integer> feedback = StreamData.FeedbackActivity.getFeedbackActivity();
+            for (Map.Entry<FeedbackTypes, Integer> entry : feedback.entrySet()) {
+                returnList.add(entry.getKey().toString()+" - "+entry.getValue()); //feedback type - count
+            }
+        }
+        return returnList;
     }
 
     //Helper method to send ping

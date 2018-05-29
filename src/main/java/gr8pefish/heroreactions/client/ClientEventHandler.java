@@ -1,8 +1,15 @@
 package gr8pefish.heroreactions.client;
 
+import com.google.common.collect.ArrayListMultimap;
+import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.api.HeroReactionsInfo;
 import gr8pefish.heroreactions.config.ConfigHandler;
+import gr8pefish.heroreactions.network.hero.HeroConnectionData;
+import gr8pefish.heroreactions.network.hero.message.HeroMessages;
+import gr8pefish.heroreactions.network.hero.message.MessageHelper;
+import gr8pefish.heroreactions.network.hero.message.data.StreamData;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -11,6 +18,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.GuiIngameForge;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
@@ -21,6 +30,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
 
+import java.util.ArrayList;
+
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class ClientEventHandler {
 
@@ -30,16 +41,22 @@ public class ClientEventHandler {
 
     //extend GuiScreen (see 1.7.10 src)
 
-    /**
-     * For rendering as a perspective projection in-world
-     */
-    @SubscribeEvent
-    public void onRenderOverlay(TickEvent.RenderTickEvent event){
-        if (ConfigHandler.generalConfigSettings.enableOverlay) {
-            //do overlay (see renderHotbar via widgets)
-            Minecraft mc = Minecraft.getMinecraft();
-//            mc.getTextureManager().bindTexture();
 
+    @SubscribeEvent
+    public void onRenderOverlayGUI(RenderGameOverlayEvent.Text event) { //can do pre/post also
+        if (ConfigHandler.generalConfigSettings.enableOverlay) {
+
+            Minecraft mc = Minecraft.getMinecraft();
+            FontRenderer fontRenderer = mc.fontRenderer;
+
+            ArrayList<String> msgArray = MessageHelper.getStreamData();
+            int top = 2;
+            for (String msg : msgArray) {
+                if (msg == null || msg.isEmpty()) continue;
+                Gui.drawRect(1, top - 1, 2 + fontRenderer.getStringWidth(msg) + 1, top + fontRenderer.FONT_HEIGHT - 1, -1873784752);
+                fontRenderer.drawString(msg, 2, top, 14737632);
+                top += fontRenderer.FONT_HEIGHT;
+            }
         }
     }
 
@@ -127,7 +144,7 @@ public class ClientEventHandler {
 
 
 
-    public static final KeyBinding KEY_TOGGLE_OVERLAY = new KeyBinding("key." + HeroReactionsInfo.MODID + ".equip", KeyConflictContext.IN_GAME, KeyModifier.NONE, Keyboard.KEY_H, HeroReactionsInfo.MOD_NAME);
+    public static final KeyBinding KEY_TOGGLE_OVERLAY = new KeyBinding("key." + HeroReactionsInfo.MODID + ".toggle", KeyConflictContext.IN_GAME, KeyModifier.NONE, Keyboard.KEY_H, HeroReactionsInfo.MOD_NAME);
 
     @SubscribeEvent
     public static void onKey(InputEvent.KeyInputEvent event) {

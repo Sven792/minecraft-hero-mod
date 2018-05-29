@@ -2,6 +2,7 @@ package gr8pefish.heroreactions.network.hero.websocket;
 
 import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.network.hero.HeroConnectionData;
+import gr8pefish.heroreactions.network.hero.message.MessageHelper;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -150,6 +151,9 @@ public final class WebSocketClient {
             //instantiate fields with valid data (for messaging via other classes)
             WEBSOCKET_CHANNEL = channel;
             GROUP = group;
+
+            //Subscribe to all relevant events //TODO: Debug/different place
+            MessageHelper.subscribeAll();
 
         //catch any errors and propagate them to the main log
         } catch (Exception e) {
