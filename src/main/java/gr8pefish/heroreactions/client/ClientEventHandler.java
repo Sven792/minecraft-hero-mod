@@ -37,11 +37,12 @@ public class ClientEventHandler {
 
     //=============================================================Rendering In-World for 1st Person Perspective==================================================
 
-    public static final ResourceLocation WIDGETS_TEX_PATH = new ResourceLocation("textures/gui/widgets.png");
+    public static final ResourceLocation ICONS_TEX_PATH = new ResourceLocation("textures/gui/icons.png");
 
     //extend GuiScreen (see 1.7.10 src)
 
-
+    //ToDo: Data caching locally as small optimization?
+    //ToDo: Choose corner to render in via (in-game) config, then hand off to helper methods to do so in that location
     @SubscribeEvent
     public void onRenderOverlayGUI(RenderGameOverlayEvent.Text event) { //can do pre/post also
         if (ConfigHandler.generalConfigSettings.enableOverlay) {
@@ -49,7 +50,30 @@ public class ClientEventHandler {
             Minecraft mc = Minecraft.getMinecraft();
             FontRenderer fontRenderer = mc.fontRenderer;
 
+            //get data as a string message (each entry is a new line to display)
             ArrayList<String> msgArray = MessageHelper.getStreamData();
+
+            //draw in bottom left corner (NOT DONE)
+//            int top = 2;
+//            for (String msg : msgArray) {
+//                if (msg == null || msg.isEmpty()) continue;
+//                Gui.drawRect(1, top - 1, 2 + fontRenderer.getStringWidth(msg) + 1, top + fontRenderer.FONT_HEIGHT - 1, -1873784752);
+//                fontRenderer.drawString(msg, 2, top, 14737632);
+//                top += fontRenderer.FONT_HEIGHT;
+//            }
+
+            //draw in top right corner
+//            int top = 2;
+//            for (String msg : msgArray) {
+//                if (msg == null || msg.isEmpty()) continue;
+//                int textWidth = fontRenderer.getStringWidth(msg);
+//                int left = event.getResolution().getScaledWidth() - 2 - textWidth;
+//                Gui.drawRect(left - 1, top - 1, left + textWidth + 1, top + fontRenderer.FONT_HEIGHT - 1, -1873784752);
+//                fontRenderer.drawString(msg, left, top, 14737632);
+//                top += fontRenderer.FONT_HEIGHT;
+//            }
+
+            //draw in top left corner
             int top = 2;
             for (String msg : msgArray) {
                 if (msg == null || msg.isEmpty()) continue;
@@ -57,6 +81,7 @@ public class ClientEventHandler {
                 fontRenderer.drawString(msg, 2, top, 14737632);
                 top += fontRenderer.FONT_HEIGHT;
             }
+
         }
     }
 
