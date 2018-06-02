@@ -1,5 +1,8 @@
 package gr8pefish.heroreactions.network.hero.message.data;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public enum FeedbackTypes {
     SHOCK,
     LAUGHTER,
@@ -20,5 +23,13 @@ public enum FeedbackTypes {
             }
         }
         return NONE;
+    }
+
+    public static FeedbackTypes[] getAllValidTypes() {
+        return Arrays.copyOf(FeedbackTypes.values(), FeedbackTypes.values().length - 1); //remove last (NONE) element
+    }
+
+    public int getTextureX() {
+        return this.ordinal() * 16;
     }
 }
