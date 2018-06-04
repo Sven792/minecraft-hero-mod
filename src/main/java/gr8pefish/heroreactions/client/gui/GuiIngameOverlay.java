@@ -20,6 +20,8 @@ public class GuiIngameOverlay extends GuiIngame {
     private ScaledResolution res = null;
     private FontRenderer fontRenderer = null;
 
+    private int middle;
+
     public GuiIngameOverlay(Minecraft minecraft) {
         //super call
         super(minecraft);
@@ -28,27 +30,33 @@ public class GuiIngameOverlay extends GuiIngame {
         //view count
         this.viewCount = 0;
         //reactions
-        this.reactions = new GuiReactions(minecraft);
+        res = new ScaledResolution(mc);
+        int width = res.getScaledWidth();
+        int height = res.getScaledHeight();
+        this.middle = (((res.getScaledWidth() / 2) + 91) + res.getScaledWidth()) / 2; //(very middle + hotbar size + total size) / 2 = custom middle
+        this.reactions = new GuiReactions(minecraft, width, height, this.middle);
     }
 
     @Override
     public void renderGameOverlay(float partialTicks) {
-        res = new ScaledResolution(mc);
+//        res = new ScaledResolution(mc);
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
+//        int middle = (((res.getScaledWidth() / 2) + 91) + res.getScaledWidth()) / 2; //(very middle + hotbar size + total size) / 2 = custom middle
         fontRenderer = mc.fontRenderer;
 
-        renderOverlay(width, height);
+        //ToDo: get center from right side to (main) - need to account for offhand if left
+        renderOverlay(width, height, this.middle);
     }
 
-    public void renderOverlay(int width, int height) {
+    public void renderOverlay(int width, int height, int middle) {
         //render main
-        renderOverlayMain(MessageHelper.getStreamData(), height);
+        renderOverlayMain(MessageHelper.getStreamData(), height, middle);
         //render child
-        reactions.renderOverlay(width, height, this);
+        reactions.renderOverlay(width, height, middle, this);
     }
 
-    public void renderOverlayMain(ArrayList<String> msgArray, int height) {
+    public void renderOverlayMain(ArrayList<String> msgArray, int height, int middle) {
 
         //draw data in top left corner
         int top = 2;
@@ -59,10 +67,9 @@ public class GuiIngameOverlay extends GuiIngame {
             top += fontRenderer.FONT_HEIGHT;
         }
 
-        //render view count
-        int viewers = StreamData.Viewers.direct;
-        //TODO: center correctly
-        drawString(fontRenderer, String.valueOf(viewers), 2 + (8) + (1 * 16) - 2, height - 30 - 2 - 10, 14737632); //TODO: Constants in GuiReactions access for no magic numbers
+        //render view count, centered
+        String viewers = String.valueOf(StreamData.Viewers.direct);
+        drawString(fontRenderer, viewers, middle - (fontRenderer.getStringWidth(viewers)/2), reactions.centerAboveY, 14737632); //TODO: Constants in GuiReactions access for no magic numbers
     }
 
 }
