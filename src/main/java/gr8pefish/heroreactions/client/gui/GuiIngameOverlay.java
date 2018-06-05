@@ -68,7 +68,7 @@ public class GuiIngameOverlay extends GuiIngame {
         }
 
         //render view count, centered
-        String viewers = String.valueOf(StreamData.Viewers.direct);
+        String viewers = String.valueOf(StreamData.Viewers.direct + StreamData.Viewers.indirect);
         drawString(fontRenderer, viewers, middle - (fontRenderer.getStringWidth(viewers)/2), reactions.centerAboveY, 14737632); //TODO: Constants in GuiReactions access for no magic numbers
     }
 
