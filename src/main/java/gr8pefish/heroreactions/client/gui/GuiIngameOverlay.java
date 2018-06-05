@@ -52,6 +52,8 @@ public class GuiIngameOverlay extends GuiIngame {
     public void renderOverlay(int width, int height, int middle) {
         //render main
         renderOverlayMain(MessageHelper.getStreamData(), height, middle);
+        //TODO: test
+//        this.drawGradientRect(0, 0, width, height, 1615855616, -1602211792);
         //render child
         reactions.renderOverlay(width, height, middle, this);
     }

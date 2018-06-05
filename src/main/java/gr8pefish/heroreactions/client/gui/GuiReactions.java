@@ -4,6 +4,7 @@ import gr8pefish.heroreactions.api.HeroReactionsInfo;
 import gr8pefish.heroreactions.network.hero.message.data.FeedbackTypes;
 import gr8pefish.heroreactions.network.hero.message.data.StreamData;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
@@ -69,16 +70,46 @@ public class GuiReactions implements IRenderOverlay {
             int xImage = xBase + (feedbackIterator * (imageTextureWidth + paddingHorizontal));
             int xText = xImage + (imageTextureWidth / 2) - (gui.getFontRenderer().getStringWidth(entry.getValue().toString()) / 2);
 
+            //half size - translate then scale (push/pop matrix as well)
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(xImage, yImage, 0);
+            GlStateManager.scale(0.5, 0.5, 0);
+
+            //enable transparency (not working?)
+            GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
+            GlStateManager.enableBlend(); //enable blending
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA); //black magic that is necessary
+            GlStateManager.color(1, 1, 1, 0.5f); //halve opacity
+
+            //use system time for keeping track (otherwise it will lag)
+
+            //the "best" way would involve rendering a "mask" of the opacity of each pixel, applying a blur, and then drawing that
+            //render the opacity into a texture, and draw with blur and a color
+            //processing the texture to make a blurred texture might be more effort than it's worth
+            //oh yeah a "baked" glow would also work lol
+            //if you have a fixed UI shape
+            //you can use "box" scaling, where you leave a margin and scale the middle sections
+            //the idea is you split the image into 9 (3x3) quads
+            //and scale each row/column based on the numbers
+            //but keeping the UV coords original
+            //normal box scaling:
+            //x0 = xpos; x1 = xpos + left_margin; x2 = xpos + width - right_margin; x3 = xpos + width;
+            //repeat for y[0..3]/ypos/height
+            //then the quads are like, {x0y0, x1y0, x1y1, x0y1} ...
+            //or the other way around, since opengl is different from dx in which direction Y grows
+
             //draw icon
             gui.drawTexturedModalRect(
-                    xImage,  //screen x
-                    yImage, //screen y
+                    0,  //screen x
+                    0, //screen y
                     entry.getKey().getTextureX(), //texture x
                     0, //texture y
                     imageTextureWidth, //width
                     imageTextureHeight); //height
 
-            //draw count of each underneath (TODO: refine)
+            GlStateManager.popMatrix();
+
+            //draw count of each underneath
             gui.drawString(
                     gui.getFontRenderer(), //fontRenderer
                     entry.getValue().toString(), //what to draw
