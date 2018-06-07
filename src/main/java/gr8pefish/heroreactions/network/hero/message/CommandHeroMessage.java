@@ -1,7 +1,7 @@
 package gr8pefish.heroreactions.network.hero.message;
 
 import gr8pefish.heroreactions.HeroReactions;
-import gr8pefish.heroreactions.network.hero.json.types.SubscribeJsonMessage;
+import gr8pefish.heroreactions.network.hero.json.variants.SubscribeJsonMessage;
 import gr8pefish.heroreactions.network.hero.websocket.WebSocketClient;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -71,7 +71,7 @@ public class CommandHeroMessage extends CommandBase {
                         //pong - send pong
                         } else if ("pong".equals(params[1].toLowerCase())) {
                             sender.sendMessage(new TextComponentString("Sending pong message."));
-//                            MessageHelper.sendPong(new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}))); //causes loop
+                            //MessageHelper.sendPong(new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}))); //causes loop
                         //message - send text (whatever was contained in the message)
                         } else {
                             sender.sendMessage(new TextComponentString("Sending text message."));

@@ -32,28 +32,6 @@ public class ClientEventHandler {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             //do rendering
             overlay.renderGameOverlay(event.getPartialTicks());
-
-            //draw in bottom left corner (NOT DONE)
-//            int top = 2;
-//            for (String msg : msgArray) {
-//                if (msg == null || msg.isEmpty()) continue;
-//                Gui.drawRect(1, top - 1, 2 + fontRenderer.getStringWidth(msg) + 1, top + fontRenderer.FONT_HEIGHT - 1, -1873784752);
-//                fontRenderer.drawString(msg, 2, top, 14737632);
-//                top += fontRenderer.FONT_HEIGHT;
-//            }
-
-            //draw in top right corner
-//            int top = 2;
-//            for (String msg : msgArray) {
-//                if (msg == null || msg.isEmpty()) continue;
-//                int textWidth = fontRenderer.getStringWidth(msg);
-//                int left = event.getResolution().getScaledWidth() - 2 - textWidth;
-//                Gui.drawRect(left - 1, top - 1, left + textWidth + 1, top + fontRenderer.FONT_HEIGHT - 1, -1873784752);
-//                fontRenderer.drawString(msg, left, top, 14737632);
-//                top += fontRenderer.FONT_HEIGHT;
-//            }
-
-
         }
     }
 

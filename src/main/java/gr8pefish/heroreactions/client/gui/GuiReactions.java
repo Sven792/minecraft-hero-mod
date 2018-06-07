@@ -1,13 +1,15 @@
 package gr8pefish.heroreactions.client.gui;
 
 import gr8pefish.heroreactions.api.HeroReactionsInfo;
-import gr8pefish.heroreactions.network.hero.message.data.FeedbackTypes;
-import gr8pefish.heroreactions.network.hero.message.data.StreamData;
+import gr8pefish.heroreactions.hero.data.enums.Reactions;
+import gr8pefish.heroreactions.network.hero.HeroData;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GuiReactions implements IRenderOverlay {
@@ -17,7 +19,7 @@ public class GuiReactions implements IRenderOverlay {
 
     private final Minecraft mc;
 
-    private ConcurrentHashMap<FeedbackTypes, Integer> feedback;
+    private ConcurrentHashMap<Reactions, Integer> feedback;
 
     //setup basic variables
     private final int imageTextureWidth = 16; //16 pixel square
@@ -35,7 +37,7 @@ public class GuiReactions implements IRenderOverlay {
         this.mc = minecraft;
 
         //feedback data
-        feedback = StreamData.FeedbackActivity.getFeedbackActivity();
+        feedback = HeroData.FeedbackActivity.getFeedbackActivity();
         int feedbackCount = feedback.size();
 
         //direct variables used in rendering
@@ -61,7 +63,7 @@ public class GuiReactions implements IRenderOverlay {
         int feedbackIterator = 0;
 
         //loop through elements and draw
-        for (Map.Entry<FeedbackTypes, Integer> entry : feedback.entrySet()) {
+        for (Map.Entry<Reactions, Integer> entry : feedback.entrySet()) {
 
             //unsure why, but seems necessary to bind more than just in the beginning
             mc.getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
@@ -120,6 +122,43 @@ public class GuiReactions implements IRenderOverlay {
             //increment
             feedbackIterator++;
         }
+    }
+
+    //Render emojis in a limited area
+    private void renderBubblingReactions(int xStart, int yStart, int width, int height, GuiIngameOverlay gui, Map<Set<Reactions>, Integer> reactionRatios) {
+        //unsure why, but seems necessary to bind more than just in the beginning
+        mc.getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
+
+        //variables
+        int xImage = 2; //xBase + (feedbackIterator * (imageTextureWidth + paddingHorizontal));
+
+        //half size - translate then scale (push/pop matrix as well)
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(xImage, yImage, 0);
+        GlStateManager.scale(0.5, 0.5, 0);
+
+        //enable transparency (not working?)
+        GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
+        GlStateManager.enableBlend(); //enable blending
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA); //black magic that is necessary
+        GlStateManager.color(1, 1, 1, 0.5f); //halve opacity
+
+        //use system time for keeping track (otherwise it will lag)
+
+        //draw icon
+        gui.drawTexturedModalRect(
+                0,  //screen x
+                0, //screen y
+                0, //entry.getKey().getTextureX(), //texture x
+                0, //texture y
+                imageTextureWidth, //width
+                imageTextureHeight); //height
+
+        GlStateManager.popMatrix();
+    }
+
+    private void getReactionRatios() {
+        HeroData.FeedbackActivity.getFeedbackActivity();
     }
 
 }

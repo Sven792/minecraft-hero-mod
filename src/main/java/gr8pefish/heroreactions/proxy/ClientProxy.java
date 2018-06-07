@@ -1,6 +1,7 @@
 package gr8pefish.heroreactions.proxy;
 
 import gr8pefish.heroreactions.client.ClientEventHandler;
+import gr8pefish.heroreactions.config.ConfigHandler;
 import gr8pefish.heroreactions.network.hero.websocket.WebSocketClient;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -21,7 +22,10 @@ public class ClientProxy extends CommonProxy {
     public void init(FMLInitializationEvent event) {
         super.init(event);
 
-        WebSocketClient.establishConnection();
+        if (ConfigHandler.generalConfigSettings.enableMod) {
+            WebSocketClient.establishConnection();
+        }
+
     }
 
 }

@@ -1,7 +1,7 @@
 package gr8pefish.heroreactions.client.gui;
 
 import gr8pefish.heroreactions.network.hero.message.MessageHelper;
-import gr8pefish.heroreactions.network.hero.message.data.StreamData;
+import gr8pefish.heroreactions.network.hero.HeroData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -33,7 +33,7 @@ public class GuiIngameOverlay extends GuiIngame {
         res = new ScaledResolution(mc);
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
-        this.middle = (((res.getScaledWidth() / 2) + 91) + res.getScaledWidth()) / 2; //(very middle + hotbar size + total size) / 2 = custom middle
+        this.middle = (((res.getScaledWidth() / 2) + 91) + res.getScaledWidth()) / 2; //(very middle + hotbar size + total size) / 2 = custom middle (right side)
         this.reactions = new GuiReactions(minecraft, width, height, this.middle);
     }
 
@@ -49,7 +49,7 @@ public class GuiIngameOverlay extends GuiIngame {
         renderOverlay(width, height, this.middle);
     }
 
-    public void renderOverlay(int width, int height, int middle) {
+    private void renderOverlay(int width, int height, int middle) {
         //render main
         renderOverlayMain(MessageHelper.getStreamData(), height, middle);
         //TODO: test
@@ -58,7 +58,7 @@ public class GuiIngameOverlay extends GuiIngame {
         reactions.renderOverlay(width, height, middle, this);
     }
 
-    public void renderOverlayMain(ArrayList<String> msgArray, int height, int middle) {
+    private void renderOverlayMain(ArrayList<String> msgArray, int height, int middle) {
 
         //draw data in top left corner
         int top = 2;
@@ -70,7 +70,7 @@ public class GuiIngameOverlay extends GuiIngame {
         }
 
         //render view count, centered
-        String viewers = String.valueOf(StreamData.Viewers.direct + StreamData.Viewers.indirect);
+        String viewers = String.valueOf(HeroData.Viewers.direct + HeroData.Viewers.indirect);
         drawString(fontRenderer, viewers, middle - (fontRenderer.getStringWidth(viewers)/2), reactions.centerAboveY, 14737632); //TODO: Constants in GuiReactions access for no magic numbers
     }
 

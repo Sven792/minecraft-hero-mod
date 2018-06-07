@@ -1,11 +1,11 @@
 package gr8pefish.heroreactions.network.hero.message;
 
 import gr8pefish.heroreactions.HeroReactions;
+import gr8pefish.heroreactions.network.hero.HeroData;
 import gr8pefish.heroreactions.network.hero.json.JsonMessageHelper;
-import gr8pefish.heroreactions.network.hero.json.types.PingPongJsonMessage;
-import gr8pefish.heroreactions.network.hero.json.types.SubscribeJsonMessage;
-import gr8pefish.heroreactions.network.hero.message.data.FeedbackTypes;
-import gr8pefish.heroreactions.network.hero.message.data.StreamData;
+import gr8pefish.heroreactions.network.hero.json.variants.PingPongJsonMessage;
+import gr8pefish.heroreactions.network.hero.json.variants.SubscribeJsonMessage;
+import gr8pefish.heroreactions.hero.data.enums.Reactions;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 import java.util.Map;
@@ -21,7 +21,7 @@ public enum HeroMessages {
         }
         @Override
         public void send(Object message) {
-            HeroReactions.LOGGER.info("Sending ping");
+            HeroReactions.LOGGER.debug("Sending ping");
             //create serialized JSON string of the ping message and send it off
             MessageHelper.sendJson(JsonMessageHelper.createSerializedPingPongMessage((PingPongJsonMessage.PingPongEnum)message));
         }
@@ -34,7 +34,7 @@ public enum HeroMessages {
 
         @Override
         public void send(Object message) {
-            HeroReactions.LOGGER.info("Sending pong");
+            HeroReactions.LOGGER.debug("Sending pong");
             //create serialized JSON string of the pong message and send it off
             MessageHelper.sendJson(JsonMessageHelper.createSerializedPingPongMessage((PingPongJsonMessage.PingPongEnum)message));
         }
@@ -47,7 +47,7 @@ public enum HeroMessages {
 
         @Override
         public void send(Object message) {
-            HeroReactions.LOGGER.info("Sending text message");
+            HeroReactions.LOGGER.debug("Sending text message");
             //create serialized JSON string of the text message and send it off
             MessageHelper.sendJson(JsonMessageHelper.createSerializedTextMessage((String)message));
         }
@@ -60,7 +60,7 @@ public enum HeroMessages {
 
         @Override
         public void send(Object message) {
-            HeroReactions.LOGGER.info("Sending subscribe message");
+            HeroReactions.LOGGER.debug("Sending subscribe message");
             //create serialized JSON string of the subscribe message and send it off
             MessageHelper.sendJson(JsonMessageHelper.createSerializedSubscribeMessage((SubscribeJsonMessage.SubscribeTopics) message));
         }
@@ -68,11 +68,11 @@ public enum HeroMessages {
     FEEDBACK { //sampled individual feedback events
         @Override
         public void onMessageReceived(TextWebSocketFrame message) {
-            //parse json, retrieving data and storing it in the appropriate location in StreamData
+            //parse json, retrieving data and storing it in the appropriate location in HeroData
             JsonMessageHelper.setMessageData(message, this);
             //manipulate data uniquely
-            HeroReactions.LOGGER.info("Got FEEDBACK message: [type] "+StreamData.Feedback.feedbackType.toString());
-            HeroReactions.LOGGER.info("Got FEEDBACK message: [count] "+StreamData.Feedback.count);
+            HeroReactions.LOGGER.debug("Got FEEDBACK message: [type] "+ HeroData.Feedback.reaction.toString());
+            HeroReactions.LOGGER.debug("Got FEEDBACK message: [count] "+ HeroData.Feedback.count);
         }
 
         @Override
@@ -83,14 +83,14 @@ public enum HeroMessages {
     FEEDBACK_ACTIVITY { //aggregated feedback activity events
         @Override
         public void onMessageReceived(TextWebSocketFrame message) {
-            //parse json, retrieving data and storing it in the appropriate location in StreamData
+            //parse json, retrieving data and storing it in the appropriate location in HeroData
             JsonMessageHelper.setMessageData(message, this);
             //manipulate data uniquely
-            HeroReactions.LOGGER.info("Got FEEDBACK_ACTIVITY message");
+            HeroReactions.LOGGER.debug("Got FEEDBACK_ACTIVITY message");
             //get data, iterate through
-            ConcurrentHashMap<FeedbackTypes, Integer> feedback = StreamData.FeedbackActivity.getFeedbackActivity();
-            for (Map.Entry<FeedbackTypes, Integer> entry : feedback.entrySet()) {
-                HeroReactions.LOGGER.info("Feedback: "+entry.getKey().toString()+" - "+entry.getValue()); //feedback type - count
+            ConcurrentHashMap<Reactions, Integer> feedback = HeroData.FeedbackActivity.getFeedbackActivity();
+            for (Map.Entry<Reactions, Integer> entry : feedback.entrySet()) {
+                HeroReactions.LOGGER.debug("Feedback: "+entry.getKey().toString()+" - "+entry.getValue()); //feedback type - count
             }
         }
 
@@ -102,10 +102,10 @@ public enum HeroMessages {
     ONLINE { //channel online status
         @Override
         public void onMessageReceived(TextWebSocketFrame message) {
-            //parse json, retrieving data and storing it in the appropriate location in StreamData
+            //parse json, retrieving data and storing it in the appropriate location in HeroData
             JsonMessageHelper.setMessageData(message, this);
             //manipulate data uniquely
-            HeroReactions.LOGGER.info("Got ONLINE message, is online: "+StreamData.Online.isOnline);
+            HeroReactions.LOGGER.debug("Got ONLINE message, is online: "+ HeroData.Online.isOnline);
         }
 
         @Override
@@ -116,11 +116,11 @@ public enum HeroMessages {
     VIEWERS { //channel viewer count
         @Override
         public void onMessageReceived(TextWebSocketFrame message) {
-            //parse json, retrieving data and storing it in the appropriate location in StreamData
+            //parse json, retrieving data and storing it in the appropriate location in HeroData
             JsonMessageHelper.setMessageData(message, this);
             //manipulate data uniquely
-            HeroReactions.LOGGER.info("Got VIEWER message: [direct] "+StreamData.Viewers.direct);
-            HeroReactions.LOGGER.info("Got VIEWER message: [indirect] "+StreamData.Viewers.indirect);
+            HeroReactions.LOGGER.debug("Got VIEWER message: [direct] "+ HeroData.Viewers.direct);
+            HeroReactions.LOGGER.debug("Got VIEWER message: [indirect] "+ HeroData.Viewers.indirect);
 
         }
 

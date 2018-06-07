@@ -16,8 +16,12 @@ public class ConfigHandler {
      * General config tweaks
      */
     public static class General {
+        @Config.RequiresMcRestart
+        @Config.Comment({ "Enables the mod" })
+        public boolean enableMod = false;
+
         @Config.Comment({ "Enables the overlay" })
-        public boolean enableOverlay = false;
+        public boolean enableOverlay = true;
     }
 
     /**
@@ -36,7 +40,7 @@ public class ConfigHandler {
         public float overlayScale = 0.5F;
 
         @Config.Comment({ "Overlay X-Position (center, left, right)" })
-        public String overlayXpos = "center";
+        public String overlayXpos = "right";
 
         @Config.Comment({ "Overlay Y-Position (top, middle, bottom)" })
         public String overlayYpos = "bottom";

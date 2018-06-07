@@ -1,4 +1,4 @@
-package gr8pefish.heroreactions.network.hero.json.types;
+package gr8pefish.heroreactions.network.hero.json.variants;
 
 /**
  * Format:
