@@ -5,6 +5,7 @@ import gr8pefish.heroreactions.lib.ModInfo;
 import gr8pefish.heroreactions.network.PacketHandler;
 import gr8pefish.heroreactions.network.hero.message.CommandHeroMessage;
 import gr8pefish.heroreactions.proxy.CommonProxy;
+import gr8pefish.heroreactions.test.MainTest;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -64,5 +65,8 @@ public class HeroReactions {
     public void postInit(FMLPostInitializationEvent event) {
 
         proxy.postInit(event);
+
+        //run test code
+        MainTest.mainTest();
     }
 }

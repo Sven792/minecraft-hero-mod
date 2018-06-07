@@ -12,7 +12,7 @@ package gr8pefish.heroreactions.network.hero.json.variants;
  */
 public class SubscribeJsonMessage extends AbstractJsonMessage {
 
-    //Main class to hold everything
+    //MainTest class to hold everything
     public SubscribeJsonMessage(SubscribeTopics topic) {
         this.type = "sub";
         this.data = new SubscribeTopicJsonMessage(topic.stringRepresentation); //TODO: nested object

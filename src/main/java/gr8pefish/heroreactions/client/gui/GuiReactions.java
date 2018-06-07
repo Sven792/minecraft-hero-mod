@@ -2,9 +2,8 @@ package gr8pefish.heroreactions.client.gui;
 
 import gr8pefish.heroreactions.api.HeroReactionsInfo;
 import gr8pefish.heroreactions.hero.data.enums.Reactions;
-import gr8pefish.heroreactions.network.hero.HeroData;
+import gr8pefish.heroreactions.hero.data.HeroData;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
@@ -18,6 +17,7 @@ public class GuiReactions implements IRenderOverlay {
     public static final ResourceLocation REACTION_ICONS_TEX_PATH = new ResourceLocation(HeroReactionsInfo.MODID,"textures/gui/reaction_icons.png");
 
     private final Minecraft mc;
+    private GuiIngameOverlay gui;
 
     private ConcurrentHashMap<Reactions, Integer> feedback;
 
@@ -33,8 +33,9 @@ public class GuiReactions implements IRenderOverlay {
 
     public int centerAboveY = -1;
 
-    public GuiReactions(Minecraft minecraft, int width, int height, int middle) {
+    public GuiReactions(Minecraft minecraft, int width, int height, int middle, GuiIngameOverlay gui) {
         this.mc = minecraft;
+        this.gui = gui;
 
         //feedback data
         feedback = HeroData.FeedbackActivity.getFeedbackActivity();
@@ -54,10 +55,10 @@ public class GuiReactions implements IRenderOverlay {
 
     @Override
     public void renderOverlay() {
-        mc.getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
+//        mc.getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
     }
 
-    public void renderOverlay(int width, int height, int middle, GuiIngameOverlay gui) {
+    public void renderOverlay(int width, int height, int middle) {
 
         //for looping through feedback icons
         int feedbackIterator = 0;
@@ -125,40 +126,47 @@ public class GuiReactions implements IRenderOverlay {
     }
 
     //Render emojis in a limited area
-    private void renderBubblingReactions(int xStart, int yStart, int width, int height, GuiIngameOverlay gui, Map<Set<Reactions>, Integer> reactionRatios) {
+    private void renderBubblingReactions(int xStart, int yStart, int width, int height, Reactions reaction, Float percentage, int total) {
         //unsure why, but seems necessary to bind more than just in the beginning
         mc.getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
 
-        //variables
-        int xImage = 2; //xBase + (feedbackIterator * (imageTextureWidth + paddingHorizontal));
-
         //half size - translate then scale (push/pop matrix as well)
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(xImage, yImage, 0);
-        GlStateManager.scale(0.5, 0.5, 0);
-
-        //enable transparency (not working?)
-        GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
-        GlStateManager.enableBlend(); //enable blending
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA); //black magic that is necessary
-        GlStateManager.color(1, 1, 1, 0.5f); //halve opacity
+//        GlStateManager.pushMatrix();
+//        GlStateManager.translate(xImage, yImage, 0);
+//        GlStateManager.scale(0.5, 0.5, 0);
+//
+//        //enable transparency (not working?)
+//        GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
+//        GlStateManager.enableBlend(); //enable blending
+//        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA); //black magic that is necessary
+//        GlStateManager.color(1, 1, 1, 0.5f); //halve opacity
 
         //use system time for keeping track (otherwise it will lag)
 
-        //draw icon
-        gui.drawTexturedModalRect(
-                0,  //screen x
-                0, //screen y
-                0, //entry.getKey().getTextureX(), //texture x
-                0, //texture y
-                imageTextureWidth, //width
-                imageTextureHeight); //height
+        //do it for 10x percent (so .5 = 5)
+        for (int i = 0 ; i < percentage * 10; i++) {
 
-        GlStateManager.popMatrix();
+            int xImage = xBase + (int)Math.round((Math.random() * 5)* 10); //random location
+            int yImageReal = yImage + (int)Math.round((Math.random() * 5)* 3); //random location
+
+            //draw icon
+            gui.drawTexturedModalRect(
+                    xImage,  //screen x
+                    yImageReal, //screen y
+                    reaction.getTextureX(), //texture x
+                    0, //texture y
+                    imageTextureWidth, //width
+                    imageTextureHeight); //height
+        }
+
+//        GlStateManager.popMatrix();
     }
 
-    private void getReactionRatios() {
-        HeroData.FeedbackActivity.getFeedbackActivity();
+    public void renderFeedbackBubblingFromReactionRatios() {
+        ConcurrentHashMap<Reactions, Float> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
+        for (Map.Entry<Reactions, Float> entry : feedbackRatios.entrySet()) {
+            renderBubblingReactions(xBase, yImage, imageTextureWidth * feedbackRatios.size(), imageTextureHeight + paddingVertical, entry.getKey(), entry.getValue(), HeroData.FeedbackActivity.totalFeedbackCount);
+        }
     }
 
 }

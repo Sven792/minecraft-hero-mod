@@ -2,11 +2,12 @@ package gr8pefish.heroreactions.network.hero.json;
 
 import com.google.gson.*;
 import gr8pefish.heroreactions.HeroReactions;
+import gr8pefish.heroreactions.hero.HeroUtils;
 import gr8pefish.heroreactions.network.hero.json.variants.*;
 import gr8pefish.heroreactions.network.hero.json.variants.SubscribeJsonMessage;
 import gr8pefish.heroreactions.network.hero.message.HeroMessages;
 import gr8pefish.heroreactions.hero.data.enums.Reactions;
-import gr8pefish.heroreactions.network.hero.HeroData;
+import gr8pefish.heroreactions.hero.data.HeroData;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import net.minecraft.util.JsonUtils;
 
@@ -96,6 +97,11 @@ public class JsonMessageHelper {
      */
     public static void setMessageData(TextWebSocketFrame message, HeroMessages messageType) {
         JsonElement dataElement = parser.parse(message.text()).getAsJsonObject().get("data");
+        setMessageData(dataElement, messageType);
+    }
+
+    //Helper method to set data (called direct from test method)
+    public static void setMessageData(JsonElement dataElement, HeroMessages messageType) {
         switch (messageType) {
             case FEEDBACK:
                 //parse message `data` for "feedback" format
@@ -105,11 +111,17 @@ public class JsonMessageHelper {
             case FEEDBACK_ACTIVITY:
                 //parse message `data` for "feedback-activity" format
                 JsonArray jsonArray = JsonUtils.getJsonArray(dataElement.getAsJsonObject(), "options");
+                //get total (for eventual use in feedback ratios)
+                int total = 0;
                 for (JsonElement element : jsonArray) {
                     Reactions feedbackType = Reactions.getFromString(JsonUtils.getString(element.getAsJsonObject(), "id"));
                     int count = JsonUtils.getInt(element.getAsJsonObject(), "activity");
                     HeroData.FeedbackActivity.getFeedbackActivity().put(feedbackType, count);
+                    total += count;
                 }
+                //calculate the ratios of feedback types to one another
+                HeroData.FeedbackActivity.totalFeedbackCount = total;
+                HeroUtils.calculateRatios();
                 return;
             case ONLINE:
                 HeroData.Online.isOnline = dataElement.getAsBoolean();

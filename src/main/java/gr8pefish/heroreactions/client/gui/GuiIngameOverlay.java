@@ -1,7 +1,7 @@
 package gr8pefish.heroreactions.client.gui;
 
 import gr8pefish.heroreactions.network.hero.message.MessageHelper;
-import gr8pefish.heroreactions.network.hero.HeroData;
+import gr8pefish.heroreactions.hero.data.HeroData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -34,7 +34,7 @@ public class GuiIngameOverlay extends GuiIngame {
         int width = res.getScaledWidth();
         int height = res.getScaledHeight();
         this.middle = (((res.getScaledWidth() / 2) + 91) + res.getScaledWidth()) / 2; //(very middle + hotbar size + total size) / 2 = custom middle (right side)
-        this.reactions = new GuiReactions(minecraft, width, height, this.middle);
+        this.reactions = new GuiReactions(minecraft, width, height, this.middle, this);
     }
 
     @Override
@@ -55,7 +55,8 @@ public class GuiIngameOverlay extends GuiIngame {
         //TODO: test
 //        this.drawGradientRect(0, 0, width, height, 1615855616, -1602211792);
         //render child
-        reactions.renderOverlay(width, height, middle, this);
+//        reactions.renderOverlay(width, height, middle); //test
+        reactions.renderFeedbackBubblingFromReactionRatios();
     }
 
     private void renderOverlayMain(ArrayList<String> msgArray, int height, int middle) {
