@@ -18,14 +18,14 @@ public class TestData {
     private void setFeedbackTopData() {
         this.messageType = HeroMessages.FEEDBACK_ACTIVITY;
 
-        //set up gr8pefish.heroreactions.test.data
+        //set up data
         FeedbackTopMessage.FeedbackOptions[] feedbackOptions = new FeedbackTopMessage.FeedbackOptions[]{
                 new FeedbackTopMessage.FeedbackOptions("applause", 10),
                 new FeedbackTopMessage.FeedbackOptions("laughter", 2),
                 new FeedbackTopMessage.FeedbackOptions("anger", 1)
         };
 
-        //set as json gr8pefish.heroreactions.test.data
+        //set as json data
         this.message = new Gson().toJsonTree(new FeedbackTopMessage(feedbackOptions));
         HeroReactions.LOGGER.info(message.toString());
     }

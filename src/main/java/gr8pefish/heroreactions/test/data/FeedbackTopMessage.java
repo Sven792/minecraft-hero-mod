@@ -1,12 +1,12 @@
-package data;
+package gr8pefish.heroreactions.test.data;
 
 //note: already in the "data" object
 public class FeedbackTopMessage {
 
-    public FeedbackOptions[] feedbackOptions;
+    public FeedbackOptions[] options;
 
     public FeedbackTopMessage(FeedbackOptions[] feedbackOptions) {
-        this.feedbackOptions = feedbackOptions;
+        this.options = feedbackOptions;
     }
 
     //Inner class to hold the options

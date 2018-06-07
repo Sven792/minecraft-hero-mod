@@ -1,7 +1,8 @@
-package gr8pefish.heroreactions.network.hero;
+package gr8pefish.heroreactions.hero.data;
 
 import gr8pefish.heroreactions.hero.data.enums.Reactions;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -9,8 +10,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class HeroData {
 
-    //Might as well make it thread safe
+    //Feedback mappings
+
+    //Reaction -> count
     private static final ConcurrentHashMap<Reactions, Integer> feedbackActivity = new ConcurrentHashMap<>();
+    //Reaction -> ratio (count/total)
+    private static final ConcurrentHashMap<Reactions, Float> feedbackRatios = new ConcurrentHashMap<>();
 
     public static class Viewers {
         public static int direct;
@@ -31,6 +36,11 @@ public class HeroData {
         public static ConcurrentHashMap<Reactions, Integer> getFeedbackActivity() {
             return feedbackActivity;
         }
+        //Use feedbackRatios map
+        public static ConcurrentHashMap<Reactions, Float> getFeedbackRatios() {
+            return feedbackRatios;
+        }
+        public static int totalFeedbackCount;
     }
 
 }
