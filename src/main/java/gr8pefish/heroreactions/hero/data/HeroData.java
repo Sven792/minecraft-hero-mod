@@ -2,7 +2,6 @@ package gr8pefish.heroreactions.hero.data;
 
 import gr8pefish.heroreactions.hero.data.enums.Reactions;
 
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**

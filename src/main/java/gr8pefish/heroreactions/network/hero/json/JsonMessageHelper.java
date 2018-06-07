@@ -3,11 +3,13 @@ package gr8pefish.heroreactions.network.hero.json;
 import com.google.gson.*;
 import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.hero.HeroUtils;
-import gr8pefish.heroreactions.network.hero.json.variants.*;
-import gr8pefish.heroreactions.network.hero.json.variants.SubscribeJsonMessage;
-import gr8pefish.heroreactions.network.hero.message.HeroMessages;
-import gr8pefish.heroreactions.hero.data.enums.Reactions;
 import gr8pefish.heroreactions.hero.data.HeroData;
+import gr8pefish.heroreactions.hero.data.enums.Reactions;
+import gr8pefish.heroreactions.network.hero.json.variants.AbstractJsonMessage;
+import gr8pefish.heroreactions.network.hero.json.variants.PingPongJsonMessage;
+import gr8pefish.heroreactions.network.hero.json.variants.SubscribeJsonMessage;
+import gr8pefish.heroreactions.network.hero.json.variants.TextJsonMessage;
+import gr8pefish.heroreactions.network.hero.message.HeroMessages;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import net.minecraft.util.JsonUtils;
 

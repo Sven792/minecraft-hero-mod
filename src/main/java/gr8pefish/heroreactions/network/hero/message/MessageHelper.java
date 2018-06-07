@@ -2,9 +2,9 @@ package gr8pefish.heroreactions.network.hero.message;
 
 import gr8pefish.heroreactions.HeroReactions;
 import gr8pefish.heroreactions.hero.data.HeroData;
+import gr8pefish.heroreactions.hero.data.enums.Reactions;
 import gr8pefish.heroreactions.network.hero.json.variants.PingPongJsonMessage;
 import gr8pefish.heroreactions.network.hero.json.variants.SubscribeJsonMessage;
-import gr8pefish.heroreactions.hero.data.enums.Reactions;
 import gr8pefish.heroreactions.network.hero.websocket.WebSocketClient;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;

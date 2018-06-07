@@ -1,7 +1,7 @@
 package gr8pefish.heroreactions.client.gui;
 
-import gr8pefish.heroreactions.network.hero.message.MessageHelper;
 import gr8pefish.heroreactions.hero.data.HeroData;
+import gr8pefish.heroreactions.network.hero.message.MessageHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;

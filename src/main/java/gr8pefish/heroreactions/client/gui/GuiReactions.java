@@ -1,14 +1,13 @@
 package gr8pefish.heroreactions.client.gui;
 
 import gr8pefish.heroreactions.api.HeroReactionsInfo;
-import gr8pefish.heroreactions.hero.data.enums.Reactions;
 import gr8pefish.heroreactions.hero.data.HeroData;
+import gr8pefish.heroreactions.hero.data.enums.Reactions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GuiReactions implements IRenderOverlay {
