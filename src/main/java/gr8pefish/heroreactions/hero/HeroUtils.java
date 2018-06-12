@@ -1,9 +1,10 @@
 package gr8pefish.heroreactions.hero;
 
-import gr8pefish.heroreactions.HeroReactions;
-import gr8pefish.heroreactions.client.gui.ReactionRenderHelper;
+import gr8pefish.heroreactions.common.Common;
+import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
-import gr8pefish.heroreactions.hero.data.enums.Reactions;
+import gr8pefish.heroreactions.hero.network.json.JsonMessageHelper;
+import gr8pefish.heroreactions.minecraft.client.gui.ReactionRenderHelper;
 
 import java.util.Collection;
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Helper class to interpret the data obtained from the Hero API.
- * Commonly called from {@link gr8pefish.heroreactions.network.hero.json.JsonMessageHelper}, as that is where the messages/events are received.
+ * Commonly called from {@link JsonMessageHelper}, as that is where the messages/events are received.
  */
 public class HeroUtils {
 
@@ -36,7 +37,7 @@ public class HeroUtils {
     }
 
     //Add together values of feedback, weighting the primary one by .8 and the rest by .1
-    private static int sumMapValues(ConcurrentHashMap<Reactions, Integer> map){
+    private static int sumMapValues(ConcurrentHashMap<FeedbackTypes, Integer> map){
         Collection<Integer> values = map.values();
         int largest = Integer.MIN_VALUE;
         float sum = 0;
@@ -74,12 +75,12 @@ public class HeroUtils {
      * Stores it in a {@link Map} in {@link HeroData#feedbackRatios}
      */
     private static void calculateRatios() { //TODO: Not being called if reactionsActivity == 0, since that message never fires, so used via test data mostly
-        ConcurrentHashMap<Reactions, Integer> feedbackActivity = HeroData.FeedbackActivity.getFeedbackActivity();
-        ConcurrentHashMap<Reactions, Float> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
-        for (Map.Entry<Reactions, Integer> entry : feedbackActivity.entrySet()) {
+        ConcurrentHashMap<FeedbackTypes, Integer> feedbackActivity = HeroData.FeedbackActivity.getFeedbackActivity();
+        ConcurrentHashMap<FeedbackTypes, Float> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
+        for (Map.Entry<FeedbackTypes, Integer> entry : feedbackActivity.entrySet()) {
             feedbackRatios.put(entry.getKey(), entry.getValue().floatValue() / HeroData.FeedbackActivity.totalFeedbackCount);
         }
-        HeroReactions.LOGGER.info(feedbackRatios.toString());
+        Common.LOGGER.info(feedbackRatios.toString());
     }
 
     private static void setStageSize() {

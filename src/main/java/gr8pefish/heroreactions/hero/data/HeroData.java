@@ -1,7 +1,5 @@
 package gr8pefish.heroreactions.hero.data;
 
-import gr8pefish.heroreactions.hero.data.enums.Reactions;
-
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -12,9 +10,9 @@ public class HeroData {
     //Feedback mappings
 
     //Reaction -> count
-    private static final ConcurrentHashMap<Reactions, Integer> feedbackActivity = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<FeedbackTypes, Integer> feedbackActivity = new ConcurrentHashMap<>();
     //Reaction -> ratio (count/total)
-    private static final ConcurrentHashMap<Reactions, Float> feedbackRatios = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<FeedbackTypes, Float> feedbackRatios = new ConcurrentHashMap<>();
 
     public static class Viewers {
         public static int direct;
@@ -27,17 +25,17 @@ public class HeroData {
     }
 
     public static class Feedback {
-        public static Reactions reaction;
+        public static FeedbackTypes feedbackType;
         public static int count;
     }
 
     public static class FeedbackActivity {
         //Use feedbackActivity map
-        public static ConcurrentHashMap<Reactions, Integer> getFeedbackActivity() {
+        public static ConcurrentHashMap<FeedbackTypes, Integer> getFeedbackActivity() {
             return feedbackActivity;
         }
         //Use feedbackRatios map
-        public static ConcurrentHashMap<Reactions, Float> getFeedbackRatios() {
+        public static ConcurrentHashMap<FeedbackTypes, Float> getFeedbackRatios() {
             return feedbackRatios;
         }
 
@@ -46,8 +44,8 @@ public class HeroData {
         public static double activity; //the total activity ratio (0 < x < 1)
 
         //top
-        public static Reactions previousTopFeedback;
-        public static Reactions currentTopFeedback;
+        public static FeedbackTypes previousTopFeedback;
+        public static FeedbackTypes currentTopFeedback;
         public static boolean renderTopFeedback; //if the top feedback changed, render it
     }
 
