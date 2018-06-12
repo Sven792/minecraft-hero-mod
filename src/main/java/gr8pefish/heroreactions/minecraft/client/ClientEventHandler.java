@@ -1,5 +1,6 @@
 package gr8pefish.heroreactions.minecraft.client;
 
+import gr8pefish.heroreactions.hero.client.RenderingUtils;
 import gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiIngameOverlay;
 import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
@@ -25,13 +26,16 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onRenderOverlayGUI(RenderGameOverlayEvent.Text event) { //can do pre/post also
         if (ConfigHandler.generalConfigSettings.enableOverlay) {
-            //render info
-            GuiIngameOverlay overlay = new GuiIngameOverlay(Minecraft.getMinecraft());
-            //"reset" GL states (just in case)
-            GlStateManager.enableBlend();
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            //do rendering
-            overlay.renderGameOverlay(event.getPartialTicks());
+
+            //render everything
+            RenderingUtils.renderAllReactionsDefault(event.getPartialTicks(), 3);
+
+//            GuiIngameOverlay overlay = new GuiIngameOverlay(Minecraft.getMinecraft());
+//            //"reset" GL states (just in case)
+//            GlStateManager.enableBlend();
+//            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+//            //do rendering
+//            overlay.renderGameOverlay(event.getPartialTicks());
         }
     }
 

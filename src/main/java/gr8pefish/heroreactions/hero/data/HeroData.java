@@ -12,7 +12,7 @@ public class HeroData {
     //Reaction -> count
     private static final ConcurrentHashMap<FeedbackTypes, Integer> feedbackActivity = new ConcurrentHashMap<>();
     //Reaction -> ratio (count/total)
-    private static final ConcurrentHashMap<FeedbackTypes, Float> feedbackRatios = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios = new ConcurrentHashMap<>();
 
     public static class Viewers {
         public static int direct;
@@ -35,7 +35,7 @@ public class HeroData {
             return feedbackActivity;
         }
         //Use feedbackRatios map
-        public static ConcurrentHashMap<FeedbackTypes, Float> getFeedbackRatios() {
+        public static ConcurrentHashMap<FeedbackTypes, Double> getFeedbackRatios() {
             return feedbackRatios;
         }
 

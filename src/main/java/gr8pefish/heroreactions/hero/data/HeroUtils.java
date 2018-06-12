@@ -1,10 +1,8 @@
-package gr8pefish.heroreactions.hero;
+package gr8pefish.heroreactions.hero.data;
 
 import gr8pefish.heroreactions.common.Common;
-import gr8pefish.heroreactions.hero.data.FeedbackTypes;
-import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.hero.network.json.JsonMessageHelper;
-import gr8pefish.heroreactions.minecraft.client.gui.ReactionRenderHelper;
+import gr8pefish.heroreactions.minecraft.client.RenderHelper;
 
 import java.util.Collection;
 import java.util.Map;
@@ -76,15 +74,15 @@ public class HeroUtils {
      */
     private static void calculateRatios() { //TODO: Not being called if reactionsActivity == 0, since that message never fires, so used via test data mostly
         ConcurrentHashMap<FeedbackTypes, Integer> feedbackActivity = HeroData.FeedbackActivity.getFeedbackActivity();
-        ConcurrentHashMap<FeedbackTypes, Float> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
+        ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
         for (Map.Entry<FeedbackTypes, Integer> entry : feedbackActivity.entrySet()) {
-            feedbackRatios.put(entry.getKey(), entry.getValue().floatValue() / HeroData.FeedbackActivity.totalFeedbackCount);
+            feedbackRatios.put(entry.getKey(), entry.getValue().doubleValue() / HeroData.FeedbackActivity.totalFeedbackCount);
         }
         Common.LOGGER.info(feedbackRatios.toString());
     }
 
     private static void setStageSize() {
-        ReactionRenderHelper.stageSize = Math.min(Math.log(HeroData.Viewers.total + 1), 10) / 10; //total view count
+        RenderHelper.stageSize = Math.min(Math.log(HeroData.Viewers.total + 1), 10) / 10; //total view count
     }
 
 

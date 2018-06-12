@@ -2,7 +2,7 @@ package gr8pefish.heroreactions.hero.network.json;
 
 import com.google.gson.*;
 import gr8pefish.heroreactions.common.Common;
-import gr8pefish.heroreactions.hero.HeroUtils;
+import gr8pefish.heroreactions.hero.data.HeroUtils;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.hero.network.json.variants.AbstractJsonMessage;

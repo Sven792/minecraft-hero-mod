@@ -77,7 +77,7 @@ public class GuiReactions implements IRenderOverlay {
             GlStateManager.translate(xImage, yImage, 0);
             GlStateManager.scale(0.5, 0.5, 0);
 
-            //enable transparency (not working?)
+            //enable transparency
             GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
             GlStateManager.enableBlend(); //enable blending
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA); //black magic that is necessary
@@ -125,7 +125,7 @@ public class GuiReactions implements IRenderOverlay {
     }
 
     //Render emojis in a limited area
-    private void renderBubblingReactions(int xStart, int yStart, int width, int height, FeedbackTypes reaction, Float percentage, int total) {
+    private void renderBubblingReactions(int xStart, int yStart, int width, int height, FeedbackTypes reaction, Double percentage, int total) {
         //unsure why, but seems necessary to bind more than just in the beginning
         mc.getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
 
@@ -162,8 +162,8 @@ public class GuiReactions implements IRenderOverlay {
     }
 
     public void renderFeedbackBubblingFromReactionRatios() {
-        ConcurrentHashMap<FeedbackTypes, Float> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
-        for (Map.Entry<FeedbackTypes, Float> entry : feedbackRatios.entrySet()) {
+        ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
+        for (Map.Entry<FeedbackTypes, Double> entry : feedbackRatios.entrySet()) {
             renderBubblingReactions(xBase, yImage, imageTextureWidth * feedbackRatios.size(), imageTextureHeight + paddingVertical, entry.getKey(), entry.getValue(), HeroData.FeedbackActivity.totalFeedbackCount);
         }
     }
