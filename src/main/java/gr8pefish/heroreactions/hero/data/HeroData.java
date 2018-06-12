@@ -19,6 +19,7 @@ public class HeroData {
     public static class Viewers {
         public static int direct;
         public static int indirect;
+        public static int total;
     }
 
     public static class Online {
@@ -39,7 +40,15 @@ public class HeroData {
         public static ConcurrentHashMap<Reactions, Float> getFeedbackRatios() {
             return feedbackRatios;
         }
-        public static int totalFeedbackCount;
+
+        //totals
+        public static int totalFeedbackCount; //the sum of the feedback counts
+        public static double activity; //the total activity ratio (0 < x < 1)
+
+        //top
+        public static Reactions previousTopFeedback;
+        public static Reactions currentTopFeedback;
+        public static boolean renderTopFeedback; //if the top feedback changed, render it
     }
 
 }

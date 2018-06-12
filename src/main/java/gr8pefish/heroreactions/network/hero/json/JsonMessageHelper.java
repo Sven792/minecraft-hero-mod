@@ -115,15 +115,23 @@ public class JsonMessageHelper {
                 JsonArray jsonArray = JsonUtils.getJsonArray(dataElement.getAsJsonObject(), "options");
                 //get total (for eventual use in feedback ratios)
                 int total = 0;
+                //get the top feedback (first element in array)
+                boolean firstFeedback = true;
+                //iterate through data
                 for (JsonElement element : jsonArray) {
                     Reactions feedbackType = Reactions.getFromString(JsonUtils.getString(element.getAsJsonObject(), "id"));
                     int count = JsonUtils.getInt(element.getAsJsonObject(), "activity");
                     HeroData.FeedbackActivity.getFeedbackActivity().put(feedbackType, count);
+                    if (firstFeedback) {
+                        HeroData.FeedbackActivity.currentTopFeedback = feedbackType;
+                        firstFeedback = false;
+                    }
                     total += count;
                 }
                 //calculate the ratios of feedback types to one another
                 HeroData.FeedbackActivity.totalFeedbackCount = total;
-                HeroUtils.calculateRatios();
+                //calculate everything else for display
+                HeroUtils.interpretFeedbackMessage();
                 return;
             case ONLINE:
                 HeroData.Online.isOnline = dataElement.getAsBoolean();
@@ -132,6 +140,9 @@ public class JsonMessageHelper {
                 //parse message `data` for "viewers" format
                 HeroData.Viewers.direct = JsonUtils.getInt(dataElement.getAsJsonObject(), "direct");
                 HeroData.Viewers.indirect = JsonUtils.getInt(dataElement.getAsJsonObject(), "indirect");
+                HeroData.Viewers.total = HeroData.Viewers.direct + HeroData.Viewers.indirect;
+                //calculate everything else for display
+                HeroUtils.interpretViewerMessage();
                 return;
             default:
                 HeroReactions.LOGGER.error("Invalid type of message!");
