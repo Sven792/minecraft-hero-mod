@@ -7,12 +7,12 @@ import net.minecraft.client.renderer.GlStateManager;
 /** Theoretically you just replace the Minecraft/GL specific calls with your specific rendering setup and the rest should work.*/
 public class CommonRenderHelper {
 
-    public static void renderFade(double currentTime, double totalTime, FeedbackTypes feedbackType, double feedbackRatioOfTotal) {
+    public static void renderFade(long currentTime, long timeDifference, long baseTime, FeedbackTypes feedbackType, double feedbackRatioOfTotal) {
         //push matrix
         GlStateManager.pushMatrix();
 
         //set transparency
-        MinecraftRenderHelper.setOpacity(currentTime, totalTime);
+        MinecraftRenderHelper.setOpacity(currentTime, timeDifference, baseTime);
 
         //helper method
         renderFeedbackBubble(feedbackType, feedbackRatioOfTotal);
@@ -22,12 +22,12 @@ public class CommonRenderHelper {
     }
 
 
-    public static void renderExpand(double currentTime, double totalTime, FeedbackTypes feedbackType, double feedbackRatioOfTotal) {
+    public static void renderExpand(long timeDifference, FeedbackTypes feedbackType, double feedbackRatioOfTotal) {
         //push matrix
         GlStateManager.pushMatrix();
 
         //set size
-        MinecraftRenderHelper.setSize(currentTime, totalTime);
+        MinecraftRenderHelper.setSize(timeDifference);
 
         //helper method
         renderFeedbackBubble(feedbackType, feedbackRatioOfTotal);

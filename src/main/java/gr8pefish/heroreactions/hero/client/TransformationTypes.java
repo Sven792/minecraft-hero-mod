@@ -9,10 +9,10 @@ public enum TransformationTypes {
     EXPAND, //grow/shrink over time
     SLIDE; //translate up/down over time
 
-    public void render(double currentTime, double totalTime, FeedbackTypes feedbackType, double feedbackRatioOfTotal) {
+    public void render(long currentTime, long totalTime, FeedbackTypes feedbackType, double feedbackRatioOfTotal) {
         switch (this) {
             case FADE:
-                CommonRenderHelper.renderFade(currentTime, totalTime, feedbackType, feedbackRatioOfTotal);
+                CommonRenderHelper.renderFade(currentTime, totalTime, 0L, feedbackType, feedbackRatioOfTotal);
             case EXPAND:
                 CommonRenderHelper.renderExpand(currentTime, totalTime, feedbackType, feedbackRatioOfTotal);
             case SLIDE:

@@ -6,6 +6,7 @@ import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiIngameOverlay;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiReactions;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.MathHelper;
 
 public class MinecraftRenderHelper {
 
@@ -27,15 +28,29 @@ public class MinecraftRenderHelper {
                 )
             );
 
-    public static void setOpacity(double currentTime, double totalTime) {
+    public static void setOpacity(long currentTime, long timeDifference, long baseTime) {
         GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
         GlStateManager.enableBlend(); //enable blending
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA); //black magic that is necessary
-        float opacity = (float) (currentTime / totalTime); //TODO: will need to halve this eventually, for fade out as well (currently just fade-in)
+
+        //base opacity of 0 (fully transparent)
+        float opacity = 0f;
+        //add delta to total
+        GuiReactions.timestampTotal += timeDifference;
+
+        //if over total time, reset
+        if (GuiReactions.timestampTotal >= GuiReactions.maxFadeInTime) {
+            GuiReactions.timestampTotal = 0d; //reset total //TODO: end spawning?
+        //otherwise set opacity
+        } else {
+            opacity = (float) MathHelper.clamp(GuiReactions.timestampTotal / GuiReactions.maxFadeInTime, 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
+        }
+
+        //set transparency
         GlStateManager.color(1, 1, 1, opacity); //1=fully opaque, 0=fully transparent
     }
 
-    public static void setSize(double currentTime, double totalTime) {
+    public static void setSize(long timeDifference) {
         //TODO
     }
 
@@ -44,6 +59,7 @@ public class MinecraftRenderHelper {
     }
 
     public static void renderFeedbackBubble(FeedbackTypes feedbackType) {
+        ClientEventHandler.overlay.getReactions().renderFeedbackBubble(feedbackType);
         //bind texture
         //TODO: How Do?
         //render in location

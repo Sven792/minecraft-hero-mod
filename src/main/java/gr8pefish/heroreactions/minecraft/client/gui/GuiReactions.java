@@ -1,5 +1,6 @@
 package gr8pefish.heroreactions.minecraft.client.gui;
 
+import gr8pefish.heroreactions.common.client.CommonRenderHelper;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo;
@@ -12,51 +13,100 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GuiReactions {
 
-    /** Icons for each reaction (static) */
+    /** Icons for the reaction emoticons */
     public static final ResourceLocation REACTION_ICONS_TEX_PATH = new ResourceLocation(HeroReactionsInfo.MODID,"textures/gui/reaction_icons.png");
 
-    private final Minecraft mc;
     private GuiIngameOverlay overlay;
+    private ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios;
 
-    private ConcurrentHashMap<FeedbackTypes, Integer> feedback;
+    public static final double maxFadeInTime = 2500;
+    public static double timestampTotal = 0;
 
     //setup basic variables
-    private final int imageTextureWidth = 16; //16 pixel square
-    private final int imageTextureHeight = 16; //16 pixel square
-    private int paddingHorizontal = 6; //padding from sides of screen and in-between elements
-    private int paddingVertical = 4; //padding in-between elements
+    public final int imageTextureWidth = 16; //16 pixel square
+    public final int imageTextureHeight = 16; //16 pixel square
+    public int paddingHorizontal = 6; //padding from sides of screen and in-between elements
+    public int paddingVertical = 4; //padding in-between elements
 
-    private int xBase;
-    private int yText;
-    private int yImage;
-
-    public int centerAboveY = -1;
+    public int xBase;
+    public int yText;
+    public int yImage;
 
     public GuiReactions(GuiIngameOverlay overlay) {
-        this.mc = overlay.getMinecraft();
         this.overlay = overlay;
 
         //feedback data
-        feedback = HeroData.FeedbackActivity.getFeedbackActivity();
-        int feedbackCount = feedback.size();
-
-        int middle =- 7;
-        int height = 12; //TODO: just random numbers so it compiles
+        feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
 
         //direct variables used in rendering
-        xBase = (feedbackCount % 2 == 0) ? middle - (feedbackCount / 2) - (((feedbackCount / 2) / 2) * paddingHorizontal) : middle - (imageTextureWidth / 2) - ((imageTextureWidth + paddingHorizontal) * (feedbackCount / 2)); //start centered, depends on even or odd
-        yText = height - paddingVertical - 8; //bottom, padding, height of actual number
-        yImage = yText - paddingVertical - imageTextureHeight; //text height, padding, image height
+//        xBase = (feedbackCount % 2 == 0) ? middle - (feedbackCount / 2) - (((feedbackCount / 2) / 2) * paddingHorizontal) : middle - (imageTextureWidth / 2) - ((imageTextureWidth + paddingHorizontal) * (feedbackCount / 2)); //start centered, depends on even or odd
+//        yText = height - paddingVertical - 8; //bottom, padding, height of actual number
+//        yImage = yText - paddingVertical - imageTextureHeight; //text height, padding, image height
         //ToDo: Check y limits (with padding) against edge of screen and hotbar/offhand bar
 
         //setup vars for public access
         //TODO: refactor (with above vars to class level)
-        centerAboveY = yImage - (paddingVertical + (paddingVertical / 2)) - 8; //image top, 1.5x padding, height of actual number
+//        centerAboveY = yImage - (paddingVertical + (paddingVertical / 2)) - 8; //image top, 1.5x padding, height of actual number
 
     }
 
     public void renderOverlay() {
-//        mc.getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
+        overlay.getMinecraft().getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
+
+        //TODO: fade in/out
+        getAlpha();
+
+        //draw icon
+        overlay.drawTexturedModalRect(
+                overlay.getGuiLocation().getMiddleX(imageTextureWidth),  //screen x
+                overlay.getGuiLocation().getMiddleY(imageTextureHeight), //screen y
+                FeedbackTypes.LOVE.getTextureX(), //texture x
+                0, //texture y
+                imageTextureWidth, //width
+                imageTextureHeight); //height
+    }
+
+    private void getAlpha() {
+
+        //Too many dependencies/jumping files - bwah
+        CommonRenderHelper.renderFade(overlay.currentTime, overlay.timeDifference, overlay.baseTime, FeedbackTypes.LOVE, 0.1f); //yay flickering xD
+
+
+
+//        check bottom of PerformerFeedback to see time flow for bubbling
+
+//        timestamp = 0;
+//        lastTimestamp = 0;
+//        lastTime = Date.now();
+//        bubbleTimestamps = {};
+//
+//        this.startTime = Date.now();
+//        this.requestAnimationFrame();
+//
+//        this.timestamp = timestampParam;
+//
+//        double minLifespan = 780;
+//        double additionalLifespan = 600;
+//
+//        for (int i = 0; i < this.bubbles.length; i++) {
+//            FeedbackTypes bubble = this.bubbles[i];
+//
+//            double lifetime = timestamp - bubble.timestamp;
+//            double inversePercent = ((20 - this.bubbles.length) / 20);
+//            if (20 - this.bubbles.length < 0) inversePercent = 0;
+//            double lifeLimit = (minLifespan + (inversePercent * additionalLifespan));
+//            if (lifetime > lifeLimit) {
+//                this.bubbles.splice(i, 1);
+//                i--;
+//            } else {
+//                //blatantly stolen math from Hero's code
+//                double currentLife = (lifetime < lifeLimit * 0.17 ?
+//                        (Math.pow((lifetime / lifeLimit), 2) * (1 / (Math.pow(0.17, 2)))) :
+//                        (1.15 * (0.16 / (lifetime / lifeLimit))) - 0.15) * 2;
+//                bubble.alpha = currentLife > 1 ? 1 : currentLife;
+//            }
+//        }
+
     }
 
     public void renderOverlay(int width, int height, int middle) {
@@ -65,14 +115,14 @@ public class GuiReactions {
         int feedbackIterator = 0;
 
         //loop through elements and draw
-        for (Map.Entry<FeedbackTypes, Integer> entry : feedback.entrySet()) {
+        for (Map.Entry<FeedbackTypes, Double> entry : feedbackRatios.entrySet()) {
 
             //unsure why, but seems necessary to bind more than just in the beginning
-            mc.getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
+            overlay.getMinecraft().getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
 
             //variables
             int xImage = xBase + (feedbackIterator * (imageTextureWidth + paddingHorizontal));
-            int xText = xImage + (imageTextureWidth / 2) - (overlay.getFontRenderer().getStringWidth(entry.getValue().toString()) / 2);
+            int xText = xImage + (imageTextureWidth / 2) - (overlay.getMinecraft().fontRenderer.getStringWidth(entry.getValue().toString()) / 2);
 
             //half size - translate then scale (push/pop matrix as well)
             GlStateManager.pushMatrix();
@@ -115,7 +165,7 @@ public class GuiReactions {
 
             //draw count of each underneath
             overlay.drawString(
-                    overlay.getFontRenderer(), //fontRenderer
+                    overlay.getMinecraft().fontRenderer, //fontRenderer
                     entry.getValue().toString(), //what to draw
                     xText, //screen x
                     yText, //screen y
@@ -129,7 +179,7 @@ public class GuiReactions {
     //Render emojis in a limited area
     private void renderBubblingReactions(int xStart, int yStart, int width, int height, FeedbackTypes reaction, Double percentage, int total) {
         //unsure why, but seems necessary to bind more than just in the beginning
-        mc.getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
+        overlay.getMinecraft().getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
 
         //half size - translate then scale (push/pop matrix as well)
 //        GlStateManager.pushMatrix();
@@ -170,4 +220,20 @@ public class GuiReactions {
         }
     }
 
+    public void renderFeedbackBubble(FeedbackTypes feedbackType) {
+        //alpha set, just have to render bubble in location
+
+        overlay.getMinecraft().getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
+
+        //TODO: randomize location
+
+        //draw icon
+        overlay.drawTexturedModalRect(
+                overlay.getGuiLocation().getMiddleX(imageTextureWidth),  //screen x
+                overlay.getGuiLocation().getMiddleY(imageTextureHeight), //screen y
+                FeedbackTypes.LOVE.getTextureX(), //texture x
+                0, //texture y
+                imageTextureWidth, //width
+                imageTextureHeight); //height
+    }
 }

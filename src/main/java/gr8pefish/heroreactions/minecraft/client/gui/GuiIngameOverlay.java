@@ -4,7 +4,6 @@ import gr8pefish.heroreactions.hero.network.message.MessageHelper;
 import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
  * A custom overlay for the Hero data.
  * Note: Only one overlay created/rendered (in {@link gr8pefish.heroreactions.minecraft.client.ClientEventHandler}), the data is just updated as needed.
  */
-public class GuiIngameOverlay extends GuiIngame {
+public class GuiIngameOverlay extends Gui {
 
     //Fields
     private final Minecraft mc;
@@ -23,10 +22,12 @@ public class GuiIngameOverlay extends GuiIngame {
     private GuiReactions reactions;
     private GuiGlow glow;
 
-    public GuiIngameOverlay(Minecraft minecraft) {
-        //super call
-        super(minecraft);
+    public long lastTime;
+    public long currentTime;
+    public long timeDifference;
+    public long baseTime;
 
+    public GuiIngameOverlay(Minecraft minecraft) {
         //client minecraft instance (for rendering)
         this.mc = minecraft;
         //scaled resolution
@@ -40,6 +41,10 @@ public class GuiIngameOverlay extends GuiIngame {
         this.reactions = new GuiReactions(this);
         //glow
         this.glow = new GuiGlow(this);
+
+        //time
+        this.lastTime = Minecraft.getSystemTime();
+        this.baseTime = Minecraft.getSystemTime();
     }
 
     //Getters + Setters
@@ -56,6 +61,10 @@ public class GuiIngameOverlay extends GuiIngame {
         return guiLocation;
     }
 
+    public GuiReactions getReactions() {
+        return reactions;
+    }
+
     public void setViewCount(int viewCount) {
         this.viewCount = viewCount;
     }
@@ -63,7 +72,13 @@ public class GuiIngameOverlay extends GuiIngame {
     //Render
 
     public void renderOverlay(ScaledResolution scaledResolution) {
+        //set scaled resolution
         this.scaledResolution = scaledResolution;
+
+        //set time
+        this.currentTime = Minecraft.getSystemTime();
+        this.timeDifference = currentTime - lastTime;
+        this.lastTime = currentTime;
 
         //draw view count
         String viewers = String.valueOf(viewCount);
