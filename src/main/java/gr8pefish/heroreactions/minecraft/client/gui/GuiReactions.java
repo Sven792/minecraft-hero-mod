@@ -7,6 +7,7 @@ import gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +21,9 @@ public class GuiReactions {
     private ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios;
 
     public static final double maxFadeInTime = 2500;
-    public static double timestampTotal = 0;
+    public static double timestampOpacity = 0;
+
+    private double timestampSize = 0;
 
     //setup basic variables
     public final int imageTextureWidth = 16; //16 pixel square
@@ -32,22 +35,13 @@ public class GuiReactions {
     public int yText;
     public int yImage;
 
+    private boolean hasBeenResizedOrMoved = false; //to know where to render the end bubble
+
     public GuiReactions(GuiIngameOverlay overlay) {
         this.overlay = overlay;
 
         //feedback data
         feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
-
-        //direct variables used in rendering
-//        xBase = (feedbackCount % 2 == 0) ? middle - (feedbackCount / 2) - (((feedbackCount / 2) / 2) * paddingHorizontal) : middle - (imageTextureWidth / 2) - ((imageTextureWidth + paddingHorizontal) * (feedbackCount / 2)); //start centered, depends on even or odd
-//        yText = height - paddingVertical - 8; //bottom, padding, height of actual number
-//        yImage = yText - paddingVertical - imageTextureHeight; //text height, padding, image height
-        //ToDo: Check y limits (with padding) against edge of screen and hotbar/offhand bar
-
-        //setup vars for public access
-        //TODO: refactor (with above vars to class level)
-//        centerAboveY = yImage - (paddingVertical + (paddingVertical / 2)) - 8; //image top, 1.5x padding, height of actual number
-
     }
 
     public void renderOverlay() {
@@ -69,7 +63,8 @@ public class GuiReactions {
     private void getAlpha() {
 
         //Too many dependencies/jumping files - bwah
-        CommonRenderHelper.renderFade(overlay.currentTime, overlay.timeDifference, overlay.baseTime, FeedbackTypes.LOVE, 0.1f); //yay flickering xD
+        CommonRenderHelper.renderFade(overlay.currentTime, overlay.timeDifference, overlay.baseTime, FeedbackTypes.LOVE, 0.1f);
+        CommonRenderHelper.renderExpand(overlay.timeDifference, FeedbackTypes.ANGER, 0.1f);
 
 
 
@@ -221,19 +216,63 @@ public class GuiReactions {
     }
 
     public void renderFeedbackBubble(FeedbackTypes feedbackType) {
-        //alpha set, just have to render bubble in location
-
+        //transformations done, just have to render bubble in location
         overlay.getMinecraft().getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
 
-        //TODO: randomize location
-
         //draw icon
-        overlay.drawTexturedModalRect(
-                overlay.getGuiLocation().getMiddleX(imageTextureWidth),  //screen x
-                overlay.getGuiLocation().getMiddleY(imageTextureHeight), //screen y
-                FeedbackTypes.LOVE.getTextureX(), //texture x
-                0, //texture y
-                imageTextureWidth, //width
-                imageTextureHeight); //height
+        if (hasBeenResizedOrMoved) { //rescaled, render at 0,0
+            overlay.drawTexturedModalRect(
+                    0,  //screen x
+                    0, //screen y
+                    FeedbackTypes.LOVE.getTextureX(), //texture x
+                    0, //texture y
+                    imageTextureWidth, //width
+                    imageTextureHeight); //height
+            hasBeenResizedOrMoved = false;
+        }
+        else
+            overlay.drawTexturedModalRect(
+                    getRandomXPos() + 40,  //screen x
+                    getRandomYPos(), //screen y
+                    FeedbackTypes.LOVE.getTextureX(), //texture x
+                    0, //texture y
+                    imageTextureWidth, //width
+                    imageTextureHeight); //height
     }
+
+
+    public void setSize(long timeDifference) {
+
+        //base scale of 0 (invisible)
+        double scale = 0;
+        //add delta to total
+        timestampSize += timeDifference;
+
+        //if over total time, reset
+        if (timestampSize >= maxFadeInTime) {
+            timestampSize = 0; //reset total //TODO: end spawning?
+        //otherwise set scale
+        } else {
+            scale = MathHelper.clamp(timestampSize / maxFadeInTime, 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
+        }
+
+        //move + scale proportionally
+//        GlStateManager.translate(getRandomXPos(), getRandomYPos(), 0);
+        GlStateManager.translate(getRandomXPos() - 40, getRandomYPos(), 0);
+        GlStateManager.scale(scale, scale, 0);
+
+        hasBeenResizedOrMoved = true;
+    }
+
+    //TODO: better (random) positions
+    private int getRandomXPos() {
+        return overlay.getGuiLocation().getMiddleX(imageTextureWidth);
+    }
+
+    //TODO: better (random) positions
+    private int getRandomYPos() {
+        return overlay.getGuiLocation().getMiddleY(imageTextureHeight);
+    }
+
+
 }

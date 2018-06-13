@@ -33,12 +33,13 @@ public class ClientEventHandler {
 
             //Scale the rendering location data to fit current screen size
             GuiLocations.applyPositionScaling(ConfigHandler.overlayConfigSettings.overlayPos.toUpperCase(), event.getResolution());
+
+            //"reset" GL states (just in case)
+            GlStateManager.enableBlend();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
             //Render the overlay
             overlay.renderOverlay(event.getResolution());
-
-//            //"reset" GL states (just in case)
-//            GlStateManager.enableBlend();
-//            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 

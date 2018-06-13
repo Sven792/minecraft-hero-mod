@@ -12,10 +12,10 @@ public class CommonRenderHelper {
         GlStateManager.pushMatrix();
 
         //set transparency
-        MinecraftRenderHelper.setOpacity(currentTime, timeDifference, baseTime);
+        MinecraftRenderHelper.setReactionOpacity(currentTime, timeDifference, baseTime);
 
         //helper method
-        renderFeedbackBubble(feedbackType, feedbackRatioOfTotal);
+        renderFeedbackBubble(feedbackType, feedbackRatioOfTotal); //disabling works
 
         //pop matrix
         GlStateManager.popMatrix();
@@ -27,10 +27,10 @@ public class CommonRenderHelper {
         GlStateManager.pushMatrix();
 
         //set size
-        MinecraftRenderHelper.setSize(timeDifference);
+        MinecraftRenderHelper.setReactionSize(timeDifference);
 
         //helper method
-        renderFeedbackBubble(feedbackType, feedbackRatioOfTotal);
+//        renderFeedbackBubble(feedbackType, feedbackRatioOfTotal);
 
         //pop matrix
         GlStateManager.popMatrix();
@@ -42,7 +42,7 @@ public class CommonRenderHelper {
         GlStateManager.pushMatrix();
 
         //set size
-        MinecraftRenderHelper.setPosition(currentTime, totalTime);
+        MinecraftRenderHelper.setReactionPosition(currentTime, totalTime);
 
         //helper method
         renderFeedbackBubble(feedbackType, feedbackRatioOfTotal);

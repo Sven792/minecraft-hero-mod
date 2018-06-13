@@ -3,7 +3,6 @@ package gr8pefish.heroreactions.minecraft.client;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroUtils;
 import gr8pefish.heroreactions.hero.data.HeroData;
-import gr8pefish.heroreactions.minecraft.client.gui.GuiIngameOverlay;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiReactions;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
@@ -28,7 +27,7 @@ public class MinecraftRenderHelper {
                 )
             );
 
-    public static void setOpacity(long currentTime, long timeDifference, long baseTime) {
+    public static void setReactionOpacity(long currentTime, long timeDifference, long baseTime) {
         GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
         GlStateManager.enableBlend(); //enable blending
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA); //black magic that is necessary
@@ -36,30 +35,32 @@ public class MinecraftRenderHelper {
         //base opacity of 0 (fully transparent)
         float opacity = 0f;
         //add delta to total
-        GuiReactions.timestampTotal += timeDifference;
+        GuiReactions.timestampOpacity += timeDifference;
 
         //if over total time, reset
-        if (GuiReactions.timestampTotal >= GuiReactions.maxFadeInTime) {
-            GuiReactions.timestampTotal = 0d; //reset total //TODO: end spawning?
+        if (GuiReactions.timestampOpacity >= GuiReactions.maxFadeInTime) {
+            GuiReactions.timestampOpacity = 0d; //reset total //TODO: end spawning?
         //otherwise set opacity
         } else {
-            opacity = (float) MathHelper.clamp(GuiReactions.timestampTotal / GuiReactions.maxFadeInTime, 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
+            opacity = (float) MathHelper.clamp((GuiReactions.timestampOpacity / GuiReactions.maxFadeInTime) / 1d, 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
         }
+//        System.out.println(opacity);
 
         //set transparency
         GlStateManager.color(1, 1, 1, opacity); //1=fully opaque, 0=fully transparent
     }
 
-    public static void setSize(long timeDifference) {
+    public static void setReactionSize(long timeDifference) {
+        getReactionOverlay().setSize(timeDifference);
         //TODO
     }
 
-    public static void setPosition(double currentTime, double totalTime) {
+    public static void setReactionPosition(double currentTime, double totalTime) {
         //TODO
     }
 
     public static void renderFeedbackBubble(FeedbackTypes feedbackType) {
-        ClientEventHandler.overlay.getReactions().renderFeedbackBubble(feedbackType);
+        getReactionOverlay().renderFeedbackBubble(feedbackType);
         //bind texture
         //TODO: How Do?
         //render in location
@@ -70,6 +71,10 @@ public class MinecraftRenderHelper {
         //update the data to show
         ClientEventHandler.overlay.setViewCount(viewCount);
         //will automatically render new info next view tick
+    }
+
+    private static GuiReactions getReactionOverlay() {
+        return ClientEventHandler.overlay.getReactions();
     }
 
 //    if (timediff >= waitTime && percentage !== 0 && this.activity !== 0)
