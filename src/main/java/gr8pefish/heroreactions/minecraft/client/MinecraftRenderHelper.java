@@ -27,30 +27,35 @@ public class MinecraftRenderHelper {
                 )
             );
 
-    public static void setReactionOpacity(long currentTime, long timeDifference, long baseTime) {
-        GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
-        GlStateManager.enableBlend(); //enable blending
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA); //black magic that is necessary
+//    public static void setReactionOpacity(long timeDifference) {
+//
+//        GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
+//        GlStateManager.enableBlend(); //enable blending
+//        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA); //black magic that is necessary
+//
+//        //base opacity of 0 (fully transparent)
+//        float opacity = 0f;
+//        //add delta to total
+//        GuiReactions.timestampOpacity += timeDifference;
+//
+//        //if over total time, reset
+//        if (GuiReactions.timestampOpacity >= GuiReactions.maxFadeInTime) {
+//            GuiReactions.timestampOpacity = 0d; //reset total //TODO: end spawning?
+//        //otherwise set opacity
+//        } else {
+//            opacity = (float) MathHelper.clamp((GuiReactions.timestampOpacity / GuiReactions.maxFadeInTime) / 1d, 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
+//        }
+////        System.out.println(opacity);
+//
+//        //set transparency
+//        GlStateManager.color(1, 1, 1, opacity); //1=fully opaque, 0=fully transparent
+//    }
 
-        //base opacity of 0 (fully transparent)
-        float opacity = 0f;
-        //add delta to total
-        GuiReactions.timestampOpacity += timeDifference;
-
-        //if over total time, reset
-        if (GuiReactions.timestampOpacity >= GuiReactions.maxFadeInTime) {
-            GuiReactions.timestampOpacity = 0d; //reset total //TODO: end spawning?
-        //otherwise set opacity
-        } else {
-            opacity = (float) MathHelper.clamp((GuiReactions.timestampOpacity / GuiReactions.maxFadeInTime) / 1d, 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
-        }
-//        System.out.println(opacity);
-
-        //set transparency
-        GlStateManager.color(1, 1, 1, opacity); //1=fully opaque, 0=fully transparent
+    public static void applyOpacity(long timeDifference) {
+        getReactionOverlay().setOpacity(timeDifference);
     }
 
-    public static void setReactionSize(long timeDifference) {
+    public static void applySize(long timeDifference) {
         getReactionOverlay().setSize(timeDifference);
         //TODO
     }
@@ -60,7 +65,7 @@ public class MinecraftRenderHelper {
     }
 
     public static void renderFeedbackBubble(FeedbackTypes feedbackType) {
-        getReactionOverlay().renderFeedbackBubble(feedbackType);
+        getReactionOverlay().renderFeedbackBubbleOnly(feedbackType);
         //bind texture
         //TODO: How Do?
         //render in location

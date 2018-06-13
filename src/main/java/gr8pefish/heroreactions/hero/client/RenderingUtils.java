@@ -20,6 +20,8 @@ public class RenderingUtils {
     //TODO: Not just reactions, but whole overlay including view count and glow
         //How to organize this (code structure) best?
 
+    //TODO: These 3 are super broken, exchange stuff with CommonRenderHelper
+
     /**
      * Render a default reaction set, with a default set of transformation types.
      *
@@ -61,7 +63,7 @@ public class RenderingUtils {
      */
     public static void renderReaction(double currentTime, double totalTime, FeedbackTypes feedbackType, double feedbackRatioOfTotal, List<TransformationTypes> transformationTypes) {
         for (TransformationTypes transformationType : transformationTypes) {
-            transformationType.render((long)currentTime, (long)totalTime, feedbackType, feedbackRatioOfTotal);
+            transformationType.apply((long) currentTime);
         }
     }
 

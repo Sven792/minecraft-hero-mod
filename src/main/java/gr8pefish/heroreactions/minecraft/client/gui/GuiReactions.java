@@ -1,14 +1,15 @@
 package gr8pefish.heroreactions.minecraft.client.gui;
 
 import gr8pefish.heroreactions.common.client.CommonRenderHelper;
+import gr8pefish.heroreactions.hero.client.TransformationTypes;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -45,29 +46,32 @@ public class GuiReactions {
     }
 
     public void renderOverlay() {
-        overlay.getMinecraft().getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
+        //TODO: ITS GOD DAMN BEAUTIFUL! :D
+        //make the rest like this
 
-        //TODO: fade in/out
-        getAlpha();
+        //push matrix
+        GlStateManager.pushMatrix();
+
+        //apply effects
+        CommonRenderHelper.applyFade(overlay.timeDifference);
+        CommonRenderHelper.applyExpand(overlay.timeDifference);
 
         //draw icon
-        overlay.drawTexturedModalRect(
-                overlay.getGuiLocation().getMiddleX(imageTextureWidth),  //screen x
-                overlay.getGuiLocation().getMiddleY(imageTextureHeight), //screen y
-                FeedbackTypes.LOVE.getTextureX(), //texture x
-                0, //texture y
-                imageTextureWidth, //width
-                imageTextureHeight); //height
+        renderFeedbackBubbleOnly(FeedbackTypes.LOVE);
+
+        //pop matrix
+        GlStateManager.popMatrix();
     }
 
     private void getAlpha() {
 
         //Too many dependencies/jumping files - bwah
-        CommonRenderHelper.renderFade(overlay.currentTime, overlay.timeDifference, overlay.baseTime, FeedbackTypes.LOVE, 0.1f);
-        CommonRenderHelper.renderExpand(overlay.timeDifference, FeedbackTypes.ANGER, 0.1f);
+//        CommonRenderHelper.renderFade(overlay.currentTime, overlay.timeDifference, overlay.baseTime, FeedbackTypes.LOVE, 0.1f);
+//        CommonRenderHelper.renderExpand(overlay.timeDifference, FeedbackTypes.ANGER, 0.1f);
+    }
 
 
-
+//TODO: Notes for time from JS code
 //        check bottom of PerformerFeedback to see time flow for bubbling
 
 //        timestamp = 0;
@@ -102,36 +106,8 @@ public class GuiReactions {
 //            }
 //        }
 
-    }
 
-    public void renderOverlay(int width, int height, int middle) {
-
-        //for looping through feedback icons
-        int feedbackIterator = 0;
-
-        //loop through elements and draw
-        for (Map.Entry<FeedbackTypes, Double> entry : feedbackRatios.entrySet()) {
-
-            //unsure why, but seems necessary to bind more than just in the beginning
-            overlay.getMinecraft().getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
-
-            //variables
-            int xImage = xBase + (feedbackIterator * (imageTextureWidth + paddingHorizontal));
-            int xText = xImage + (imageTextureWidth / 2) - (overlay.getMinecraft().fontRenderer.getStringWidth(entry.getValue().toString()) / 2);
-
-            //half size - translate then scale (push/pop matrix as well)
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(xImage, yImage, 0);
-            GlStateManager.scale(0.5, 0.5, 0);
-
-            //enable transparency
-            GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
-            GlStateManager.enableBlend(); //enable blending
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA); //black magic that is necessary
-            GlStateManager.color(1, 1, 1, 0.5f); //halve opacity
-
-            //use system time for keeping track (otherwise it will lag) - because doesn't really care about world
-
+    //TODO: Notes for glow
             //the "best" way would involve rendering a "mask" of the opacity of each pixel, applying a blur, and then drawing that
             //render the opacity into a texture, and draw with blur and a color
             //processing the texture to make a blurred texture might be more effort than it's worth
@@ -147,75 +123,25 @@ public class GuiReactions {
             //then the quads are like, {x0y0, x1y0, x1y1, x0y1} ...
             //or the other way around, since opengl is different from dx in which direction Y grows
 
-            //draw icon
-            overlay.drawTexturedModalRect(
-                    0,  //screen x
-                    0, //screen y
-                    entry.getKey().getTextureX(), //texture x
-                    0, //texture y
-                    imageTextureWidth, //width
-                    imageTextureHeight); //height
 
-            GlStateManager.popMatrix();
 
-            //draw count of each underneath
-            overlay.drawString(
-                    overlay.getMinecraft().fontRenderer, //fontRenderer
-                    entry.getValue().toString(), //what to draw
-                    xText, //screen x
-                    yText, //screen y
-                    14737632);
 
-            //increment
-            feedbackIterator++;
-        }
-    }
-
-    //Render emojis in a limited area
-    private void renderBubblingReactions(int xStart, int yStart, int width, int height, FeedbackTypes reaction, Double percentage, int total) {
-        //unsure why, but seems necessary to bind more than just in the beginning
-        overlay.getMinecraft().getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
-
-        //half size - translate then scale (push/pop matrix as well)
-//        GlStateManager.pushMatrix();
-//        GlStateManager.translate(xImage, yImage, 0);
-//        GlStateManager.scale(0.5, 0.5, 0);
+//    public void renderFeedbackBubblingFromReactionRatios() {
+//        ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
+//        for (Map.Entry<FeedbackTypes, Double> entry : feedbackRatios.entrySet()) {
+//            renderBubblingReactions(xBase, yImage, imageTextureWidth * feedbackRatios.size(), imageTextureHeight + paddingVertical, entry.getKey(), entry.getValue(), HeroData.FeedbackActivity.totalFeedbackCount);
+//        }
+//    }
 //
-//        //enable transparency (not working?)
-//        GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
-//        GlStateManager.enableBlend(); //enable blending
-//        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA); //black magic that is necessary
-//        GlStateManager.color(1, 1, 1, 0.5f); //halve opacity
+//    public void renderFeedbackBubbleWithTransformation(FeedbackTypes feedbackType, List<TransformationTypes> transformations, long timeDifference) {
+//        for (TransformationTypes transformation : transformations) {
+//            transformation.apply(timeDifference);
+//            renderFeedbackBubbleOnly(feedbackType);
+//        }
+//    }
 
-        //use system time for keeping track (otherwise it will lag)
 
-        //do it for 10x percent (so .5 = 5)
-        for (int i = 0 ; i < percentage * 10; i++) {
-
-            int xImage = xBase + (int)Math.round((Math.random() * 5)* 10); //random location
-            int yImageReal = yImage + (int)Math.round((Math.random() * 5)* 3); //random location
-
-            //draw icon
-            overlay.drawTexturedModalRect(
-                    xImage,  //screen x
-                    yImageReal, //screen y
-                    reaction.getTextureX(), //texture x
-                    0, //texture y
-                    imageTextureWidth, //width
-                    imageTextureHeight); //height
-        }
-
-//        GlStateManager.popMatrix();
-    }
-
-    public void renderFeedbackBubblingFromReactionRatios() {
-        ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
-        for (Map.Entry<FeedbackTypes, Double> entry : feedbackRatios.entrySet()) {
-            renderBubblingReactions(xBase, yImage, imageTextureWidth * feedbackRatios.size(), imageTextureHeight + paddingVertical, entry.getKey(), entry.getValue(), HeroData.FeedbackActivity.totalFeedbackCount);
-        }
-    }
-
-    public void renderFeedbackBubble(FeedbackTypes feedbackType) {
+    public void renderFeedbackBubbleOnly(FeedbackTypes feedbackType) {
         //transformations done, just have to render bubble in location
         overlay.getMinecraft().getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
 
@@ -228,16 +154,40 @@ public class GuiReactions {
                     0, //texture y
                     imageTextureWidth, //width
                     imageTextureHeight); //height
-            hasBeenResizedOrMoved = false;
+            hasBeenResizedOrMoved = false; //TODO: won't work in a loop of them :(
         }
         else
             overlay.drawTexturedModalRect(
-                    getRandomXPos() + 40,  //screen x
+                    getRandomXPos(),  //screen x
                     getRandomYPos(), //screen y
                     FeedbackTypes.LOVE.getTextureX(), //texture x
                     0, //texture y
                     imageTextureWidth, //width
                     imageTextureHeight); //height
+    }
+
+    public void setOpacity(long timeDifference) {
+
+        //set GL states
+        GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
+        GlStateManager.enableBlend(); //enable blending
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA); //black magic that is necessary
+
+        //base opacity of 0 (fully transparent)
+        float opacity = 0f;
+        //add delta to total
+        timestampOpacity += timeDifference;
+
+        //if over total time, reset
+        if (timestampOpacity >= maxFadeInTime) {
+            timestampOpacity = 0; //reset total //TODO: end spawning?
+        //otherwise set opacity
+        } else {
+            opacity = (float) MathHelper.clamp(timestampOpacity / maxFadeInTime, 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
+        }
+
+        //set transparency
+        GlStateManager.color(1, 1, 1, opacity); //1=fully opaque, 0=fully transparent
     }
 
 
@@ -257,8 +207,7 @@ public class GuiReactions {
         }
 
         //move + scale proportionally
-//        GlStateManager.translate(getRandomXPos(), getRandomYPos(), 0);
-        GlStateManager.translate(getRandomXPos() - 40, getRandomYPos(), 0);
+        GlStateManager.translate(getRandomXPos(), getRandomYPos(), 0);
         GlStateManager.scale(scale, scale, 0);
 
         hasBeenResizedOrMoved = true;

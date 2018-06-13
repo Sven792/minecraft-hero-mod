@@ -9,15 +9,14 @@ public enum TransformationTypes {
     EXPAND, //grow/shrink over time
     SLIDE; //translate up/down over time
 
-    //TODO: re-do method signature
-    public void render(long currentTime, long totalTime, FeedbackTypes feedbackType, double feedbackRatioOfTotal) {
-        switch (this) {
+    public void apply(long timeDifference) {
+        switch(this) {
             case FADE:
-                CommonRenderHelper.renderFade(currentTime, totalTime, 0L, feedbackType, feedbackRatioOfTotal);
+                CommonRenderHelper.applyFade(timeDifference);
             case EXPAND:
-                CommonRenderHelper.renderExpand(0, feedbackType, feedbackRatioOfTotal);
+                CommonRenderHelper.applyExpand(timeDifference);
             case SLIDE:
-                CommonRenderHelper.renderSlide(currentTime, totalTime, feedbackType, feedbackRatioOfTotal);
+                CommonRenderHelper.applySlide(timeDifference);
             default:
                 Common.LOGGER.warn("Invalid transformation type!");
         }
