@@ -1,8 +1,10 @@
 package gr8pefish.heroreactions.hero.data;
 
 import gr8pefish.heroreactions.common.Common;
+import gr8pefish.heroreactions.common.client.CommonRenderHelper;
+import gr8pefish.heroreactions.hero.client.RenderingUtils;
 import gr8pefish.heroreactions.hero.network.json.JsonMessageHelper;
-import gr8pefish.heroreactions.minecraft.client.RenderHelper;
+import gr8pefish.heroreactions.minecraft.client.MinecraftRenderHelper;
 
 import java.util.Collection;
 import java.util.Map;
@@ -24,7 +26,10 @@ public class HeroUtils {
     }
 
     public static void interpretViewerMessage() {
+        //Set size of display based on view count
         setStageSize();
+        //Update view count rendered
+        CommonRenderHelper.renderViewCount(HeroData.Viewers.total);
     }
 
     //gets the activity of the feedback as a value 0 < x < 1
@@ -82,7 +87,8 @@ public class HeroUtils {
     }
 
     private static void setStageSize() {
-        RenderHelper.stageSize = Math.min(Math.log(HeroData.Viewers.total + 1), 10) / 10; //total view count
+        MinecraftRenderHelper.stageSize = Math.min(Math.log(HeroData.Viewers.total + 1), 10) / 10; //total view count
+        Common.LOGGER.info("Stage size: "+Math.floor(MinecraftRenderHelper.stageSize * 100)+"%");
     }
 
 

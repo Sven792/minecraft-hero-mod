@@ -10,13 +10,13 @@ import net.minecraft.util.ResourceLocation;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class GuiReactions implements IRenderOverlay {
+public class GuiReactions {
 
     /** Icons for each reaction (static) */
     public static final ResourceLocation REACTION_ICONS_TEX_PATH = new ResourceLocation(HeroReactionsInfo.MODID,"textures/gui/reaction_icons.png");
 
     private final Minecraft mc;
-    private GuiIngameOverlay gui;
+    private GuiIngameOverlay overlay;
 
     private ConcurrentHashMap<FeedbackTypes, Integer> feedback;
 
@@ -32,13 +32,16 @@ public class GuiReactions implements IRenderOverlay {
 
     public int centerAboveY = -1;
 
-    public GuiReactions(Minecraft minecraft, int width, int height, int middle, GuiIngameOverlay gui) {
-        this.mc = minecraft;
-        this.gui = gui;
+    public GuiReactions(GuiIngameOverlay overlay) {
+        this.mc = overlay.getMinecraft();
+        this.overlay = overlay;
 
         //feedback data
         feedback = HeroData.FeedbackActivity.getFeedbackActivity();
         int feedbackCount = feedback.size();
+
+        int middle =- 7;
+        int height = 12; //TODO: just random numbers so it compiles
 
         //direct variables used in rendering
         xBase = (feedbackCount % 2 == 0) ? middle - (feedbackCount / 2) - (((feedbackCount / 2) / 2) * paddingHorizontal) : middle - (imageTextureWidth / 2) - ((imageTextureWidth + paddingHorizontal) * (feedbackCount / 2)); //start centered, depends on even or odd
@@ -52,7 +55,6 @@ public class GuiReactions implements IRenderOverlay {
 
     }
 
-    @Override
     public void renderOverlay() {
 //        mc.getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
     }
@@ -70,7 +72,7 @@ public class GuiReactions implements IRenderOverlay {
 
             //variables
             int xImage = xBase + (feedbackIterator * (imageTextureWidth + paddingHorizontal));
-            int xText = xImage + (imageTextureWidth / 2) - (gui.getFontRenderer().getStringWidth(entry.getValue().toString()) / 2);
+            int xText = xImage + (imageTextureWidth / 2) - (overlay.getFontRenderer().getStringWidth(entry.getValue().toString()) / 2);
 
             //half size - translate then scale (push/pop matrix as well)
             GlStateManager.pushMatrix();
@@ -83,7 +85,7 @@ public class GuiReactions implements IRenderOverlay {
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA); //black magic that is necessary
             GlStateManager.color(1, 1, 1, 0.5f); //halve opacity
 
-            //use system time for keeping track (otherwise it will lag)
+            //use system time for keeping track (otherwise it will lag) - because doesn't really care about world
 
             //the "best" way would involve rendering a "mask" of the opacity of each pixel, applying a blur, and then drawing that
             //render the opacity into a texture, and draw with blur and a color
@@ -101,7 +103,7 @@ public class GuiReactions implements IRenderOverlay {
             //or the other way around, since opengl is different from dx in which direction Y grows
 
             //draw icon
-            gui.drawTexturedModalRect(
+            overlay.drawTexturedModalRect(
                     0,  //screen x
                     0, //screen y
                     entry.getKey().getTextureX(), //texture x
@@ -112,8 +114,8 @@ public class GuiReactions implements IRenderOverlay {
             GlStateManager.popMatrix();
 
             //draw count of each underneath
-            gui.drawString(
-                    gui.getFontRenderer(), //fontRenderer
+            overlay.drawString(
+                    overlay.getFontRenderer(), //fontRenderer
                     entry.getValue().toString(), //what to draw
                     xText, //screen x
                     yText, //screen y
@@ -149,7 +151,7 @@ public class GuiReactions implements IRenderOverlay {
             int yImageReal = yImage + (int)Math.round((Math.random() * 5)* 3); //random location
 
             //draw icon
-            gui.drawTexturedModalRect(
+            overlay.drawTexturedModalRect(
                     xImage,  //screen x
                     yImageReal, //screen y
                     reaction.getTextureX(), //texture x

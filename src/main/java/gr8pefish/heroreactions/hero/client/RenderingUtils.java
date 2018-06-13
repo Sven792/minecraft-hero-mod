@@ -1,5 +1,6 @@
 package gr8pefish.heroreactions.hero.client;
 
+import gr8pefish.heroreactions.common.client.CommonRenderHelper;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import scala.actors.threadpool.Arrays;
@@ -62,6 +63,10 @@ public class RenderingUtils {
         for (TransformationTypes transformationType : transformationTypes) {
             transformationType.render(currentTime, totalTime, feedbackType, feedbackRatioOfTotal);
         }
+    }
+
+    public static void getTime() {
+//        this.timestamp += (Date.now() - this.lastTime);
     }
 
 }

@@ -3,10 +3,11 @@ package gr8pefish.heroreactions.minecraft.client;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroUtils;
 import gr8pefish.heroreactions.hero.data.HeroData;
+import gr8pefish.heroreactions.minecraft.client.gui.GuiIngameOverlay;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiReactions;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class RenderHelper {
+public class MinecraftRenderHelper {
 
     //fields
     /**set by {@link HeroUtils#setStageSize()} during a viewer message event */
@@ -42,13 +43,18 @@ public class RenderHelper {
         //TODO
     }
 
-    public static void render(FeedbackTypes feedbackType) {
+    public static void renderFeedbackBubble(FeedbackTypes feedbackType) {
         //bind texture
         //TODO: How Do?
         //render in location
         //TODO
     }
 
+    public static void renderViewCount(int viewCount) {
+        //update the data to show
+        ClientEventHandler.overlay.setViewCount(viewCount);
+        //will automatically render new info next view tick
+    }
 
 //    if (timediff >= waitTime && percentage !== 0 && this.activity !== 0)
 //    this.bubbleTimestamps[type] = timestamp; //emit

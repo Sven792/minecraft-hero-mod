@@ -9,6 +9,6 @@ public class HeroReactionsInfo {
     public static final String MODID = "heroreactions";
 
     /** The externally used mod name **/
-    public static final String MOD_NAME = "Hero FeedbackTypes";
+    public static final String MOD_NAME = "Hero Reactions";
 
 }
