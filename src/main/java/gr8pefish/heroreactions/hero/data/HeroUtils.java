@@ -23,6 +23,8 @@ public class HeroUtils {
         getActivity();
         //Get top feedback
         getTopFeedback();
+        //Render new data
+        CommonRenderHelper.renderAllFeedbackBubbles();
     }
 
     public static void interpretViewerMessage() {
@@ -81,9 +83,13 @@ public class HeroUtils {
         ConcurrentHashMap<FeedbackTypes, Integer> feedbackActivity = HeroData.FeedbackActivity.getFeedbackActivity();
         ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
         for (Map.Entry<FeedbackTypes, Integer> entry : feedbackActivity.entrySet()) {
-            feedbackRatios.put(entry.getKey(), entry.getValue().doubleValue() / HeroData.FeedbackActivity.totalFeedbackCount);
+            if (HeroData.FeedbackActivity.totalFeedbackCount == 0) {
+                feedbackRatios.put(entry.getKey(), 0d);
+            } else {
+                feedbackRatios.put(entry.getKey(), entry.getValue().doubleValue() / HeroData.FeedbackActivity.totalFeedbackCount);
+            }
         }
-        Common.LOGGER.info(feedbackRatios.toString());
+        Common.LOGGER.info("Feedback ratios created: "+feedbackRatios.toString());
     }
 
     private static void setStageSize() {

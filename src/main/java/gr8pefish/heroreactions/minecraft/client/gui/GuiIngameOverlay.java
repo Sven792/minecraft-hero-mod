@@ -33,7 +33,8 @@ public class GuiIngameOverlay extends Gui {
         //scaled resolution
         this.scaledResolution = new ScaledResolution(minecraft);
         //guiLocation
-        this.guiLocation = GuiLocations.valueOf(ConfigHandler.overlayConfigSettings.overlayPos.toUpperCase()); //TODO: Error handling
+        this.guiLocation = GuiLocations.valueOf(ConfigHandler.overlayConfigSettings.overlayPos.toUpperCase()); //TODO: Error handling (will crash if config value not right)
+        GuiLocations.applyPositionScaling(ConfigHandler.overlayConfigSettings.overlayPos.toUpperCase(), scaledResolution);
 
         //view count
         this.viewCount = 0;
@@ -59,6 +60,10 @@ public class GuiIngameOverlay extends Gui {
 
     public GuiLocations getGuiLocation() {
         return guiLocation;
+    }
+
+    public void setGuiLocation(GuiLocations location) {
+        this.guiLocation = location;
     }
 
     public GuiReactions getReactions() {

@@ -38,7 +38,7 @@ public class ClientEventHandler {
             GuiLocations.applyPositionScaling(ConfigHandler.overlayConfigSettings.overlayPos.toUpperCase(), event.getResolution());
 
             if (!addedBubble) {
-                overlay.getReactions().addTestBubbles();
+//                overlay.getReactions().addTestBubbles();
                 addedBubble = true;
             }
 

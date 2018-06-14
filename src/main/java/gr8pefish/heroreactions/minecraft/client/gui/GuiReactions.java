@@ -1,10 +1,14 @@
 package gr8pefish.heroreactions.minecraft.client.gui;
 
+import com.google.common.collect.ConcurrentHashMultiset;
 import gr8pefish.heroreactions.common.client.CommonRenderHelper;
+import gr8pefish.heroreactions.hero.client.TransformationTypes;
 import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo;
+import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
+import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -22,7 +26,8 @@ public class GuiReactions {
     private GuiIngameOverlay overlay;
     private ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios;
 
-    public List<Bubble> bubbles;
+    //init bubbles
+    public ConcurrentSet<Bubble> bubbles;
 
     private final double maxBubbleTime = 2000;
     private double timestampOpacity = 0;
@@ -52,104 +57,36 @@ public class GuiReactions {
         //feedback data
         feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
 
-        //init bubbles
-        bubbles = new ArrayList<>();
+        bubbles = new ConcurrentSet<>();
     }
 
+    /** Renders all bubble reactions */
     public void renderOverlay() {
-        //TODO: ITS GOD DAMN BEAUTIFUL! :D
-        //make the rest like this
-
         //loop through bubbles
         for (Bubble bubble : bubbles) {
 
             //update timestamp
             bubble.setTimestamp(bubble.getTimestamp() + overlay.timeDifference);
 
+            //if temporary bubble should disappear, do so
+            if (bubble.isTemporary() && bubble.getTimestamp() >= bubble.getMaxTime()) {
+                bubbles.remove(bubble);
+                continue; //no need to render this one
+            }
+
             //push matrix
             GlStateManager.pushMatrix();
 
             //apply effects (pop in normal, expand to oversize, shrink back to nothing, all while slowly decreasing opacity)
-            CommonRenderHelper.applyExpand(bubble);
-            CommonRenderHelper.applyFade(bubble);
+            CommonRenderHelper.applyEffects(new TransformationTypes[]{TransformationTypes.EXPAND, TransformationTypes.FADE}, bubble);
 
             //draw icon
-            renderFeedbackBubbleOnly(bubble);
+            CommonRenderHelper.renderBubble(bubble);
 
             //pop matrix
             GlStateManager.popMatrix();
         }
     }
-
-
-//TODO: Notes for time from JS code
-//        check bottom of PerformerFeedback to see time flow for bubbling
-
-//        timestamp = 0;
-//        lastTimestamp = 0;
-//        lastTime = Date.now();
-//        bubbleTimestamps = {};
-//
-//        this.startTime = Date.now();
-//        this.requestAnimationFrame();
-//
-//        this.timestamp = timestampParam;
-//
-//        double minLifespan = 780;
-//        double additionalLifespan = 600;
-//
-//        for (int i = 0; i < this.bubbles.length; i++) {
-//            FeedbackTypes bubble = this.bubbles[i];
-//
-//            double lifetime = timestamp - bubble.timestamp;
-//            double inversePercent = ((20 - this.bubbles.length) / 20);
-//            if (20 - this.bubbles.length < 0) inversePercent = 0;
-//            double lifeLimit = (minLifespan + (inversePercent * additionalLifespan));
-//            if (lifetime > lifeLimit) {
-//                this.bubbles.splice(i, 1);
-//                i--;
-//            } else {
-//                //blatantly stolen math from Hero's code
-//                double currentLife = (lifetime < lifeLimit * 0.17 ?
-//                        (Math.pow((lifetime / lifeLimit), 2) * (1 / (Math.pow(0.17, 2)))) :
-//                        (1.15 * (0.16 / (lifetime / lifeLimit))) - 0.15) * 2;
-//                bubble.alpha = currentLife > 1 ? 1 : currentLife;
-//            }
-//        }
-
-
-    //TODO: Notes for glow
-            //the "best" way would involve rendering a "mask" of the opacity of each pixel, applying a blur, and then drawing that
-            //render the opacity into a texture, and draw with blur and a color
-            //processing the texture to make a blurred texture might be more effort than it's worth
-            //oh yeah a "baked" glow would also work lol
-            //if you have a fixed UI shape
-            //you can use "box" scaling, where you leave a margin and scale the middle sections
-            //the idea is you split the image into 9 (3x3) quads
-            //and scale each row/column based on the numbers
-            //but keeping the UV coords original
-            //normal box scaling:
-            //x0 = xpos; x1 = xpos + left_margin; x2 = xpos + width - right_margin; x3 = xpos + width;
-            //repeat for y[0..3]/ypos/height
-            //then the quads are like, {x0y0, x1y0, x1y1, x0y1} ...
-            //or the other way around, since opengl is different from dx in which direction Y grows
-
-
-
-
-//    public void renderFeedbackBubblingFromReactionRatios() {
-//        ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
-//        for (Map.Entry<FeedbackTypes, Double> entry : feedbackRatios.entrySet()) {
-//            renderBubblingReactions(xBase, yImage, imageTextureWidth * feedbackRatios.size(), imageTextureHeight + paddingVertical, entry.getKey(), entry.getValue(), HeroData.FeedbackActivity.totalFeedbackCount);
-//        }
-//    }
-//
-//    public void renderFeedbackBubbleWithTransformation(FeedbackTypes feedbackType, List<TransformationTypes> transformations, long timeDifference) {
-//        for (TransformationTypes transformation : transformations) {
-//            transformation.apply(timeDifference);
-//            renderFeedbackBubbleOnly(feedbackType);
-//        }
-//    }
 
 
     public void renderFeedbackBubbleOnly(Bubble bubble) {
@@ -222,22 +159,102 @@ public class GuiReactions {
         GlStateManager.scale(scale, scale, 0);
     }
 
-
+    /** Helper method to get a random x position in the rendering box */
     private int getRandomXPos() {
         int x = overlay.getGuiLocation().xStart + paddingHorizontal; //min = xStart + padding
         int xMax = x + overlay.getGuiLocation().width - (int)(imageTextureWidth * scalingRatio * growthRatio) - paddingHorizontal; //max = edge of box (xStart + width) - texture size - padding
         return (x + random.nextInt(xMax - x + 1));
     }
 
+    /** Helper method to get a random y position in the rendering box */
     private int getRandomYPos() {
         int y = overlay.getGuiLocation().yStart + paddingVertical; //min = xStart + padding
         int yMax = y + overlay.getGuiLocation().height - (int)(imageTextureHeight * scalingRatio * growthRatio) - paddingVertical; //max = edge of box (xStart + width) - texture size - padding
         return (y + random.nextInt(yMax - y + 1));
     }
 
+    //Helper test method to add a couple bubbles
     public void addTestBubbles() {
-        bubbles.add(new Bubble(0, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LOVE));
-        bubbles.add(new Bubble(700, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.APPLAUSE));
-        bubbles.add(new Bubble(1400, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LAUGHTER)); //setting base timestamp doesn't do anything?
+        bubbles.add(new Bubble(0, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LOVE, false));
+        bubbles.add(new Bubble(700, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.APPLAUSE, false));
+        bubbles.add(new Bubble(1400, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LAUGHTER, false)); //setting base timestamp doesn't do anything?
     }
+
+    //Helper method to add a temporary bubble to the render list
+    public void addTestBubble(FeedbackTypes type) {
+        bubbles.add(new Bubble(0, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), type, true));
+    }
+
+
+    //==============----------------- Notes below here -------------=====================
+
+//TODO: Notes for time from JS code
+//        check bottom of PerformerFeedback to see time flow for bubbling
+
+//        timestamp = 0;
+//        lastTimestamp = 0;
+//        lastTime = Date.now();
+//        bubbleTimestamps = {};
+//
+//        this.startTime = Date.now();
+//        this.requestAnimationFrame();
+//
+//        this.timestamp = timestampParam;
+//
+//        double minLifespan = 780;
+//        double additionalLifespan = 600;
+//
+//        for (int i = 0; i < this.bubbles.length; i++) {
+//            FeedbackTypes bubble = this.bubbles[i];
+//
+//            double lifetime = timestamp - bubble.timestamp;
+//            double inversePercent = ((20 - this.bubbles.length) / 20);
+//            if (20 - this.bubbles.length < 0) inversePercent = 0;
+//            double lifeLimit = (minLifespan + (inversePercent * additionalLifespan));
+//            if (lifetime > lifeLimit) {
+//                this.bubbles.splice(i, 1);
+//                i--;
+//            } else {
+//                //blatantly stolen math from Hero's code
+//                double currentLife = (lifetime < lifeLimit * 0.17 ?
+//                        (Math.pow((lifetime / lifeLimit), 2) * (1 / (Math.pow(0.17, 2)))) :
+//                        (1.15 * (0.16 / (lifetime / lifeLimit))) - 0.15) * 2;
+//                bubble.alpha = currentLife > 1 ? 1 : currentLife;
+//            }
+//        }
+
+
+//TODO: Notes for glow
+//the "best" way would involve rendering a "mask" of the opacity of each pixel, applying a blur, and then drawing that
+//render the opacity into a texture, and draw with blur and a color
+//processing the texture to make a blurred texture might be more effort than it's worth
+//oh yeah a "baked" glow would also work lol
+//if you have a fixed UI shape
+//you can use "box" scaling, where you leave a margin and scale the middle sections
+//the idea is you split the image into 9 (3x3) quads
+//and scale each row/column based on the numbers
+//but keeping the UV coords original
+//normal box scaling:
+//x0 = xpos; x1 = xpos + left_margin; x2 = xpos + width - right_margin; x3 = xpos + width;
+//repeat for y[0..3]/ypos/height
+//then the quads are like, {x0y0, x1y0, x1y1, x0y1} ...
+//or the other way around, since opengl is different from dx in which direction Y grows
+
+
+
+//TODO: Cleanup + multi bubble rendering via input from actual events
+//    public void renderFeedbackBubblingFromReactionRatios() {
+//        ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
+//        for (Map.Entry<FeedbackTypes, Double> entry : feedbackRatios.entrySet()) {
+//            renderBubblingReactions(xBase, yImage, imageTextureWidth * feedbackRatios.size(), imageTextureHeight + paddingVertical, entry.getKey(), entry.getValue(), HeroData.FeedbackActivity.totalFeedbackCount);
+//        }
+//    }
+//
+//    public void renderFeedbackBubbleWithTransformation(FeedbackTypes feedbackType, List<TransformationTypes> transformations, long timeDifference) {
+//        for (TransformationTypes transformation : transformations) {
+//            transformation.apply(timeDifference);
+//            renderFeedbackBubbleOnly(feedbackType);
+//        }
+//    }
+
 }

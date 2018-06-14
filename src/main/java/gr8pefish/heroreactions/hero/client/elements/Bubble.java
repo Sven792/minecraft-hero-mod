@@ -17,14 +17,17 @@ public class Bubble {
     private int yLocation;
     /** The {@link FeedbackTypes} type of feedback this bubble is */
     private FeedbackTypes type;
+    /** If this bubble will die after rendering once */
+    private final boolean temporary;
 
-    public Bubble(double timestamp, double maxTime, double sizeModifier, int xLocation, int yLocation, FeedbackTypes type) {
+    public Bubble(double timestamp, double maxTime, double sizeModifier, int xLocation, int yLocation, FeedbackTypes type, boolean temporary) {
         this.timestamp = timestamp;
         this.maxTime = maxTime;
         this.sizeModifier = sizeModifier;
         this.xLocation = xLocation;
         this.yLocation = yLocation;
         this.type = type;
+        this.temporary = temporary;
     }
 
     // Getters/Setters
@@ -77,12 +80,19 @@ public class Bubble {
         this.type = type;
     }
 
+    public boolean isTemporary() {
+        return temporary;
+    }
+
     // Helper methods
 
     //When resetting, just spawn in a new location (temporary)
     public void reset(int randomXPos, int randomYPos) {
-        this.timestamp = 0;
-        setXLocation(randomXPos);
-        setYLocation(randomYPos);
+        if (!isTemporary()) {
+            setTimestamp(0);
+            setXLocation(randomXPos);
+            setYLocation(randomYPos);
+        }
     }
+
 }

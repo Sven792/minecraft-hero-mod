@@ -2,6 +2,7 @@ package gr8pefish.heroreactions.hero.client;
 
 import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.common.client.CommonRenderHelper;
+import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 
 public enum TransformationTypes {
@@ -9,14 +10,17 @@ public enum TransformationTypes {
     EXPAND, //grow/shrink over time
     SLIDE; //translate up/down over time
 
-    public void apply(long timeDifference) {
+    public void apply(Bubble bubble) {
         switch(this) {
             case FADE:
-//                CommonRenderHelper.applyFade(timeDifference);
+                CommonRenderHelper.applyFade(bubble);
+                break;
             case EXPAND:
-//                CommonRenderHelper.applyExpand(timeDifference);
+                CommonRenderHelper.applyExpand(bubble);
+                break;
             case SLIDE:
-                CommonRenderHelper.applySlide(timeDifference);
+                CommonRenderHelper.applySlide(bubble);
+                break;
             default:
                 Common.LOGGER.warn("Invalid transformation type!");
         }
