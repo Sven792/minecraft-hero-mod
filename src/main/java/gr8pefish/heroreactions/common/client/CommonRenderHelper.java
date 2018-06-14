@@ -67,14 +67,14 @@ public class CommonRenderHelper {
     //---------------------------------------
 
 
-    public static void applyFade(Bubble bubble, long timeDifference) {
+    public static void applyFade(Bubble bubble) {
         //set transparency
-        MinecraftRenderHelper.applyOpacity(bubble, timeDifference);
+        MinecraftRenderHelper.applyOpacity(bubble);
     }
 
-    public static void applyExpand(Bubble bubble, long timeDifference) {
+    public static void applyExpand(Bubble bubble) {
         //set size
-        MinecraftRenderHelper.applySize(bubble, timeDifference);
+        MinecraftRenderHelper.applySize(bubble);
     }
 
     public static void applySlide(long timeDifference) {

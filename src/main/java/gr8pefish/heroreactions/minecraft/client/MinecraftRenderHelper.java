@@ -52,13 +52,12 @@ public class MinecraftRenderHelper {
 //        GlStateManager.color(1, 1, 1, opacity); //1=fully opaque, 0=fully transparent
 //    }
 
-    public static void applyOpacity(Bubble bubble, long timeDifference) {
-        getReactionOverlay().setOpacity(bubble, timeDifference);
+    public static void applyOpacity(Bubble bubble) {
+        getReactionOverlay().setOpacity(bubble);
     }
 
-    public static void applySize(Bubble bubble, long timeDifference) {
-        getReactionOverlay().setSize(bubble, timeDifference);
-        //TODO
+    public static void applySize(Bubble bubble) {
+        getReactionOverlay().setSize(bubble);
     }
 
     public static void setReactionPosition(double currentTime, double totalTime) {

@@ -5,10 +5,8 @@ import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 public class Bubble {
 
 
-    /** Time counter for opacity rendering */
-    private double timestampOpacity;
-    /** Time counter for size rendering */
-    private double timestampSize;
+    /** Time counter for rendering */
+    private double timestamp;
     /** Time counter for maximum rendering time */
     private double maxTime;
     /** Modifier for scaling (0-1, default 0.5) */
@@ -20,9 +18,8 @@ public class Bubble {
     /** The {@link FeedbackTypes} type of feedback this bubble is */
     private FeedbackTypes type;
 
-    public Bubble(double timestampOpacity, double timestampSize, double maxTime, double sizeModifier, int xLocation, int yLocation, FeedbackTypes type) {
-        this.timestampOpacity = timestampOpacity;
-        this.timestampSize = timestampSize;
+    public Bubble(double timestamp, double maxTime, double sizeModifier, int xLocation, int yLocation, FeedbackTypes type) {
+        this.timestamp = timestamp;
         this.maxTime = maxTime;
         this.sizeModifier = sizeModifier;
         this.xLocation = xLocation;
@@ -30,20 +27,14 @@ public class Bubble {
         this.type = type;
     }
 
-    public double getTimestampOpacity() {
-        return timestampOpacity;
+    // Getters/Setters
+
+    public double getTimestamp() {
+        return timestamp;
     }
 
-    public void setTimestampOpacity(double timestamp) {
-        this.timestampOpacity = timestamp;
-    }
-
-    public double getTimestampSize() {
-        return timestampSize;
-    }
-
-    public void setTimestampSize(double timestampSize) {
-        this.timestampSize = timestampSize;
+    public void setTimestamp(double timestamp) {
+        this.timestamp = timestamp;
     }
 
     public double getMaxTime() {
@@ -86,4 +77,12 @@ public class Bubble {
         this.type = type;
     }
 
+    // Helper methods
+
+    //When resetting, just spawn in a new location (temporary)
+    public void reset(int randomXPos, int randomYPos) {
+        this.timestamp = 0;
+        setXLocation(randomXPos);
+        setYLocation(randomYPos);
+    }
 }

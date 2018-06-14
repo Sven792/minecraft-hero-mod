@@ -41,6 +41,8 @@ public class GuiReactions {
 
     private Random random;
 
+    private double growthRatio = 1.25; //how much the bubble expands by initially (cut into quarters so 1.25)
+
     GuiReactions(GuiIngameOverlay overlay) {
         this.overlay = overlay;
 
@@ -58,33 +60,25 @@ public class GuiReactions {
         //TODO: ITS GOD DAMN BEAUTIFUL! :D
         //make the rest like this
 
-        //pop in normal size
-        //expand to oversize real quick
-        //fade out with increasing transparency and smaller size
-
-        //push matrix
-        GlStateManager.pushMatrix();
-
         //loop through bubbles
         for (Bubble bubble : bubbles) {
 
-            //apply effects
-            CommonRenderHelper.applyExpand(bubble, overlay.timeDifference);
-            CommonRenderHelper.applyFade(bubble, overlay.timeDifference);
+            //update timestamp
+            bubble.setTimestamp(bubble.getTimestamp() + overlay.timeDifference);
+
+            //push matrix
+            GlStateManager.pushMatrix();
+
+            //apply effects (pop in normal, expand to oversize, shrink back to nothing, all while slowly decreasing opacity)
+            CommonRenderHelper.applyExpand(bubble);
+            CommonRenderHelper.applyFade(bubble);
 
             //draw icon
             renderFeedbackBubbleOnly(bubble);
+
+            //pop matrix
+            GlStateManager.popMatrix();
         }
-
-        //pop matrix
-        GlStateManager.popMatrix();
-    }
-
-    private void getAlpha() {
-
-        //Too many dependencies/jumping files - bwah
-//        CommonRenderHelper.renderFade(overlay.currentTime, overlay.timeDifference, overlay.baseTime, FeedbackTypes.LOVE, 0.1f);
-//        CommonRenderHelper.renderExpand(overlay.timeDifference, FeedbackTypes.ANGER, 0.1f);
     }
 
 
@@ -167,15 +161,15 @@ public class GuiReactions {
 
         //draw icon
         overlay.drawTexturedModalRect(
-                0,  //screen x
-                0, //screen y
+                0,  //screen x, 0 because translated already (in scaling)
+                0, //screen y, 0 because translated already (in scaling)
                 bubble.getFeedbackType().getTextureX(), //texture x
                 0, //texture y
                 imageTextureWidth, //width
                 imageTextureHeight); //height
     }
 
-    public void setOpacity(Bubble bubble, long timeDifference) {
+    public void setOpacity(Bubble bubble) {
 
         //set GL states
         GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
@@ -184,15 +178,13 @@ public class GuiReactions {
 
         //base opacity of 0 (fully transparent)
         float opacity = 0f;
-        //add delta to total
-        bubble.setTimestampOpacity(bubble.getTimestampOpacity() + timeDifference);
 
         //if over total time, reset
-        if (bubble.getTimestampOpacity() >= bubble.getMaxTime()) {
-            bubble.setTimestampOpacity(0); //reset total //TODO: end spawning?
+        if (bubble.getTimestamp() >= bubble.getMaxTime()) {
+            bubble.reset(getRandomXPos(), getRandomYPos()); //reset total //TODO: end spawning?
         //otherwise set opacity
         } else {
-            opacity = (float) MathHelper.clamp(bubble.getTimestampOpacity() / bubble.getMaxTime(), 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
+            opacity = (float) MathHelper.clamp(bubble.getTimestamp() / bubble.getMaxTime(), 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
             opacity = 1 - opacity; //inverse, make more transparent over time
         }
 
@@ -201,18 +193,17 @@ public class GuiReactions {
     }
 
 
-    public void setSize(Bubble bubble, long timeDifference) {
+    public void setSize(Bubble bubble) {
 
         //base scale of 0 (invisible)
         double scale = 0;
-        //add delta to total
-        double timestampSize = bubble.getTimestampSize();
+        //local variables for simplicity
+        double timestampSize = bubble.getTimestamp();
         double maxBubbleTime = bubble.getMaxTime();
-        timestampSize += timeDifference;
 
         //if over total time, reset
         if (timestampSize >= maxBubbleTime) {
-            bubble.setTimestampSize(0); //reset total //TODO: end spawning
+            bubble.reset(getRandomXPos(), getRandomYPos());
         //otherwise set scale
         } else if (timestampSize < maxBubbleTime / 4) { //first quarter growth to 1.25 size
             scale = 1 + (timestampSize / maxBubbleTime); //increase by time amount
@@ -234,17 +225,19 @@ public class GuiReactions {
 
     private int getRandomXPos() {
         int x = overlay.getGuiLocation().xStart + paddingHorizontal; //min = xStart + padding
-        int xMax = x + overlay.getGuiLocation().width - (int)(imageTextureWidth * scalingRatio) - paddingHorizontal; //max = edge of box (xStart + width) - texture size - padding
+        int xMax = x + overlay.getGuiLocation().width - (int)(imageTextureWidth * scalingRatio * growthRatio) - paddingHorizontal; //max = edge of box (xStart + width) - texture size - padding
         return (x + random.nextInt(xMax - x + 1));
     }
 
     private int getRandomYPos() {
         int y = overlay.getGuiLocation().yStart + paddingVertical; //min = xStart + padding
-        int yMax = y + overlay.getGuiLocation().height - (int)(imageTextureHeight * scalingRatio) - paddingVertical; //max = edge of box (xStart + width) - texture size - padding
+        int yMax = y + overlay.getGuiLocation().height - (int)(imageTextureHeight * scalingRatio * growthRatio) - paddingVertical; //max = edge of box (xStart + width) - texture size - padding
         return (y + random.nextInt(yMax - y + 1));
     }
 
-    public void addTestBubble() {
-        bubbles.add(new Bubble(0, 0, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LOVE));
+    public void addTestBubbles() {
+        bubbles.add(new Bubble(0, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LOVE));
+        bubbles.add(new Bubble(700, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.APPLAUSE));
+        bubbles.add(new Bubble(1400, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LAUGHTER)); //setting base timestamp doesn't do anything?
     }
 }
