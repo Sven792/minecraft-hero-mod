@@ -1,7 +1,6 @@
 package gr8pefish.heroreactions.minecraft.client.gui;
 
 import gr8pefish.heroreactions.common.client.CommonRenderHelper;
-import gr8pefish.heroreactions.hero.client.TransformationTypes;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo;
@@ -9,26 +8,23 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GuiReactions {
 
     /** Icons for the reaction emoticons */
-    public static final ResourceLocation REACTION_ICONS_TEX_PATH = new ResourceLocation(HeroReactionsInfo.MODID,"textures/gui/reaction_icons.png");
+    private static final ResourceLocation REACTION_ICONS_TEX_PATH = new ResourceLocation(HeroReactionsInfo.MODID,"textures/gui/reaction_icons.png");
 
     private GuiIngameOverlay overlay;
     private ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios;
 
-    public static final double maxFadeInTime = 2500;
-    public static double timestampOpacity = 0;
-
+    private final double maxBubbleTime = 2000;
+    private double timestampOpacity = 0;
     private double timestampSize = 0;
 
     //setup basic variables
-    public final int imageTextureWidth = 16; //16 pixel square
-    public final int imageTextureHeight = 16; //16 pixel square
+    private final int imageTextureWidth = 16; //16 pixel square
+    private final int imageTextureHeight = 16; //16 pixel square
     public int paddingHorizontal = 6; //padding from sides of screen and in-between elements
     public int paddingVertical = 4; //padding in-between elements
 
@@ -38,7 +34,7 @@ public class GuiReactions {
 
     private boolean hasBeenResizedOrMoved = false; //to know where to render the end bubble
 
-    public GuiReactions(GuiIngameOverlay overlay) {
+    GuiReactions(GuiIngameOverlay overlay) {
         this.overlay = overlay;
 
         //feedback data
@@ -49,12 +45,16 @@ public class GuiReactions {
         //TODO: ITS GOD DAMN BEAUTIFUL! :D
         //make the rest like this
 
+        //pop in normal size
+        //expand to oversize real quick
+        //fade out with increasing transparency and smaller size
+
         //push matrix
         GlStateManager.pushMatrix();
 
         //apply effects
-        CommonRenderHelper.applyFade(overlay.timeDifference);
         CommonRenderHelper.applyExpand(overlay.timeDifference);
+        CommonRenderHelper.applyFade(overlay.timeDifference);
 
         //draw icon
         renderFeedbackBubbleOnly(FeedbackTypes.LOVE);
@@ -145,6 +145,10 @@ public class GuiReactions {
         //transformations done, just have to render bubble in location
         overlay.getMinecraft().getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
 
+        //move + scale proportionally
+        GlStateManager.scale(0.5, 0.5, 0); //default half size (for small bubbles)
+        hasBeenResizedOrMoved = true;
+
         //draw icon
         if (hasBeenResizedOrMoved) { //rescaled, render at 0,0
             overlay.drawTexturedModalRect(
@@ -179,11 +183,11 @@ public class GuiReactions {
         timestampOpacity += timeDifference;
 
         //if over total time, reset
-        if (timestampOpacity >= maxFadeInTime) {
+        if (timestampOpacity >= maxBubbleTime) {
             timestampOpacity = 0; //reset total //TODO: end spawning?
         //otherwise set opacity
         } else {
-            opacity = (float) MathHelper.clamp(timestampOpacity / maxFadeInTime, 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
+            opacity = (float) MathHelper.clamp(timestampOpacity / maxBubbleTime, 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
         }
 
         //set transparency
@@ -199,11 +203,19 @@ public class GuiReactions {
         timestampSize += timeDifference;
 
         //if over total time, reset
-        if (timestampSize >= maxFadeInTime) {
-            timestampSize = 0; //reset total //TODO: end spawning?
+        if (timestampSize >= maxBubbleTime) {
+            timestampSize = 0; //reset total //TODO: end spawning
         //otherwise set scale
-        } else {
-            scale = MathHelper.clamp(timestampSize / maxFadeInTime, 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
+        } else if (timestampSize < maxBubbleTime / 4) { //first quarter growth to 1.25 size
+            scale = 1 + (timestampSize / maxBubbleTime);
+        } else if (timestampSize < maxBubbleTime / 2){ //second quarter shrink to base size
+            scale = 1 + (timestampSize / maxBubbleTime);
+            double z = timestampSize / (maxBubbleTime / 2);
+            scale -= ((timestampSize / maxBubbleTime) * z);
+        } else { //second half shrink from base size to 0
+            scale = (timestampSize / maxBubbleTime);
+            scale = ((scale - 0.5d) / 0.5d); //normalize to 0-1 (instead of 0.5-1)
+            scale = 1 - scale; //inverse, make smaller over time
         }
 
         //move + scale proportionally
