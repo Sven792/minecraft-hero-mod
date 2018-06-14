@@ -188,6 +188,7 @@ public class GuiReactions {
         //otherwise set opacity
         } else {
             opacity = (float) MathHelper.clamp(timestampOpacity / maxBubbleTime, 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
+            opacity = 1 - opacity; //inverse, make more transparent over time
         }
 
         //set transparency
@@ -207,13 +208,13 @@ public class GuiReactions {
             timestampSize = 0; //reset total //TODO: end spawning
         //otherwise set scale
         } else if (timestampSize < maxBubbleTime / 4) { //first quarter growth to 1.25 size
-            scale = 1 + (timestampSize / maxBubbleTime);
+            scale = 1 + (timestampSize / maxBubbleTime); //increase by time amount
         } else if (timestampSize < maxBubbleTime / 2){ //second quarter shrink to base size
-            scale = 1 + (timestampSize / maxBubbleTime);
-            double z = timestampSize / (maxBubbleTime / 2);
-            scale -= ((timestampSize / maxBubbleTime) * z);
+            scale = 1 + (timestampSize / maxBubbleTime); //old growth, need to use this to keep it smooth
+            double z = timestampSize / (maxBubbleTime / 2); //modifier of how much to shrink
+            scale -= ((timestampSize / maxBubbleTime) * z); //apply modifier to shrink from what it was to 1
         } else { //second half shrink from base size to 0
-            scale = (timestampSize / maxBubbleTime);
+            scale = (timestampSize / maxBubbleTime); //get time spent as modifier
             scale = ((scale - 0.5d) / 0.5d); //normalize to 0-1 (instead of 0.5-1)
             scale = 1 - scale; //inverse, make smaller over time
         }
