@@ -1,6 +1,7 @@
 package gr8pefish.heroreactions.common.client;
 
 import gr8pefish.heroreactions.hero.client.TransformationTypes;
+import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.minecraft.client.MinecraftRenderHelper;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiReactions;
@@ -42,7 +43,7 @@ public class CommonRenderHelper {
 
         //loop through each transformation type and apply it
         for (TransformationTypes transformationType : transformationTypes) {
-            transformationType.apply(timeDifference);
+//            transformationType.apply(timeDifference);
         }
 
         //render the bubble
@@ -66,14 +67,14 @@ public class CommonRenderHelper {
     //---------------------------------------
 
 
-    public static void applyFade(long timeDifference) {
+    public static void applyFade(Bubble bubble, long timeDifference) {
         //set transparency
-        MinecraftRenderHelper.applyOpacity(timeDifference);
+        MinecraftRenderHelper.applyOpacity(bubble, timeDifference);
     }
 
-    public static void applyExpand(long timeDifference) {
+    public static void applyExpand(Bubble bubble, long timeDifference) {
         //set size
-        MinecraftRenderHelper.applySize(timeDifference);
+        MinecraftRenderHelper.applySize(bubble, timeDifference);
     }
 
     public static void applySlide(long timeDifference) {

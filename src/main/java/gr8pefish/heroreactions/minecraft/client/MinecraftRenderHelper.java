@@ -1,5 +1,6 @@
 package gr8pefish.heroreactions.minecraft.client;
 
+import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroUtils;
 import gr8pefish.heroreactions.hero.data.HeroData;
@@ -51,12 +52,12 @@ public class MinecraftRenderHelper {
 //        GlStateManager.color(1, 1, 1, opacity); //1=fully opaque, 0=fully transparent
 //    }
 
-    public static void applyOpacity(long timeDifference) {
-        getReactionOverlay().setOpacity(timeDifference);
+    public static void applyOpacity(Bubble bubble, long timeDifference) {
+        getReactionOverlay().setOpacity(bubble, timeDifference);
     }
 
-    public static void applySize(long timeDifference) {
-        getReactionOverlay().setSize(timeDifference);
+    public static void applySize(Bubble bubble, long timeDifference) {
+        getReactionOverlay().setSize(bubble, timeDifference);
         //TODO
     }
 
@@ -65,7 +66,7 @@ public class MinecraftRenderHelper {
     }
 
     public static void renderFeedbackBubble(FeedbackTypes feedbackType) {
-        getReactionOverlay().renderFeedbackBubbleOnly(feedbackType);
+//        getReactionOverlay().renderFeedbackBubbleOnly(feedbackType);
         //bind texture
         //TODO: How Do?
         //render in location

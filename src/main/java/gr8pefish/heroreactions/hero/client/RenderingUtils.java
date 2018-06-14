@@ -63,7 +63,7 @@ public class RenderingUtils {
      */
     public static void renderReaction(double currentTime, double totalTime, FeedbackTypes feedbackType, double feedbackRatioOfTotal, List<TransformationTypes> transformationTypes) {
         for (TransformationTypes transformationType : transformationTypes) {
-            transformationType.apply((long) currentTime);
+//            transformationType.apply((long) currentTime);
         }
     }
 

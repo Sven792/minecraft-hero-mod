@@ -1,6 +1,7 @@
 package gr8pefish.heroreactions.minecraft.client.gui;
 
 import gr8pefish.heroreactions.common.client.CommonRenderHelper;
+import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo;
@@ -8,6 +9,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GuiReactions {
@@ -18,6 +22,8 @@ public class GuiReactions {
     private GuiIngameOverlay overlay;
     private ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios;
 
+    public List<Bubble> bubbles;
+
     private final double maxBubbleTime = 2000;
     private double timestampOpacity = 0;
     private double timestampSize = 0;
@@ -25,20 +31,27 @@ public class GuiReactions {
     //setup basic variables
     private final int imageTextureWidth = 16; //16 pixel square
     private final int imageTextureHeight = 16; //16 pixel square
-    public int paddingHorizontal = 6; //padding from sides of screen and in-between elements
-    public int paddingVertical = 4; //padding in-between elements
+    private int paddingHorizontal = 4; //padding from sides of screen and in-between elements
+    private int paddingVertical = 4; //padding in-between elements
+    private double scalingRatio = 0.5; //size of bubbles
 
     public int xBase;
     public int yText;
     public int yImage;
 
-    private boolean hasBeenResizedOrMoved = false; //to know where to render the end bubble
+    private Random random;
 
     GuiReactions(GuiIngameOverlay overlay) {
         this.overlay = overlay;
 
+        //setup randomizer
+        this.random = new Random();
+
         //feedback data
         feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
+
+        //init bubbles
+        bubbles = new ArrayList<>();
     }
 
     public void renderOverlay() {
@@ -52,12 +65,16 @@ public class GuiReactions {
         //push matrix
         GlStateManager.pushMatrix();
 
-        //apply effects
-        CommonRenderHelper.applyExpand(overlay.timeDifference);
-        CommonRenderHelper.applyFade(overlay.timeDifference);
+        //loop through bubbles
+        for (Bubble bubble : bubbles) {
 
-        //draw icon
-        renderFeedbackBubbleOnly(FeedbackTypes.LOVE);
+            //apply effects
+            CommonRenderHelper.applyExpand(bubble, overlay.timeDifference);
+            CommonRenderHelper.applyFade(bubble, overlay.timeDifference);
+
+            //draw icon
+            renderFeedbackBubbleOnly(bubble);
+        }
 
         //pop matrix
         GlStateManager.popMatrix();
@@ -141,36 +158,24 @@ public class GuiReactions {
 //    }
 
 
-    public void renderFeedbackBubbleOnly(FeedbackTypes feedbackType) {
+    public void renderFeedbackBubbleOnly(Bubble bubble) {
         //transformations done, just have to render bubble in location
         overlay.getMinecraft().getTextureManager().bindTexture(REACTION_ICONS_TEX_PATH);
 
-        //move + scale proportionally
-        GlStateManager.scale(0.5, 0.5, 0); //default half size (for small bubbles)
-        hasBeenResizedOrMoved = true;
+        //Default half size (smaller bubbles)
+        GlStateManager.scale(bubble.getSizeModifier(), bubble.getSizeModifier(), 0); //TODO: value via config
 
         //draw icon
-        if (hasBeenResizedOrMoved) { //rescaled, render at 0,0
-            overlay.drawTexturedModalRect(
-                    0,  //screen x
-                    0, //screen y
-                    FeedbackTypes.LOVE.getTextureX(), //texture x
-                    0, //texture y
-                    imageTextureWidth, //width
-                    imageTextureHeight); //height
-            hasBeenResizedOrMoved = false; //TODO: won't work in a loop of them :(
-        }
-        else
-            overlay.drawTexturedModalRect(
-                    getRandomXPos(),  //screen x
-                    getRandomYPos(), //screen y
-                    FeedbackTypes.LOVE.getTextureX(), //texture x
-                    0, //texture y
-                    imageTextureWidth, //width
-                    imageTextureHeight); //height
+        overlay.drawTexturedModalRect(
+                0,  //screen x
+                0, //screen y
+                bubble.getFeedbackType().getTextureX(), //texture x
+                0, //texture y
+                imageTextureWidth, //width
+                imageTextureHeight); //height
     }
 
-    public void setOpacity(long timeDifference) {
+    public void setOpacity(Bubble bubble, long timeDifference) {
 
         //set GL states
         GlStateManager.enableAlpha(); //can cause weird transparent cutout issues, but positive affects performance (dependent on transparent pixel %) if no issues present
@@ -180,14 +185,14 @@ public class GuiReactions {
         //base opacity of 0 (fully transparent)
         float opacity = 0f;
         //add delta to total
-        timestampOpacity += timeDifference;
+        bubble.setTimestampOpacity(bubble.getTimestampOpacity() + timeDifference);
 
         //if over total time, reset
-        if (timestampOpacity >= maxBubbleTime) {
-            timestampOpacity = 0; //reset total //TODO: end spawning?
+        if (bubble.getTimestampOpacity() >= bubble.getMaxTime()) {
+            bubble.setTimestampOpacity(0); //reset total //TODO: end spawning?
         //otherwise set opacity
         } else {
-            opacity = (float) MathHelper.clamp(timestampOpacity / maxBubbleTime, 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
+            opacity = (float) MathHelper.clamp(bubble.getTimestampOpacity() / bubble.getMaxTime(), 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
             opacity = 1 - opacity; //inverse, make more transparent over time
         }
 
@@ -196,16 +201,18 @@ public class GuiReactions {
     }
 
 
-    public void setSize(long timeDifference) {
+    public void setSize(Bubble bubble, long timeDifference) {
 
         //base scale of 0 (invisible)
         double scale = 0;
         //add delta to total
+        double timestampSize = bubble.getTimestampSize();
+        double maxBubbleTime = bubble.getMaxTime();
         timestampSize += timeDifference;
 
         //if over total time, reset
         if (timestampSize >= maxBubbleTime) {
-            timestampSize = 0; //reset total //TODO: end spawning
+            bubble.setTimestampSize(0); //reset total //TODO: end spawning
         //otherwise set scale
         } else if (timestampSize < maxBubbleTime / 4) { //first quarter growth to 1.25 size
             scale = 1 + (timestampSize / maxBubbleTime); //increase by time amount
@@ -220,21 +227,24 @@ public class GuiReactions {
         }
 
         //move + scale proportionally
-        GlStateManager.translate(getRandomXPos(), getRandomYPos(), 0);
+        GlStateManager.translate(bubble.getXLocation(), bubble.getYLocation(), 0);
         GlStateManager.scale(scale, scale, 0);
-
-        hasBeenResizedOrMoved = true;
     }
 
-    //TODO: better (random) positions
+
     private int getRandomXPos() {
-        return overlay.getGuiLocation().getMiddleX(imageTextureWidth);
+        int x = overlay.getGuiLocation().xStart + paddingHorizontal; //min = xStart + padding
+        int xMax = x + overlay.getGuiLocation().width - (int)(imageTextureWidth * scalingRatio) - paddingHorizontal; //max = edge of box (xStart + width) - texture size - padding
+        return (x + random.nextInt(xMax - x + 1));
     }
 
-    //TODO: better (random) positions
     private int getRandomYPos() {
-        return overlay.getGuiLocation().getMiddleY(imageTextureHeight);
+        int y = overlay.getGuiLocation().yStart + paddingVertical; //min = xStart + padding
+        int yMax = y + overlay.getGuiLocation().height - (int)(imageTextureHeight * scalingRatio) - paddingVertical; //max = edge of box (xStart + width) - texture size - padding
+        return (y + random.nextInt(yMax - y + 1));
     }
 
-
+    public void addTestBubble() {
+        bubbles.add(new Bubble(0, 0, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LOVE));
+    }
 }

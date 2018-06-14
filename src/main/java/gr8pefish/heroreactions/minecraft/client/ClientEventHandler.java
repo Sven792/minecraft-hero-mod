@@ -1,10 +1,11 @@
 package gr8pefish.heroreactions.minecraft.client;
 
-import gr8pefish.heroreactions.common.Common;
-import gr8pefish.heroreactions.hero.client.RenderingUtils;
+import gr8pefish.heroreactions.hero.client.elements.Bubble;
+import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiIngameOverlay;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiLocations;
+import gr8pefish.heroreactions.minecraft.client.gui.GuiReactions;
 import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -26,6 +27,8 @@ public class ClientEventHandler {
     //The overlay to render (one instance, with internal data changed depending)
     public static final GuiIngameOverlay overlay = new GuiIngameOverlay(Minecraft.getMinecraft());
 
+    private boolean addedBubble = false;
+
     //ToDo: Data caching locally as small optimization?
     @SubscribeEvent
     public void onRenderOverlayGUI(RenderGameOverlayEvent.Text event) { //can do pre/post also
@@ -33,6 +36,11 @@ public class ClientEventHandler {
 
             //Scale the rendering location data to fit current screen size
             GuiLocations.applyPositionScaling(ConfigHandler.overlayConfigSettings.overlayPos.toUpperCase(), event.getResolution());
+
+            if (!addedBubble) {
+                overlay.getReactions().addTestBubble();
+                addedBubble = true;
+            }
 
             //"reset" GL states (just in case)
             GlStateManager.enableBlend();

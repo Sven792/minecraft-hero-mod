@@ -12,9 +12,9 @@ public enum TransformationTypes {
     public void apply(long timeDifference) {
         switch(this) {
             case FADE:
-                CommonRenderHelper.applyFade(timeDifference);
+//                CommonRenderHelper.applyFade(timeDifference);
             case EXPAND:
-                CommonRenderHelper.applyExpand(timeDifference);
+//                CommonRenderHelper.applyExpand(timeDifference);
             case SLIDE:
                 CommonRenderHelper.applySlide(timeDifference);
             default:

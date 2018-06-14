@@ -82,6 +82,7 @@ public class GuiIngameOverlay extends Gui {
 
         //draw view count
         String viewers = String.valueOf(viewCount);
+        //TODO: Shouldn't y be plus, not minus?
         drawString(mc.fontRenderer, viewers, guiLocation.getMiddleX(mc.fontRenderer.getStringWidth(viewers)), guiLocation.yStart - mc.fontRenderer.FONT_HEIGHT - 2, 14737632); //-2 for more y padding, 14737632 is the vanilla white text color
 
         //render glow
