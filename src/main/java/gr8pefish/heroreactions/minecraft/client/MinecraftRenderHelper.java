@@ -11,7 +11,7 @@ import net.minecraft.util.math.MathHelper;
 public class MinecraftRenderHelper {
 
     /**set by {@link HeroUtils#setStageSize()} during a viewer message event */
-    public static double stageSize = 1;
+    public static double stageSize = 1; //TODO: Determine glow intensity/spawn box size/reaction count via more refined algorithm than just stageSize (i.e. viewCount)
 
     public static void renderBubble(Bubble bubble) {
         getReactionOverlay().renderFeedbackBubbleOnly(bubble);

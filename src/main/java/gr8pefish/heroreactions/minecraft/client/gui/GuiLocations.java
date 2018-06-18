@@ -101,7 +101,7 @@ public enum GuiLocations {
         // y
 
         //get scaled height
-        int scaledHeight = (int) (height * scale); //max height * scale
+        int scaledHeight = (int) (height * scale); //max height * scale //TODO: Borken on tiny value (too high) - just way off somehow (values don't add up)
         if (scaledHeight < MIN_SIZE_Y) {
             int upscaleValue = (int)(MIN_SIZE_Y * ((MIN_SIZE_Y - scaledHeight) / (double) scaledHeight)); //get percentage of difference from min as int (to add to the scaledHeight later)
             scaledHeight = MIN_SIZE_Y + upscaleValue; //upscale depending on how tiny it is (so not always just at min height w/ small values)

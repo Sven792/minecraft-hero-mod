@@ -1,5 +1,6 @@
 package gr8pefish.heroreactions.minecraft.client.gui;
 
+import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.hero.network.message.MessageHelper;
 import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
 import net.minecraft.client.Minecraft;
@@ -107,6 +108,11 @@ public class GuiIngameOverlay extends Gui {
             }
         }
 
+    }
+
+    //propagates this to public scope so it can be called from GuiGlow
+    public void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
+        super.drawGradientRect(left, top, right, bottom, startColor, endColor);
     }
 
 }
