@@ -5,19 +5,28 @@ import com.google.gson.JsonElement;
 import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.hero.network.message.HeroMessages;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class TestData {
 
-    private HeroMessages messageType;
-    private JsonElement message;
+    private ConcurrentHashMap<HeroMessages, JsonElement> messages = new ConcurrentHashMap<>();
+    private ViewersMessage viewersMessage;
+    private int viewCount = 10;
+    private int incrementViewersAmount = 10;
+
+    private Gson gson = new Gson();
 
     public TestData() {
+        setViewersData();
         setFeedbackTopData();
     }
 
+    //Private
 
     private void setFeedbackTopData() {
-        this.messageType = HeroMessages.FEEDBACK_ACTIVITY;
-
         //set up data
         FeedbackTopMessage.FeedbackOptions[] feedbackOptions = new FeedbackTopMessage.FeedbackOptions[]{
                 new FeedbackTopMessage.FeedbackOptions("applause", 12),
@@ -26,14 +35,25 @@ public class TestData {
         };
 
         //set as json data
-        this.message = new Gson().toJsonTree(new FeedbackTopMessage(feedbackOptions));
+        this.messages.put(HeroMessages.FEEDBACK_ACTIVITY, gson.toJsonTree(new FeedbackTopMessage(feedbackOptions)));
     }
 
-    public JsonElement getMessage() {
-        return message;
+    private void setViewersData() {
+        viewersMessage = new ViewersMessage(viewCount, 5);
+        this.messages.put(HeroMessages.VIEWERS, gson.toJsonTree(viewersMessage));
     }
 
-    public HeroMessages getMessageType() {
-        return messageType;
+    //Public
+
+    public ConcurrentHashMap<HeroMessages, JsonElement> getMessages() {
+        return messages;
     }
+
+    public void incrementViewerCount() {
+        //if > 100 reset, otherwise increment
+        viewCount = viewCount + incrementViewersAmount > 155 ? 0 : viewCount + incrementViewersAmount ;
+        viewersMessage = new ViewersMessage(viewCount, 5);
+        this.messages.replace(HeroMessages.VIEWERS, gson.toJsonTree(viewersMessage));
+    }
+
 }
