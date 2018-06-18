@@ -1,6 +1,7 @@
 package gr8pefish.heroreactions.minecraft.client.gui;
 
 import com.google.common.collect.ConcurrentHashMultiset;
+import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.common.client.CommonRenderHelper;
 import gr8pefish.heroreactions.hero.client.TransformationTypes;
 import gr8pefish.heroreactions.hero.client.elements.Bubble;
@@ -34,11 +35,9 @@ public class GuiReactions {
     private double timestampSize = 0;
 
     //setup basic variables
-    private final int imageTextureWidth = 16; //16 pixel square
-    private final int imageTextureHeight = 16; //16 pixel square
-    private int paddingHorizontal = 4; //padding from sides of screen and in-between elements
-    private int paddingVertical = 4; //padding in-between elements
-    private double scalingRatio = 0.5; //size of bubbles
+    public static final int imageTextureWidth = 16; //16 pixel square
+    public static final int imageTextureHeight = 16; //16 pixel square
+    public static double scalingRatio = 0.5; //size of bubbles
 
     public int xBase;
     public int yText;
@@ -46,7 +45,7 @@ public class GuiReactions {
 
     private Random random;
 
-    private double growthRatio = 1.25; //how much the bubble expands by initially (cut into quarters so 1.25)
+    public static double growthRatio = 1.25; //how much the bubble expands by initially (cut into quarters so 1.25)
 
     GuiReactions(GuiIngameOverlay overlay) {
         this.overlay = overlay;
@@ -160,16 +159,16 @@ public class GuiReactions {
     }
 
     /** Helper method to get a random x position in the rendering box */
-    private int getRandomXPos() {
-        int x = overlay.getGuiLocation().xStart + paddingHorizontal; //min = xStart + padding
-        int xMax = x + overlay.getGuiLocation().width - (int)(imageTextureWidth * scalingRatio * growthRatio) - paddingHorizontal; //max = edge of box (xStart + width) - texture size - padding
+    private int getRandomXPos() { //TODO: smarter algo somehow here
+        int x = overlay.getGuiLocation().getRescaledXStart(); //min = xStart
+        int xMax = x + overlay.getGuiLocation().getRescaledWidth() - (int)(imageTextureWidth * scalingRatio * growthRatio); //max = edge of box (xStart + width) - texture size - padding
         return (x + random.nextInt(xMax - x + 1));
     }
 
     /** Helper method to get a random y position in the rendering box */
-    private int getRandomYPos() {
-        int y = overlay.getGuiLocation().yStart + paddingVertical; //min = xStart + padding
-        int yMax = y + overlay.getGuiLocation().height - (int)(imageTextureHeight * scalingRatio * growthRatio) - paddingVertical; //max = edge of box (xStart + width) - texture size - padding
+    private int getRandomYPos() { //TODO: bias towards middle Y
+        int y = overlay.getGuiLocation().getRescaledYStart(); //min = yStart (no padding on top)
+        int yMax = y + overlay.getGuiLocation().getRescaledHeight() - ((int)(imageTextureHeight * scalingRatio * growthRatio)); //max = edge of box (yStart + height) - largest texture size - padding
         return (y + random.nextInt(yMax - y + 1));
     }
 

@@ -15,7 +15,7 @@ public class TestData {
     private ConcurrentHashMap<HeroMessages, JsonElement> messages = new ConcurrentHashMap<>();
     private ViewersMessage viewersMessage;
     private int viewCount = 10;
-    private int incrementViewersAmount = 10;
+    private int incrementViewersAmount = 50;
 
     private Gson gson = new Gson();
 
@@ -51,7 +51,7 @@ public class TestData {
 
     public void incrementViewerCount() {
         //if > 100 reset, otherwise increment
-        viewCount = viewCount + incrementViewersAmount > 155 ? 0 : viewCount + incrementViewersAmount ;
+        viewCount = viewCount + incrementViewersAmount > 565 ? 0 : viewCount + incrementViewersAmount;
         viewersMessage = new ViewersMessage(viewCount, 5);
         this.messages.replace(HeroMessages.VIEWERS, gson.toJsonTree(viewersMessage));
     }

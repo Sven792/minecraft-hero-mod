@@ -27,8 +27,6 @@ public class ClientEventHandler {
     //The overlay to render (one instance, with internal data changed depending)
     public static final GuiIngameOverlay overlay = new GuiIngameOverlay(Minecraft.getMinecraft());
 
-    private boolean addedBubble = false;
-
     //ToDo: Data caching locally as small optimization?
     @SubscribeEvent
     public void onRenderOverlayGUI(RenderGameOverlayEvent.Text event) { //can do pre/post also
@@ -36,11 +34,6 @@ public class ClientEventHandler {
 
             //Scale the rendering location data to fit current screen size
             GuiLocations.applyPositionScaling(ConfigHandler.overlayConfigSettings.overlayPos.toUpperCase(), event.getResolution());
-
-            if (!addedBubble) {
-//                overlay.getReactions().addTestBubbles();
-                addedBubble = true;
-            }
 
             //"reset" GL states (just in case)
             GlStateManager.enableBlend();

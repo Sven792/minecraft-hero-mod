@@ -93,8 +93,11 @@ public class HeroUtils {
     }
 
     private static void setStageSize() {
-        MinecraftRenderHelper.stageSize = Math.min(Math.log(HeroData.Viewers.total + 1), 10) / 10; //total view count
-        Common.LOGGER.info("Stage size: "+Math.floor(MinecraftRenderHelper.stageSize * 100)+"%");
+        double scale = Math.min(Math.log(HeroData.Viewers.total + 1), 10) / 10; //total view count
+        if (scale > 1) scale = 1;
+        if (scale <= 0) scale = 0;
+        MinecraftRenderHelper.stageSize = scale;
+//        Common.LOGGER.info("Stage size: "+Math.floor(MinecraftRenderHelper.stageSize * 100)+"%");
     }
 
 

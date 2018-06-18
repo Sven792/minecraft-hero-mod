@@ -11,7 +11,7 @@ import net.minecraft.util.math.MathHelper;
 public class MinecraftRenderHelper {
 
     /**set by {@link HeroUtils#setStageSize()} during a viewer message event */
-    public static double stageSize = -1;
+    public static double stageSize = 1;
 
     public static void renderBubble(Bubble bubble) {
         getReactionOverlay().renderFeedbackBubbleOnly(bubble);
@@ -34,6 +34,12 @@ public class MinecraftRenderHelper {
         //add a new bubble to the list to render
         getReactionOverlay().addTestBubble(type);
     }
+
+    public static void updateSpawnBoxForStageSize() {
+        //rescale spawn area to fit
+        ClientEventHandler.overlay.getGuiLocation().applyStageSizeScaling(stageSize);
+    }
+
 
     //Helper method
     private static GuiReactions getReactionOverlay() {
