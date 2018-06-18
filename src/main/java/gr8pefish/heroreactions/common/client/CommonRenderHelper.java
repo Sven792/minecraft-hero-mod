@@ -32,9 +32,9 @@ public class CommonRenderHelper {
         }
     }
 
-    //render 10x the proportion (0.5 -> 5), so should be ~10 total rendered at one time //TODO: refine
+    //render 10x the proportion (e.g. 0.5 -> 5), multiplied by the stage size (usually hovers around 50%), so should be ~5 total rendered at one time //TODO: refine a lot
     private static int getCountToRender(double feedbackRatio) {
-        return (int) Math.floor(feedbackRatio * 10);
+        return (int) Math.floor(feedbackRatio * 10 * (MinecraftRenderHelper.stageSize * 1.75 > 1 ? 1 : MinecraftRenderHelper.stageSize * 1.75));
     }
 
     //---------------------------------------
