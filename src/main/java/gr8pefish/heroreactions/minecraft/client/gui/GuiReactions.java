@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GuiReactions {
 
@@ -30,9 +31,10 @@ public class GuiReactions {
     //init bubbles
     public ConcurrentSet<Bubble> bubbles;
 
-    private final double maxBubbleTime = 2000;
+    private final double maxBubbleTime = 1500;
     private double timestampOpacity = 0;
     private double timestampSize = 0;
+    private final double maxStartTimeOffset = maxBubbleTime * 1.5; //in ms, NOT inclusive
 
     //setup basic variables
     public static final int imageTextureWidth = 16; //16 pixel square
@@ -51,7 +53,7 @@ public class GuiReactions {
         this.overlay = overlay;
 
         //setup randomizer
-        this.random = new Random();
+//        this.random = new Random();
 
         //feedback data
         feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
@@ -68,9 +70,14 @@ public class GuiReactions {
             bubble.setTimestamp(bubble.getTimestamp() + overlay.timeDifference);
 
             //if temporary bubble should disappear, do so
-            if (bubble.isTemporary() && bubble.getTimestamp() >= bubble.getMaxTime()) {
+            if (bubble.isTemporary() && bubble.getTimestampWithOffset() >= bubble.getMaxTimeWithOffset()) {
                 bubbles.remove(bubble);
                 continue; //no need to render this one
+            }
+
+            //if bubble shouldn't render (startTimeOffset not taken care of)
+            if (bubble.getTimestamp() < bubble.getRenderTimeStartOffset()) {
+                continue; //don't render yet
             }
 
             //push matrix
@@ -114,15 +121,13 @@ public class GuiReactions {
 
         //base opacity of 0 (fully transparent)
         float opacity = 0f;
+        //local variables for simplicity
+        double timestampSize = bubble.getTimestampWithOffset();
+        double maxBubbleTime = bubble.getMaxTimeWithOffset();
 
-        //if over total time, reset
-        if (bubble.getTimestamp() >= bubble.getMaxTime()) {
-            bubble.reset(getRandomXPos(), getRandomYPos()); //reset total //TODO: end spawning?
-        //otherwise set opacity
-        } else {
-            opacity = (float) MathHelper.clamp(bubble.getTimestamp() / bubble.getMaxTime(), 0, 1); //simply progress over lifespan ratio (clamp shouldn't theoretically be necessary)
-            opacity = 1 - opacity; //inverse, make more transparent over time
-        }
+        //simply progress over lifespan ratio
+        opacity = (float) MathHelper.clamp(timestampSize / maxBubbleTime, 0, 0.9); // clamp to limit min transparency to be at least 10% opaque
+        opacity = 1 - opacity; //inverse, make more transparent over time
 
         //set transparency
         GlStateManager.color(1, 1, 1, opacity); //1=fully opaque, 0=fully transparent
@@ -134,14 +139,11 @@ public class GuiReactions {
         //base scale of 0 (invisible)
         double scale = 0;
         //local variables for simplicity
-        double timestampSize = bubble.getTimestamp();
-        double maxBubbleTime = bubble.getMaxTime();
+        double timestampSize = bubble.getTimestampWithOffset();
+        double maxBubbleTime = bubble.getMaxTimeWithOffset();
 
-        //if over total time, reset
-        if (timestampSize >= maxBubbleTime) {
-            bubble.reset(getRandomXPos(), getRandomYPos());
-        //otherwise set scale
-        } else if (timestampSize < maxBubbleTime / 4) { //first quarter growth to 1.25 size
+        //Set scale //TODO: re-smooth (broke a little when adding offset)
+        if (timestampSize < maxBubbleTime / 4) { //first quarter growth to 1.25 size
             scale = 1 + (timestampSize / maxBubbleTime); //increase by time amount
         } else if (timestampSize < maxBubbleTime / 2){ //second quarter shrink to base size
             scale = 1 + (timestampSize / maxBubbleTime); //old growth, need to use this to keep it smooth
@@ -159,35 +161,42 @@ public class GuiReactions {
     }
 
     public void setRotation(Bubble bubble) {
-        double randomRotationAngle = ((random.nextFloat() * ((Math.PI / 8) * 2)) - (Math.PI / 8));
-        GlStateManager.rotate((float) randomRotationAngle, 1.0f, 0, 0);
+        GlStateManager.rotate(bubble.getRotationAngle(), 0, 0, 1f);
     }
 
 
     /** Helper method to get a random x position in the rendering box */
-    private int getRandomXPos() { //TODO: smarter algo somehow here
+    private int getRandomXPos() { //TODO: smarter algo somehow here - bias towards non-overlapping
         int x = overlay.getGuiLocation().getRescaledXStart(); //min = xStart
         int xMax = x + overlay.getGuiLocation().getRescaledWidth() - (int)(imageTextureWidth * scalingRatio * growthRatio); //max = edge of box (xStart + width) - texture size - padding
-        return (x + random.nextInt(xMax - x + 1));
+        return ThreadLocalRandom.current().nextInt(x, xMax);
     }
 
     /** Helper method to get a random y position in the rendering box */
     private int getRandomYPos() { //TODO: bias towards middle Y
         int y = overlay.getGuiLocation().getRescaledYStart(); //min = yStart (no padding on top)
         int yMax = y + overlay.getGuiLocation().getRescaledHeight() - ((int)(imageTextureHeight * scalingRatio * growthRatio)); //max = edge of box (yStart + height) - largest texture size - padding
-        return (y + random.nextInt(yMax - y + 1));
+        return ThreadLocalRandom.current().nextInt(y, yMax);
     }
 
     //Helper test method to add a couple bubbles
     public void addTestBubbles() {
-        bubbles.add(new Bubble(0, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LOVE, false));
-        bubbles.add(new Bubble(700, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.APPLAUSE, false));
-        bubbles.add(new Bubble(1400, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LAUGHTER, false)); //setting base timestamp doesn't do anything?
+//        bubbles.add(new Bubble(0, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LOVE, false));
+//        bubbles.add(new Bubble(700, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.APPLAUSE, false));
+//        bubbles.add(new Bubble(1400, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LAUGHTER, false)); //setting base timestamp doesn't do anything?
     }
 
     //Helper method to add a temporary bubble to the render list
     public void addTestBubble(FeedbackTypes type) {
-        bubbles.add(new Bubble(0, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), type, true));
+        bubbles.add(new Bubble(0, getRandomStartTime(), maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), getRandomRotationAngle(), type, true));
+    }
+
+    private float getRandomRotationAngle() {
+        return (float) Math.toDegrees((ThreadLocalRandom.current().nextFloat() * ((Math.PI / 8) * 2)) - (Math.PI / 8));
+    }
+
+    private double getRandomStartTime() {
+        return ThreadLocalRandom.current().nextDouble(0, maxStartTimeOffset);
     }
 
 
