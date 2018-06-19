@@ -77,7 +77,7 @@ public class GuiReactions {
             GlStateManager.pushMatrix();
 
             //apply effects (pop in normal, expand to oversize, shrink back to nothing, all while slowly decreasing opacity)
-            CommonRenderHelper.applyEffects(new TransformationTypes[]{TransformationTypes.EXPAND, TransformationTypes.FADE}, bubble);
+            CommonRenderHelper.applyEffects(new TransformationTypes[]{TransformationTypes.EXPAND, TransformationTypes.FADE, TransformationTypes.ROTATE}, bubble);
 
             //draw icon
             CommonRenderHelper.renderBubble(bubble);
@@ -157,6 +157,12 @@ public class GuiReactions {
         GlStateManager.translate(bubble.getXLocation(), bubble.getYLocation(), 0);
         GlStateManager.scale(scale, scale, 0);
     }
+
+    public void setRotation(Bubble bubble) {
+        double randomRotationAngle = ((random.nextFloat() * ((Math.PI / 8) * 2)) - (Math.PI / 8));
+        GlStateManager.rotate((float) randomRotationAngle, 1.0f, 0, 0);
+    }
+
 
     /** Helper method to get a random x position in the rendering box */
     private int getRandomXPos() { //TODO: smarter algo somehow here

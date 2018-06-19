@@ -8,6 +8,7 @@ import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 public enum TransformationTypes {
     FADE, //opacity changes for a fade-in/out effect
     EXPAND, //grow/shrink over time
+    ROTATE, //rotate
     SLIDE; //translate up/down over time
 
     public void apply(Bubble bubble) {
@@ -17,6 +18,9 @@ public enum TransformationTypes {
                 break;
             case EXPAND:
                 CommonRenderHelper.applyExpand(bubble);
+                break;
+            case ROTATE:
+                CommonRenderHelper.applyRotate(bubble);
                 break;
             case SLIDE:
                 CommonRenderHelper.applySlide(bubble);

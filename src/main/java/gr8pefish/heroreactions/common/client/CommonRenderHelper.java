@@ -56,6 +56,11 @@ public class CommonRenderHelper {
         MinecraftRenderHelper.applySize(bubble);
     }
 
+    //set rotation
+    public static void applyRotate(Bubble bubble) {
+        MinecraftRenderHelper.applyRotation(bubble);
+    }
+
     //set position
     public static void applySlide(Bubble bubble) {
         //TODO
