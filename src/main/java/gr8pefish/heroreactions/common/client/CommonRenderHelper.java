@@ -26,7 +26,6 @@ public class CommonRenderHelper {
         for (Map.Entry<FeedbackTypes, Double> entry : HeroData.FeedbackActivity.getFeedbackRatios().entrySet()) {
             //render bubbling reactions, with an amount depending on how large this is
             int renderCount = getCountToRender(entry.getValue());
-            renderCount = 1; //testing code //TODO remove
             for (int i = 0; i < renderCount; i++) {
                 MinecraftRenderHelper.addBubble(entry.getKey());
             }
