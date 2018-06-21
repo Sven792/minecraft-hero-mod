@@ -29,9 +29,9 @@ public class TestData {
     private void setFeedbackTopData() {
         //set up data
         FeedbackTopMessage.FeedbackOptions[] feedbackOptions = new FeedbackTopMessage.FeedbackOptions[]{
-                new FeedbackTopMessage.FeedbackOptions("applause", 12),
-                new FeedbackTopMessage.FeedbackOptions("laughter", 6),
-                new FeedbackTopMessage.FeedbackOptions("anger", 2)
+                new FeedbackTopMessage.FeedbackOptions("laughter", 12),
+                new FeedbackTopMessage.FeedbackOptions("applause", 6),
+                new FeedbackTopMessage.FeedbackOptions("love", 2)
         };
 
         //set as json data

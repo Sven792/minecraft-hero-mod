@@ -2,7 +2,6 @@ package gr8pefish.heroreactions.minecraft.client.gui;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
 import gr8pefish.heroreactions.common.client.CommonRenderHelper;
 import gr8pefish.heroreactions.hero.client.TransformationTypes;
 import gr8pefish.heroreactions.hero.client.elements.Bubble;
@@ -10,6 +9,7 @@ import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo;
 import io.netty.util.internal.ConcurrentSet;
+import javafx.util.Pair;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -17,7 +17,6 @@ import net.minecraft.util.math.MathHelper;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 public class
 GuiReactions {
@@ -67,7 +66,7 @@ GuiReactions {
             //if temporary bubble should disappear, do so
             if (bubble.isTemporary() && bubble.getTimestampWithOffset() >= bubble.getMaxTimeWithOffset()) {
                 bubbles.remove(bubble);
-                System.out.println("Bubble removed");
+//                System.out.println("Bubble removed");
                 continue; //no need to render this one
             }
 
@@ -100,8 +99,7 @@ GuiReactions {
             //if temporary bubble should disappear, do so
             if (bubble.isTemporary() && bubble.getTimestampWithOffset() >= bubble.getMaxTimeWithOffset()) {
                 bubbles.remove(bubble);
-                System.out.println("Bubble removed");
-                continue; //no need to render this one
+//                System.out.println("Bubble removed");
             }
         }
     }
@@ -179,87 +177,143 @@ GuiReactions {
 
     /** Helper method to get a pseudo-random x position in the rendering box.
      * Biases towards minimal overlap by scoring each random location and choosing the best one. */
-    private int getRandomXPos() {
+    @SuppressWarnings("Duplicates")
+    private Pair<Integer, Integer> getRandomPositions() {
         //TODO: Eventually use flocking algorithms to have ideal distribution
 
         //the amount the texture grows when expanding
-        int additionalExpansionSize = (int)(imageTextureWidth * scalingRatio * growthRatio);
+        int additionalExpansionSizeX = (int)(imageTextureWidth * scalingRatio * growthRatio);
+        int additionalExpansionSizeY= (int)(imageTextureHeight * scalingRatio * growthRatio);
 
         //short circuit, simple random if no bubbles already
         if (bubbles.isEmpty()) {
             System.out.println("short circuit placement");
+
+            //x
             int x = overlay.getGuiLocation().getRescaledXStart(); //min = xStart
-            int xMax = x + overlay.getGuiLocation().getRescaledWidth() - additionalExpansionSize; //max = edge of box (xStart + width) - texture size - padding
-            return ThreadLocalRandom.current().nextInt(x, xMax);
+            int xMax = x + overlay.getGuiLocation().getRescaledWidth() - additionalExpansionSizeX; //max = edge of box (xStart + width) - texture size - padding
+
+
+            //y
+            int y = overlay.getGuiLocation().getRescaledYStart(); //min = yStart (no padding on top)
+            int yMax = y + overlay.getGuiLocation().getRescaledHeight() - additionalExpansionSizeY; //max = edge of box (yStart + height) - largest texture size - padding
+
+            //return both positions
+            return new Pair(ThreadLocalRandom.current().nextInt(x, xMax), ThreadLocalRandom.current().nextInt(y, yMax));
         }
 
         //otherwise weight towards non-taken spots
         int maxIterations = 10; //the amount of random spaces to check, higher = less overlap but slower //TODO: Config
-        ConcurrentHashMap<Integer, Double> positionWithScore = new ConcurrentHashMap<>();
+        ConcurrentHashMap<Integer, Double> positionXWithScore = new ConcurrentHashMap<>();
+        ConcurrentHashMap<Integer, Double> positionYWithScore = new ConcurrentHashMap<>();
 
-        //get taken x positions and put into data structure
-        ListMultimap<Integer, Integer> takenPositionStartEnd = ArrayListMultimap.create();
+        //get taken x and y positions and put into data structures
+        ListMultimap<Integer, Integer> takenPositionXStartEnd = ArrayListMultimap.create();
+        ListMultimap<Integer, Integer> takenPositionYStartEnd = ArrayListMultimap.create();
         for (Object b : bubbles) {
             Bubble bubble =(Bubble) b;
-            int start = bubble.getXLocation();
-            int end = bubble.getXLocation() + additionalExpansionSize;
-            takenPositionStartEnd.put(start, end);
+            //x
+            int startX = bubble.getXLocation();
+            int endX = bubble.getXLocation() + additionalExpansionSizeX;
+            takenPositionXStartEnd.put(startX, endX);
+            //y
+            int startY = bubble.getYLocation();
+            int endY = bubble.getYLocation() + additionalExpansionSizeY;
+            takenPositionYStartEnd.put(startY, endY);
         }
 
         //setupVariables
-        int x, xMax, randomPos, bestPos = -1;
-        boolean perfectChosen = false; //perfect loop
+        int x, y, xMax, yMax, randomPosX = -1, randomPosY = -1, bestPosX = -1, bestPosY = -1;
+        boolean perfectChosenX = false, perfectChosenY = false; //perfect location found
 
         //loop x many times to find best location
         for (int i = 0; i < maxIterations; i++) {
+
             //get random pos
-            x = overlay.getGuiLocation().getRescaledXStart(); //min = xStart
-            xMax = x + overlay.getGuiLocation().getRescaledWidth() - (int)(imageTextureWidth * scalingRatio * growthRatio); //max = edge of box (xStart + width) - texture size - padding
-            randomPos = ThreadLocalRandom.current().nextInt(x, xMax);
-            //check against taken positions (to apply scoring)
-            double score = 0;
-            for (Map.Entry<Integer, Integer> takenPos : takenPositionStartEnd.entries()) {
-                int start = takenPos.getKey();
-                int end = takenPos.getValue();
 
-                int scoreModifier = -1 * getOverlapAmountX(randomPos, randomPos + additionalExpansionSize, start, end);
-                score += scoreModifier;
-
+            //x
+            if (!perfectChosenX) {
+                x = overlay.getGuiLocation().getRescaledXStart(); //min = xStart
+                xMax = x + overlay.getGuiLocation().getRescaledWidth() - additionalExpansionSizeX; //max = edge of box (xStart + width) - texture size - padding
+                randomPosX = ThreadLocalRandom.current().nextInt(x, xMax);
             }
 
-            //Debug
-//            System.out.println("Putting pos/score: " + randomPos + " / " + score);
-            positionWithScore.put(randomPos, score);
+            //y
+            if (!perfectChosenY) {
+                y = overlay.getGuiLocation().getRescaledYStart(); //min = yStart (no padding on top)
+                yMax = y + overlay.getGuiLocation().getRescaledHeight() - additionalExpansionSizeY; //max = edge of box (yStart + height) - largest texture size - padding
+                randomPosY = ThreadLocalRandom.current().nextInt(y, yMax);
+            }
 
-            //found perfect one (no overlap), no need to loop more
-            if (score >= 0) {
-                bestPos = randomPos;
-                perfectChosen = true;
+            //check against taken positions (to apply scoring)
+            double scoreX = 0;
+            double scoreY = 0;
+
+            //TODO: check both x and y boundings at once for composite overlap scoring
+
+            //loop through X
+            if (!perfectChosenX) {
+                for (Map.Entry<Integer, Integer> takenPos : takenPositionXStartEnd.entries()) {
+                    int startX = takenPos.getKey();
+                    int endX = takenPos.getValue();
+
+                    int scoreModifier = -1 * getOverlapAmount(randomPosX, randomPosX + additionalExpansionSizeX, startX, endX);
+                    scoreX += scoreModifier;
+                }
+
+                if (scoreX >= 0) {
+                    bestPosX = randomPosX;
+                    perfectChosenX = true;
+                }
+
+                positionXWithScore.put(randomPosX, scoreX);
+            }
+
+            //loop through Y
+            if (!perfectChosenY) {
+                for (Map.Entry<Integer, Integer> takenPos : takenPositionYStartEnd.entries()) {
+                    int startY = takenPos.getKey();
+                    int endY = takenPos.getValue();
+
+                    int scoreModifier = -1 * getOverlapAmount(randomPosY, randomPosY + additionalExpansionSizeY, startY, endY);
+                    scoreY += scoreModifier;
+                }
+
+                if (scoreY >= 0) {
+                    bestPosY = randomPosY;
+                    perfectChosenY = true;
+                }
+
+                positionYWithScore.put(randomPosY, scoreY);
+            }
+
+            //perfect solution, stop iterating
+            if (perfectChosenX && perfectChosenY) {
                 break;
             }
         }
 
-        //return perfect (no overlap) if possible, otherwise just the best one
-        if (perfectChosen) {
-//            System.out.println("Returning bestPos: "+ bestPos);
-            positionWithScore.clear();
-            takenPositionStartEnd.clear();
-            return bestPos;
-        } else {
-            //get best score, return position linked with that
-//            double bestScore = Collections.max(positionWithScore.entrySet(), Comparator.comparingDouble(Map.Entry::getValue)).getValue();
-            int bestPosScored = Collections.max(positionWithScore.entrySet(), Comparator.comparingDouble(Map.Entry::getValue)).getKey();
-//            System.out.println("Positions taken: " + bubbles.stream().map(Bubble::getXLocation).sorted().collect(Collectors.toList()).toString());
-//            System.out.println("Got best pos scored: "+bestPosScored+ " / "+bestScore);
-            positionWithScore.clear();
-            takenPositionStartEnd.clear();
-            return bestPosScored;
+        //return perfect (no overlap) if possible, otherwise just the best scored one
+        int bestPosXOverall, bestPosYOverall;
+
+        //x
+        if (perfectChosenX) bestPosXOverall = bestPosX;
+        else {
+            bestPosXOverall = Collections.max(positionXWithScore.entrySet(), Comparator.comparingDouble(Map.Entry::getValue)).getKey();
         }
+
+        //y
+        if (perfectChosenY) bestPosYOverall = bestPosY;
+        else {
+            bestPosYOverall = Collections.max(positionYWithScore.entrySet(), Comparator.comparingDouble(Map.Entry::getValue)).getKey();
+        }
+
+        return new Pair(bestPosXOverall, bestPosYOverall);
 
     }
 
     //get how much the boxes overlap
-    private int getOverlapAmountX(int startOne, int endOne, int startTwo, int endTwo) {
+    private int getOverlapAmount(int startOne, int endOne, int startTwo, int endTwo) {
         int overlap = 0;
 
         //if same
@@ -267,13 +321,13 @@ GuiReactions {
             return 10000; //arbitrary huge number
         }
 
-        //if box 2 overlap on the right side of box 1
+        //if box 2 overlap on the right/bottom side of box 1
         if (startTwo > startOne && startTwo < endOne) {
             //calc how much in-between
             overlap += (endOne - startTwo);
         }
 
-        //if box 2 overlap on the left side of box 2
+        //if box 2 overlap on the left/top side of box 2
         if (endTwo > startOne && endTwo < endOne) {
             //calc how much in-between
             overlap += (endTwo - startOne);
@@ -299,8 +353,9 @@ GuiReactions {
 
     //Helper method to add a temporary bubble to the render list
     public void addTestBubble(FeedbackTypes type) {
-        System.out.println("adding bubble");
-        bubbles.add(new Bubble(0, getRandomStartTime(), maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), getRandomRotationAngle(), type, true));
+//        System.out.println("adding bubble");
+        Pair<Integer, Integer> positions = getRandomPositions(); //x and y, respectively
+        bubbles.add(new Bubble(0, getRandomStartTime(), maxBubbleTime, scalingRatio, positions.getKey(), positions.getValue(), getRandomRotationAngle(), type, true));
     }
 
     private float getRandomRotationAngle() {
