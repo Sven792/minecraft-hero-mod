@@ -82,9 +82,7 @@ public class GuiIngameOverlay extends Gui {
         this.scaledResolution = scaledResolution;
 
         //set time
-        this.currentTime = Minecraft.getSystemTime();
-        this.timeDifference = currentTime - lastTime;
-        this.lastTime = currentTime;
+        updateTime();
 
         //draw view count
         String viewers = String.valueOf(viewCount);
@@ -113,6 +111,12 @@ public class GuiIngameOverlay extends Gui {
     //propagates this to public scope so it can be called from GuiGlow
     public void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
         super.drawGradientRect(left, top, right, bottom, startColor, endColor);
+    }
+
+    public void updateTime() {
+        this.currentTime = Minecraft.getSystemTime();
+        this.timeDifference = currentTime - lastTime;
+        this.lastTime = currentTime;
     }
 
 }

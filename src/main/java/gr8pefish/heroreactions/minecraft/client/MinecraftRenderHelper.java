@@ -5,6 +5,7 @@ import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroUtils;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiReactions;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 
@@ -39,6 +40,15 @@ public class MinecraftRenderHelper {
         getReactionOverlay().addTestBubble(type);
     }
 
+    public static void clearOldBubbles() {
+        //clear bubbles from render list
+        //update time
+        ClientEventHandler.overlay.updateTime();
+        //remove if relevant
+        getReactionOverlay().removeOldBubbles();
+    }
+
+
     public static void updateSpawnBoxForStageSize() {
         //rescale spawn area to fit
         ClientEventHandler.overlay.getGuiLocation().applyStageSizeScaling(stageSize);
@@ -65,6 +75,7 @@ public class MinecraftRenderHelper {
                             * (0.6 + (Math.random() * 0.8))
             )
     );
+
 
     // More NOTES
 
