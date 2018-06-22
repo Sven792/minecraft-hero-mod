@@ -1,4 +1,4 @@
-package gr8pefish.heroreactions.minecraft;
+package gr8pefish.heroreactions.minecraft.command;
 
 import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.hero.network.json.variants.SubscribeJsonMessage;
@@ -30,7 +30,7 @@ import java.util.List;
 public class CommandHeroMessage extends CommandBase {
 
     // The strings used for the command, all in one place
-    private final String HERO = "hero";
+    private final String HERO = "heromsg";
     private final String SEND = "[send|sub]";
     private final String MESSAGE = "[ping|close|message|subtype|help]";
     private final String MESSAGE_COMMAND = "/"+HERO+" "+SEND+" "+MESSAGE;
@@ -47,7 +47,7 @@ public class CommandHeroMessage extends CommandBase {
 
     @Override
     public int getRequiredPermissionLevel(){
-        return 4; //Has to be op-ed
+        return 1; //Has to be op-ed
     }
 
     @Override
