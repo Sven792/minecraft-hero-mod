@@ -8,7 +8,7 @@ public class GuiGlow {
 
     private GuiIngameOverlay overlay;
 
-    private final int MAX_INTENSITY = 100; //255 opaque, 0 transparent //TODO: Config value
+    private final int MAX_INTENSITY = 50; //255 opaque, 0 transparent //TODO: Config value
 
     public GuiGlow(GuiIngameOverlay overlay) {
         this.overlay = overlay;

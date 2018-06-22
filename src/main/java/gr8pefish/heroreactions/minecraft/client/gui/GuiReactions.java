@@ -30,7 +30,7 @@ GuiReactions {
     //init bubbles
     public static ConcurrentSet<Bubble> bubbles;
 
-    private final double maxBubbleTime = 1500;
+    private final double maxBubbleTime = 1000;
     private double timestampOpacity = 0;
     private double timestampSize = 0;
     private final double maxStartTimeOffset = maxBubbleTime * 1.5; //in ms, NOT inclusive
@@ -38,7 +38,7 @@ GuiReactions {
     //setup basic variables
     public static final int imageTextureWidth = 16; //16 pixel square
     public static final int imageTextureHeight = 16; //16 pixel square
-    public static double scalingRatio = 0.5; //size of bubbles
+    public static double scalingRatio = 0.4; //size of bubbles
 
     public int xBase;
     public int yText;
@@ -143,7 +143,7 @@ GuiReactions {
         GlStateManager.color(1, 1, 1, opacity); //1=fully opaque, 0=fully transparent
     }
 
-
+    //defines how much the bubble "pops"
     public void setSize(Bubble bubble) {
 
         //base scale of 0 (invisible)
@@ -152,14 +152,17 @@ GuiReactions {
         double timestampSize = bubble.getTimestampWithOffset();
         double maxBubbleTime = bubble.getMaxTimeWithOffset();
 
-        //Set scale //TODO: re-smooth (broke a little when adding offset)
-        if (timestampSize < maxBubbleTime / 4) { //first quarter growth to 1.25 size
+        //smaller number is more pop (must be at least 3 b/c of if statements)
+        int popValue = 3;
+
+        //Set scale
+        if (timestampSize < maxBubbleTime / popValue) { //first part growth to 1 + (1/x) size
             scale = 1 + (timestampSize / maxBubbleTime); //increase by time amount
-        } else if (timestampSize < maxBubbleTime / 2){ //second quarter shrink to base size
+        } else if (timestampSize < maxBubbleTime / popValue){ //second part shrink to base size
             scale = 1 + (timestampSize / maxBubbleTime); //old growth, need to use this to keep it smooth
-            double z = timestampSize / (maxBubbleTime / 2); //modifier of how much to shrink
+            double z = timestampSize / (maxBubbleTime / popValue); //modifier of how much to shrink
             scale -= ((timestampSize / maxBubbleTime) * z); //apply modifier to shrink from what it was to 1
-        } else { //second half shrink from base size to 0
+        } else { //last part shrink from base size to 0
             scale = (timestampSize / maxBubbleTime); //get time spent as modifier
             scale = ((scale - 0.5d) / 0.5d); //normalize to 0-1 (instead of 0.5-1)
             scale = 1 - scale; //inverse, make smaller over time
