@@ -57,6 +57,8 @@ public class ConfigHandler {
     public static class Auth {
         @Config.Comment({ "Store a token for automatically logging you in" })
         public boolean keepToken = true;
+        @Config.Comment({ "The file path to store the token" })
+        public String tokenFilePath = System.getProperty("user.home");
     }
 
 }
