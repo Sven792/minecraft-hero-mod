@@ -26,7 +26,7 @@ import java.net.URI;
 /**
  * This WebSocket client attempts to establish a connection to a valid WebSocket server.
  * The {@link Channel} and {@link EventLoopGroup} are provided as public static fields for other classes to access the connection from.
- * Use {@link WebSocketClient#establishConnection()} to initialize the connection.
+ * Use {@link WebSocketClient#establishConnection)} to initialize the connection.
  */
 public final class WebSocketClient {
 
@@ -41,7 +41,7 @@ public final class WebSocketClient {
     public static EventLoopGroup GROUP;
 
     /** A owner-id to connect to. */
-    public static final String ACCOUNT_ID = "a20e92f3-e27e-4ac0-a1f3-0cd81a18850c"; //temp one
+    public static final String DEFAULT_ACCOUNT_ID = "a20e92f3-e27e-4ac0-a1f3-0cd81a18850c"; //temp one
     // "3af7fb9f-b1c6-426e-b9e5-0bf77c5bcc09"; //temp one
     // "e1b53572-5d24-4704-9822-f83e93370c27"; //spookywaifu owner-id;
     // offline test one -> "826d6c8b-b5f3-4cfe-b2c9-af629c361bdb";
@@ -52,12 +52,12 @@ public final class WebSocketClient {
     /**
      * Establishes a WebSocket connection to a server.
      *
-     * This is a wrapper method that has error handling. The internal class is {@link WebSocketClient#establishWebSocketConnection()}.
+     * This is a wrapper method that has error handling. The internal class is {@link WebSocketClient#establishWebSocketConnection(String)}.
      */
-    public static void establishConnection() {
+    public static void establishConnection(String accountID) {
         try {
             Common.LOGGER.info("Starting WebSocket connection...");
-            WebSocketClient.establishWebSocketConnection();
+            WebSocketClient.establishWebSocketConnection(accountID);
             Common.LOGGER.info("WebSocket connection completed successfully!");
         } catch (Exception e) {
             Common.LOGGER.error("WebSocket connection failed!");
@@ -72,15 +72,16 @@ public final class WebSocketClient {
      * Uses the {@link WebSocketClientHandler}.
      *
      * @throws Exception - any error (note it is logged)
+     * @param accountID - the account to connect with
      */
-    private static void establishWebSocketConnection() throws Exception {
+    private static void establishWebSocketConnection(String accountID) throws Exception {
 
 
         //URL format example: ("url", "ws://127.0.0.1:8080/websocket");
         //final String URL = System.getProperty("url", "ws://echo.websocket.org/"); //echo server used for testing
 
         //Hero -> wss://stream.outpostgames.com/ws/account/<account-id>
-        final String URL = System.getProperty("url", "wss://stream.outpostgames.com/ws/account/"+ACCOUNT_ID);
+        final String URL = System.getProperty("url", "wss://stream.outpostgames.com/ws/account/"+accountID);
 
         //setup base data (ws at correct host and URL)
         URI uri = new URI(URL);

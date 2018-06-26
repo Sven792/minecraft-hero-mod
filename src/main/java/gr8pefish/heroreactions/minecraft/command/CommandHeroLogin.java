@@ -33,6 +33,8 @@ import java.util.List;
  */
 public class CommandHeroLogin extends CommandBase {
 
+    public static Path tokenLocation = Paths.get(ConfigHandler.authConfigSettings.tokenFilePath);
+
     // The strings used for the command, all in one place
     private final String HERO = "hero";
     private final String LOGIN = "login";
@@ -84,42 +86,60 @@ public class CommandHeroLogin extends CommandBase {
         }
     }
 
+    public static void getFilepath() {
+        Path dirPath = Paths.get(ConfigHandler.authConfigSettings.tokenFilePath);
+
+        //if unchanged file from home dir, make subdir /minecraft/hero
+        if (ConfigHandler.authConfigSettings.tokenFilePath.equalsIgnoreCase(System.getProperty("user.home"))) {
+            //get path to hero directory
+            String heroDir = File.separatorChar + "minecraft" + File.separatorChar + "hero";
+            dirPath = Paths.get(ConfigHandler.authConfigSettings.tokenFilePath.concat(heroDir));
+            //if no hero dir
+            if (Files.notExists(dirPath)) {
+                //make filepath
+                try {
+                    Files.createDirectories(dirPath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        //create file
+        String filename = File.separatorChar + "token.txt";
+        Path filepath = Paths.get(dirPath.toString(), filename); //append file to dir path
+        tokenLocation = filepath;
+
+        try {
+            Files.createFile(filepath);
+        } catch (FileAlreadyExistsException ex) {
+            Common.LOGGER.error("You already have a token stored, you're good to go!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getToken(){
+        getFilepath();
+        try {
+            byte[] token = Files.readAllBytes(tokenLocation);
+            return Arrays.toString(token);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "NO TOKEN";
+    }
+
     private String storeToken(String token) {
         //get token if it exists already
         if (ConfigHandler.authConfigSettings.keepToken) {
-            Path dirPath = Paths.get(ConfigHandler.authConfigSettings.tokenFilePath);
 
-            //if unchanged file from home dir, make subdir /minecraft/hero
-            if (ConfigHandler.authConfigSettings.tokenFilePath.equalsIgnoreCase(System.getProperty("user.home"))) {
-                //get path to hero directory
-                String heroDir = File.separatorChar + "minecraft" + File.separatorChar + "hero";
-                dirPath = Paths.get(ConfigHandler.authConfigSettings.tokenFilePath.concat(heroDir));
-                //if no hero dir
-                if (Files.notExists(dirPath)) {
-                    //make filepath
-                    try {
-                        Files.createDirectories(dirPath);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            //create file
-            String filename = File.separatorChar + "token.txt";
-            Path filepath = Paths.get(dirPath.toString(), filename); //append file to dir path
-
-            try {
-                Files.createFile(filepath);
-            } catch (FileAlreadyExistsException ex) {
-                return "You already have a token stored, you're good to go!";
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            //set location
+            getFilepath();
 
             //write token to file
             try {
-                Files.write(filepath, Collections.singletonList(token));
+                Files.write(tokenLocation, Collections.singletonList(token));
             } catch (IOException e) {
                 e.printStackTrace();
             }

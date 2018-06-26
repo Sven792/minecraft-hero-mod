@@ -1,5 +1,6 @@
 package gr8pefish.heroreactions.minecraft.proxy;
 
+import gr8pefish.heroreactions.hero.network.LoginClient;
 import gr8pefish.heroreactions.hero.network.websocket.WebSocketClient;
 import gr8pefish.heroreactions.minecraft.client.ClientEventHandler;
 import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
@@ -23,7 +24,7 @@ public class ClientProxy extends CommonProxy {
         super.init(event);
 
         if (ConfigHandler.generalConfigSettings.enableMod) {
-            WebSocketClient.establishConnection();
+            LoginClient.login();
         }
 
     }
