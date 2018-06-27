@@ -6,6 +6,8 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.net.URI;
+
 import static gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo.MODID;
 import static gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo.MOD_NAME;
 
@@ -55,10 +57,8 @@ public class ConfigHandler {
      * Authorization config tweaks
      */
     public static class Auth {
-        @Config.Comment({ "Store a token for automatically logging you in" })
-        public boolean keepToken = true;
-        @Config.Comment({ "The file path to store the token" })
-        public String tokenFilePath = System.getProperty("user.home");
+        @Config.Comment({ "The filepath to store login data at" })
+        public String loginFilePath = System.getenv("APPDATA");
     }
 
 }

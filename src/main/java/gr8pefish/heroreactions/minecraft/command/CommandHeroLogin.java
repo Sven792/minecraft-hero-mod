@@ -1,7 +1,6 @@
 package gr8pefish.heroreactions.minecraft.command;
 
-import gr8pefish.heroreactions.common.Common;
-import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
+import gr8pefish.heroreactions.hero.data.FileHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -13,13 +12,7 @@ import net.minecraft.util.text.event.ClickEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 //Registered on the client, in the main init phase
@@ -32,8 +25,6 @@ import java.util.List;
  * The default (no token) gives you the url, the token logs you in
  */
 public class CommandHeroLogin extends CommandBase {
-
-    public static Path tokenLocation = Paths.get(ConfigHandler.authConfigSettings.tokenFilePath);
 
     // The strings used for the command, all in one place
     private final String HERO = "hero";
@@ -74,7 +65,7 @@ public class CommandHeroLogin extends CommandBase {
                         sender.sendMessage(helpMsg);
                     } else {
                         //token login
-                        String outputMessage = storeToken(params[1]);
+                        String outputMessage = FileHelper.storeToken(params[1]);
                         sender.sendMessage(new TextComponentString(outputMessage));
                     }
                 } else { //no message
@@ -83,71 +74,6 @@ public class CommandHeroLogin extends CommandBase {
             }
         } else {
             throw new CommandException(getUsage(sender));
-        }
-    }
-
-    public static void getFilepath() {
-        Path dirPath = Paths.get(ConfigHandler.authConfigSettings.tokenFilePath);
-
-        //if unchanged file from home dir, make subdir /minecraft/hero
-        if (ConfigHandler.authConfigSettings.tokenFilePath.equalsIgnoreCase(System.getProperty("user.home"))) {
-            //get path to hero directory
-            String heroDir = File.separatorChar + "minecraft" + File.separatorChar + "hero";
-            dirPath = Paths.get(ConfigHandler.authConfigSettings.tokenFilePath.concat(heroDir));
-            //if no hero dir
-            if (Files.notExists(dirPath)) {
-                //make filepath
-                try {
-                    Files.createDirectories(dirPath);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        //create file
-        String filename = File.separatorChar + "token.txt";
-        Path filepath = Paths.get(dirPath.toString(), filename); //append file to dir path
-        tokenLocation = filepath;
-
-        try {
-            Files.createFile(filepath);
-        } catch (FileAlreadyExistsException ex) {
-            Common.LOGGER.error("You already have a token stored, you're good to go!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String getToken(){
-        getFilepath();
-        try {
-            byte[] token = Files.readAllBytes(tokenLocation);
-            return Arrays.toString(token);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "NO TOKEN";
-    }
-
-    private String storeToken(String token) {
-        //get token if it exists already
-        if (ConfigHandler.authConfigSettings.keepToken) {
-
-            //set location
-            getFilepath();
-
-            //write token to file
-            try {
-                Files.write(tokenLocation, Collections.singletonList(token));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return "Token stored successfully!";
-
-        } else {
-            return "Your config options are set to not store a token. Change that to enable this command.";
         }
     }
 
