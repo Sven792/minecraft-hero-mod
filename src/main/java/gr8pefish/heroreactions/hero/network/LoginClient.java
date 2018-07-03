@@ -5,12 +5,18 @@ import gr8pefish.heroreactions.hero.data.FileHelper;
 import gr8pefish.heroreactions.hero.network.http.HttpClient;
 import gr8pefish.heroreactions.hero.network.websocket.WebSocketClient;
 
+import java.util.concurrent.CompletableFuture;
+
+import static java.util.concurrent.CompletableFuture.completedFuture;
+
 public class LoginClient {
+
+    public static String accountID;
 
     public static void login() {
         //try with account ID first
         Common.LOGGER.info("Checking for account ID...");
-        String accountID = FileHelper.retreiveAccountID();
+        accountID = FileHelper.retreiveAccountID();
         //if account ID exists
         if (!accountID.equals(FileHelper.NONEXISTENT)) {
             //login with correct user
@@ -26,15 +32,7 @@ public class LoginClient {
         if (!token.equals(FileHelper.NONEXISTENT)) {
             //get accountID from token
             accountID = getOwnerIdFromToken(token);
-            //if valid token
-            if (!accountID.equals(FileHelper.NONEXISTENT)) {
-                //login with correct user
-                Common.LOGGER.info("Logging in with user: "+accountID);
-                WebSocketClient.establishConnection(accountID);
-                return;
-            } else {
-              //invalid token
-            }
+            //automatically logs in via async calls if possible
         }
 
         //default action
@@ -43,14 +41,14 @@ public class LoginClient {
         WebSocketClient.establishConnection(WebSocketClient.DEFAULT_ACCOUNT_ID);
     }
 
-    private static String getOwnerIdFromToken(String token) {
+    public static String getOwnerIdFromToken(String token) {
         //send REST request with JSON token
         try {
             HttpClient.sendHttpMessage(HttpClient.httpMessageActions.GET_ACCOUNT_ID_FROM_ACCESS_TOKEN, token); //send request
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "todo";
+        return FileHelper.NONEXISTENT;
     }
 
 }

@@ -65,6 +65,15 @@ public final class WebSocketClient {
         }
     }
 
+    /**
+     * Close connection (if possible)
+     */
+    public static void closeConnection() {
+        if (GROUP != null) {
+            GROUP.shutdownGracefully();
+        }
+    }
+
     // Internal code
 
     /**

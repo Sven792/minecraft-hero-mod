@@ -1,6 +1,7 @@
 package gr8pefish.heroreactions.hero.data;
 
 import gr8pefish.heroreactions.common.Common;
+import io.netty.util.CharsetUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,8 +9,10 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class FileHelper {
 
@@ -44,8 +47,8 @@ public class FileHelper {
         setFilepathLocations();
         try {
             if (new File(tokenFilePath.toString()).length() == 0) return NONEXISTENT; //empty file
-            byte[] bytes = Files.readAllBytes(tokenFilePath);
-            return Arrays.toString(bytes).isEmpty() ? NONEXISTENT : Arrays.toString(bytes);
+            List<String> lines = Files.readAllLines(tokenFilePath);
+            return lines.get(0); //first line
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -70,8 +73,8 @@ public class FileHelper {
         setFilepathLocations();
         try {
             if (new File(accountIDFilePath.toString()).length() == 0) return NONEXISTENT; //empty file
-            byte[] bytes = Files.readAllBytes(accountIDFilePath);
-            return Arrays.toString(bytes).isEmpty() ? NONEXISTENT : Arrays.toString(bytes);
+            List<String> lines = Files.readAllLines(accountIDFilePath);
+            return lines.get(0); //first line
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -15,3 +15,6 @@ Config toggle connection on/off
 * Add timeouts for not connecting/rendering
 - [X] Split hero logic into helper library to keep MC-only and hero-only stuff separate? (Could do pseudo-library for now, as one big package).
 - [X] Unit testing for logic not bound to minecraft (pure java messaging)
+- Switch to Apache commons for networking?? http://hc.apache.org/
+
+//Very specific with headers

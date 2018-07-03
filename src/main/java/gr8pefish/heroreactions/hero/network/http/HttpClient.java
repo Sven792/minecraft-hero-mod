@@ -76,37 +76,34 @@ public final class HttpClient {
             Channel ch = b.connect(host, port).sync().channel();
 
             //data
-            String token = "{\"code\":\"FSDM-BL7N-H5XX\"}";
-            ByteBuf byteToken = wrappedBuffer(token.getBytes(CharsetUtil.UTF_8));
-//            ByteBuf byteToken = wrappedBuffer(messageAction.jsonData.concat(authCodeOrAccessToken+"\"}").getBytes(CharsetUtil.UTF_8)));
+//            String token = "{\"code\":\"FSDM-BL7N-H5XX\"}";
+            ByteBuf byteMessage = wrappedBuffer(messageAction.jsonData.concat(authCodeOrAccessToken+"\"}").getBytes(CharsetUtil.UTF_8));
+
+            HttpRequest request;
+            if (messageAction.equals(httpMessageActions.GET_ACCOUNT_ID_FROM_ACCESS_TOKEN)) {
+                request = new DefaultFullHttpRequest(
+                        HttpVersion.HTTP_1_1, messageAction.httpType, uri.getRawPath());
+                request.headers().set("Authorization", "Token "+authCodeOrAccessToken);
+                //TODO: in this case no content needed.
+            } else {
+                request = new DefaultFullHttpRequest(
+                        HttpVersion.HTTP_1_1, messageAction.httpType, uri.getRawPath(),
+                        byteMessage);
+                request.headers().add(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON);
+                request.headers().set(HttpHeaderNames.CONTENT_LENGTH, byteMessage.readableBytes());
+            }
 
             // Prepare the HTTP request with a body dependent on the message type.
             // Note: All CONTENT_* headers here are necessary!
-            HttpRequest request = new DefaultFullHttpRequest(
-                    HttpVersion.HTTP_1_1, messageAction.httpType, uri.getRawPath(),
-                    byteToken);
-            request.headers().add(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON);
-            request.headers().set(HttpHeaderNames.CONTENT_LENGTH, byteToken.readableBytes());
             request.headers().set(HttpHeaderNames.HOST, host);
             request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
 
-            // Send the HTTP request.
-            ChannelFuture future = ch.writeAndFlush(request);
 
-//            //wait for it
-//            future.awaitUninterruptibly();
-//
-//            // Now we are sure the future is completed.
-//            assert future.isDone();
-//
-//            if (future.isCancelled()) {
-//                // Connection attempt cancelled by user
-//            } else if (!future.isSuccess()) {
-//                future.cause().printStackTrace();
-//            } else {
-//                // Connection established successfully
-//                ch.flush();
-//            }
+            System.out.println(request);
+            System.out.println("Message: " + messageAction.jsonData.concat(authCodeOrAccessToken+"\"}"));
+
+            // Send the HTTP request.
+            ch.writeAndFlush(request);
 
             // Wait for the server to close the connection.
             ch.closeFuture().sync();
@@ -120,7 +117,7 @@ public final class HttpClient {
     public enum httpMessageActions {
 
         GET_ACCESS_TOKEN_FROM_AUTHCODE("https://api.outpostgames.com/api/access-token/auth-code", HttpMethod.POST, "{\"code\":\""),
-        GET_ACCOUNT_ID_FROM_ACCESS_TOKEN("https://api.outpostgames.com/api/identity", HttpMethod.GET, "{\"token\":\"");
+        GET_ACCOUNT_ID_FROM_ACCESS_TOKEN("https://api.outpostgames.com/api/account", HttpMethod.GET, "{\"token\":\"");
 
         private final String url;
         private final HttpMethod httpType;

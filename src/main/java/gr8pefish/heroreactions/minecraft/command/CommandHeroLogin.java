@@ -71,8 +71,7 @@ public class CommandHeroLogin extends CommandBase {
                         Common.LOGGER.info("Exchanging token...");
                         try {
                             HttpClient.sendHttpMessage(HttpClient.httpMessageActions.GET_ACCESS_TOKEN_FROM_AUTHCODE, params[1]);
-                            String outputMessage = FileHelper.storeToken(params[1]); //TODO: Actual token, not authcode
-                            sender.sendMessage(new TextComponentString(outputMessage));
+                            sender.sendMessage(new TextComponentString("Stored token")); //TODO: Actual message
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

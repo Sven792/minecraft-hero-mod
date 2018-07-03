@@ -2,6 +2,7 @@ package gr8pefish.heroreactions.hero.network.message;
 
 import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
+import gr8pefish.heroreactions.hero.data.FileHelper;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.hero.network.json.variants.PingPongJsonMessage;
 import gr8pefish.heroreactions.hero.network.json.variants.SubscribeJsonMessage;
@@ -49,6 +50,7 @@ public class MessageHelper {
         ArrayList<String> returnList = new ArrayList<>();
         if (WebSocketClient.WEBSOCKET_CHANNEL.isOpen()) { //connected TODO: Helper method isConnected()
             //isOnline
+            returnList.add("ID: " + FileHelper.retreiveAccountID());
             returnList.add("Online: "+ HeroData.Online.isOnline);
             //viewerCount
             returnList.add("Viewers [Direct/Indirect]: "+ HeroData.Viewers.direct+"/"+ HeroData.Viewers.indirect);
