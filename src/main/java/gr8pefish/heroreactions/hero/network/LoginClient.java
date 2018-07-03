@@ -9,6 +9,7 @@ public class LoginClient {
 
     public static void login() {
         //try with account ID first
+        Common.LOGGER.info("Checking for account ID...");
         String accountID = FileHelper.retreiveAccountID();
         //if account ID exists
         if (!accountID.equals(FileHelper.NONEXISTENT)) {
@@ -20,6 +21,7 @@ public class LoginClient {
 
         //try with token
         String token = FileHelper.retrieveToken();
+        Common.LOGGER.info("Checking for access token...");
         //if token exists
         if (!token.equals(FileHelper.NONEXISTENT)) {
             //get accountID from token
@@ -43,9 +45,8 @@ public class LoginClient {
 
     private static String getOwnerIdFromToken(String token) {
         //send REST request with JSON token
-        //TODO
         try {
-            HttpClient.main(token); //send request
+            HttpClient.sendHttpMessage(HttpClient.httpMessageActions.GET_ACCOUNT_ID_FROM_ACCESS_TOKEN, token); //send request
         } catch (Exception e) {
             e.printStackTrace();
         }

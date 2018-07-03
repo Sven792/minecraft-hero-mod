@@ -1,18 +1,22 @@
 package gr8pefish.heroreactions.hero.network.http;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.http.cookie.ClientCookieEncoder;
-import io.netty.handler.codec.http.cookie.DefaultCookie;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import io.netty.util.CharsetUtil;
 
 import java.net.URI;
+
+import static io.netty.buffer.Unpooled.wrappedBuffer;
 
 /**
  * A simple HTTP client that prints out the content of the HTTP response to
@@ -20,11 +24,16 @@ import java.net.URI;
  */
 public final class HttpClient {
 
-    static final String URL = System.getProperty("url", "https://api.outpostgames.com/api/identity");
-//    static final String URL = System.getProperty("url", "http://127.0.0.1:8080/");
+    //auth code
+    //access token
+    //account
 
-    public static void main(String accessToken) throws Exception {
-        URI uri = new URI(URL);
+    //ws -> account
+    //account -> access token
+    //store: access token, account info
+
+    public static void sendHttpMessage(httpMessageActions messageAction, String authCodeOrAccessToken) throws Exception {
+        URI uri = new URI(System.getProperty("url", messageAction.url));
         String scheme = uri.getScheme() == null? "http" : uri.getScheme();
         String host = uri.getHost() == null? "127.0.0.1" : uri.getHost();
         int port = uri.getPort();
@@ -54,31 +63,50 @@ public final class HttpClient {
         // Configure the client.
         EventLoopGroup group = new NioEventLoopGroup();
         try {
+
             Bootstrap b = new Bootstrap();
             b.group(group)
                     .channel(NioSocketChannel.class)
-                    .handler(new HttpClientInitializer(sslCtx));
+                    .handler(new HttpClientInitializer(sslCtx)); //initialize handler
+
+            //timeout option
+            b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
 
             // Make the connection attempt.
             Channel ch = b.connect(host, port).sync().channel();
 
-            // Prepare the HTTP request.
+            //data
+            String token = "{\"code\":\"FSDM-BL7N-H5XX\"}";
+            ByteBuf byteToken = wrappedBuffer(token.getBytes(CharsetUtil.UTF_8));
+//            ByteBuf byteToken = wrappedBuffer(messageAction.jsonData.concat(authCodeOrAccessToken+"\"}").getBytes(CharsetUtil.UTF_8)));
+
+            // Prepare the HTTP request with a body dependent on the message type.
+            // Note: All CONTENT_* headers here are necessary!
             HttpRequest request = new DefaultFullHttpRequest(
-                    HttpVersion.HTTP_1_1, HttpMethod.GET, uri.getRawPath());
+                    HttpVersion.HTTP_1_1, messageAction.httpType, uri.getRawPath(),
+                    byteToken);
+            request.headers().add(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON);
+            request.headers().set(HttpHeaderNames.CONTENT_LENGTH, byteToken.readableBytes());
             request.headers().set(HttpHeaderNames.HOST, host);
             request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-            request.headers().set(HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.GZIP);
-            request.headers().add("Authorization", "Token "+accessToken);
-
-            // Set some example cookies.
-//            request.headers().set(
-//                    HttpHeaderNames.COOKIE,
-//                    ClientCookieEncoder.STRICT.encode(
-//                            new DefaultCookie("my-cookie", "foo"),
-//                            new DefaultCookie("another-cookie", "bar")));
 
             // Send the HTTP request.
-            ch.writeAndFlush(request);
+            ChannelFuture future = ch.writeAndFlush(request);
+
+//            //wait for it
+//            future.awaitUninterruptibly();
+//
+//            // Now we are sure the future is completed.
+//            assert future.isDone();
+//
+//            if (future.isCancelled()) {
+//                // Connection attempt cancelled by user
+//            } else if (!future.isSuccess()) {
+//                future.cause().printStackTrace();
+//            } else {
+//                // Connection established successfully
+//                ch.flush();
+//            }
 
             // Wait for the server to close the connection.
             ch.closeFuture().sync();
@@ -87,5 +115,35 @@ public final class HttpClient {
             group.shutdownGracefully();
         }
     }
+
+
+    public enum httpMessageActions {
+
+        GET_ACCESS_TOKEN_FROM_AUTHCODE("https://api.outpostgames.com/api/access-token/auth-code", HttpMethod.POST, "{\"code\":\""),
+        GET_ACCOUNT_ID_FROM_ACCESS_TOKEN("https://api.outpostgames.com/api/identity", HttpMethod.GET, "{\"token\":\"");
+
+        private final String url;
+        private final HttpMethod httpType;
+        private final String jsonData;
+
+        httpMessageActions(String url, HttpMethod type, String jsonData) {
+            this.url = url;
+            this.httpType = type;
+            this.jsonData = jsonData;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public HttpMethod getHttpType() {
+            return httpType;
+        }
+
+        public String getJsonData() {
+            return jsonData;
+        }
+    }
+
 }
 

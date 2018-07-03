@@ -86,8 +86,8 @@ public enum GuiLocations {
 
     public void applyStageSizeScaling(double scale) {
 
-        Common.LOGGER.info("Old spawn box: " + xStart + " " + width + " - " + yStart + " " + height);
-        Common.LOGGER.info("Rescaling to "+(int)(scale * 100)+"%");
+//        Common.LOGGER.info("Old spawn box: " + xStart + " " + width + " - " + yStart + " " + height);
+//        Common.LOGGER.info("Rescaling to "+(int)(scale * 100)+"%");
 
         // x
 
@@ -112,7 +112,7 @@ public enum GuiLocations {
 
 
         //print all (debug)
-        Common.LOGGER.info("Scaled spawn box: " + rescaledXStart + " " + rescaledWidth + " - " + rescaledYStart + " " + rescaledHeight);
+//        Common.LOGGER.info("Scaled spawn box: " + rescaledXStart + " " + rescaledWidth + " - " + rescaledYStart + " " + rescaledHeight);
 
     }
 

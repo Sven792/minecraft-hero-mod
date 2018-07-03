@@ -43,8 +43,9 @@ public class FileHelper {
     public static String retrieveToken() {
         setFilepathLocations();
         try {
+            if (new File(tokenFilePath.toString()).length() == 0) return NONEXISTENT; //empty file
             byte[] bytes = Files.readAllBytes(tokenFilePath);
-            return Arrays.toString(bytes);
+            return Arrays.toString(bytes).isEmpty() ? NONEXISTENT : Arrays.toString(bytes);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,8 +69,9 @@ public class FileHelper {
     public static String retreiveAccountID() {
         setFilepathLocations();
         try {
+            if (new File(accountIDFilePath.toString()).length() == 0) return NONEXISTENT; //empty file
             byte[] bytes = Files.readAllBytes(accountIDFilePath);
-            return Arrays.toString(bytes);
+            return Arrays.toString(bytes).isEmpty() ? NONEXISTENT : Arrays.toString(bytes);
         } catch (IOException e) {
             e.printStackTrace();
         }

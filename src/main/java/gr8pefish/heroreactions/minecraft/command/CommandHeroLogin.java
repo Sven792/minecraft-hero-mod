@@ -1,6 +1,8 @@
 package gr8pefish.heroreactions.minecraft.command;
 
+import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.hero.data.FileHelper;
+import gr8pefish.heroreactions.hero.network.http.HttpClient;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -55,8 +57,8 @@ public class CommandHeroLogin extends CommandBase {
 
                 //create help message with formatted link
                 TextComponentString preLink = new TextComponentString("Login at ");
-                TextComponentString link = new TextComponentString("hero.tv/minecraft");
-                link.setStyle(link.getStyle().setColor(TextFormatting.BLUE).setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://hero.tv/minecraft")));
+                TextComponentString link = new TextComponentString("https://www.hero.tv/connect/minecraft-hero");
+                link.setStyle(link.getStyle().setColor(TextFormatting.BLUE).setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.hero.tv/connect/minecraft-hero")));
                 TextComponentString postLink = new TextComponentString(", then paste the token you get here by running '/hero login [token_here]'. You only have to do this once, every time after it will remember you!"); //TODO: localize;
                 TextComponentString helpMsg = (TextComponentString) preLink.appendSibling(link).appendSibling(postLink);
 
@@ -65,8 +67,15 @@ public class CommandHeroLogin extends CommandBase {
                         sender.sendMessage(helpMsg);
                     } else {
                         //token login
-                        String outputMessage = FileHelper.storeToken(params[1]);
-                        sender.sendMessage(new TextComponentString(outputMessage));
+                        //exchange for correct token
+                        Common.LOGGER.info("Exchanging token...");
+                        try {
+                            HttpClient.sendHttpMessage(HttpClient.httpMessageActions.GET_ACCESS_TOKEN_FROM_AUTHCODE, params[1]);
+                            String outputMessage = FileHelper.storeToken(params[1]); //TODO: Actual token, not authcode
+                            sender.sendMessage(new TextComponentString(outputMessage));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 } else { //no message
                     sender.sendMessage(helpMsg);
