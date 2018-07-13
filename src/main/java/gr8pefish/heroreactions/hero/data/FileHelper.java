@@ -110,7 +110,7 @@ public class FileHelper {
         try {
             Files.createFile(filepath);
         } catch (FileAlreadyExistsException ex) {
-            Common.LOGGER.error("You already have a token stored, you're good to go!");
+//            Common.LOGGER.error("You already have a token stored, you're good to go!");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -122,10 +122,29 @@ public class FileHelper {
         try {
             Files.createFile(filepath);
         } catch (FileAlreadyExistsException ex) {
-            Common.LOGGER.error("You already have a account ID stored, you're good to go!");
+//            Common.LOGGER.error("You already have a account ID stored, you're good to go!");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void clearData() {
+        setFilepathLocations();
+
+        //remove account id from file
+        try {
+            Files.write(accountIDFilePath, Collections.singletonList("")); //just set file to be empty
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //remove token from file
+        try {
+            Files.write(tokenFilePath, Collections.singletonList("")); //just set file to be empty
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

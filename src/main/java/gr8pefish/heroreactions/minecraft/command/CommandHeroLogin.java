@@ -31,7 +31,7 @@ public class CommandHeroLogin extends CommandBase {
     // The strings used for the command, all in one place
     private final String HERO = "hero";
     private final String LOGIN = "login";
-    private final String MESSAGE = "[help|token]";
+    private final String MESSAGE = "[help|token|clear]";
     private final String MESSAGE_COMMAND = "/"+HERO+" "+LOGIN+" "+MESSAGE;
 
     @Override
@@ -65,6 +65,9 @@ public class CommandHeroLogin extends CommandBase {
                 if (params.length == 2) { //message supplied (contained in params[1])
                     if (params[1].equalsIgnoreCase("help")) {
                         sender.sendMessage(helpMsg);
+                    } else if (params[1].equalsIgnoreCase("clear")) {
+                        FileHelper.clearData();
+                        sender.sendMessage(new TextComponentString("Cleared data"));
                     } else {
                         //token login
                         //exchange for correct token
@@ -93,7 +96,7 @@ public class CommandHeroLogin extends CommandBase {
         if (args.length <= 1) //no name, match string
             tabCompletion.addAll(getListOfStringsMatchingLastWord(args, "login"));
         else //match name
-            tabCompletion.addAll(getListOfStringsMatchingLastWord(args, "help", "token"));
+            tabCompletion.addAll(getListOfStringsMatchingLastWord(args, "help", "token", "clear"));
         return tabCompletion;
     }
 

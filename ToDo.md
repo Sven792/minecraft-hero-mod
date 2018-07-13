@@ -13,8 +13,12 @@ Config toggle connection on/off
 * Fix resources/in-game config not showing (and possibly not reloading/onChanged)
 * Might break terribly on first run with not enough connection error checking and config disabling mod by default
 * Add timeouts for not connecting/rendering
+* Jar in jar w/ Maven build (see laptop for details)?
 - [X] Split hero logic into helper library to keep MC-only and hero-only stuff separate? (Could do pseudo-library for now, as one big package).
 - [X] Unit testing for logic not bound to minecraft (pure java messaging)
-- Switch to Apache commons for networking?? http://hc.apache.org/
-
-//Very specific with headers
+- [X] Command to clear login data
+- [ ] Switch to Apache commons for networking http://hc.apache.org/
+- [ ] Redo sprites to be more "minecraft-y"
+* MC curseforge page - also talk about CP?
+* Main sentiment moment? i.e. big emoji?
+* Profiling for performance
