@@ -1,6 +1,5 @@
 package gr8pefish.heroreactions.minecraft.client.gui;
 
-import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.hero.network.message.MessageHelper;
 import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
 import net.minecraft.client.Minecraft;

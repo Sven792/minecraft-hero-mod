@@ -15,7 +15,7 @@ public class SubscribeJsonMessage extends AbstractJsonMessage {
     //MainTest class to hold everything
     public SubscribeJsonMessage(SubscribeTopics topic) {
         this.type = "sub";
-        this.data = new SubscribeTopicJsonMessage(topic.stringRepresentation); //TODO: nested object
+        this.data = new SubscribeTopicJsonMessage(topic.stringRepresentation);
     }
 
     //Inner class to hold the topic

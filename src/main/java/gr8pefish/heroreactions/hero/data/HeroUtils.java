@@ -2,7 +2,6 @@ package gr8pefish.heroreactions.hero.data;
 
 import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.common.client.CommonRenderHelper;
-import gr8pefish.heroreactions.hero.client.RenderingUtils;
 import gr8pefish.heroreactions.hero.network.json.JsonMessageHelper;
 import gr8pefish.heroreactions.minecraft.client.MinecraftRenderHelper;
 

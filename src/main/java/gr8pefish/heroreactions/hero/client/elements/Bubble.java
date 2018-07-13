@@ -2,10 +2,7 @@ package gr8pefish.heroreactions.hero.client.elements;
 
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 
-import java.util.Vector;
-
 public class Bubble {
-
 
     /** Time counter for rendering */
     private double timestamp;
@@ -118,20 +115,6 @@ public class Bubble {
     //Need to include offset time when doing rendering calculations
     public double getMaxTimeWithOffset() {
         return maxTime + renderTimeStartOffset;
-    }
-
-    //TODO
-    public Vector getBoundingBox() {
-        return new Vector();
-    }
-
-    //When resetting, just spawn in a new location (temporary)
-    public void reset(int randomXPos, int randomYPos) {
-        if (!isTemporary()) {
-            setTimestamp(0);
-            setXLocation(randomXPos);
-            setYLocation(randomYPos);
-        }
     }
 
 }

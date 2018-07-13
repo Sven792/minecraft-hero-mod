@@ -2,12 +2,9 @@ package gr8pefish.heroreactions.minecraft.client;
 
 import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
-import gr8pefish.heroreactions.hero.data.HeroUtils;
 import gr8pefish.heroreactions.hero.data.HeroData;
+import gr8pefish.heroreactions.hero.data.HeroUtils;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiReactions;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.math.MathHelper;
 
 public class MinecraftRenderHelper {
 

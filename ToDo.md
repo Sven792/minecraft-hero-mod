@@ -25,6 +25,8 @@ Config toggle connection on/off
 
 #### Post-Beta
 - [ ] Switch to Apache commons for networking http://hc.apache.org/
+- [ ] Code cleanup
+- [ ] Make open source
 
 
 #### Misc

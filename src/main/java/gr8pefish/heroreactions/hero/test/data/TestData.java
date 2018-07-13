@@ -2,12 +2,8 @@ package gr8pefish.heroreactions.hero.test.data;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.hero.network.message.HeroMessages;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TestData {

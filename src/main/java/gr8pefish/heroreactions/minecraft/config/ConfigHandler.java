@@ -6,10 +6,8 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.net.URI;
-
-import static gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo.MODID;
-import static gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo.MOD_NAME;
+import static gr8pefish.heroreactions.minecraft.lib.ModInfo.MODID;
+import static gr8pefish.heroreactions.minecraft.lib.ModInfo.MOD_NAME;
 
 @Config(modid = MODID, name = MOD_NAME + "/" + MODID)
 @Mod.EventBusSubscriber(modid = MODID)
@@ -44,7 +42,7 @@ public class ConfigHandler {
      */
     public static class Overlay {
         @Config.Comment({ "Overlay Scale (0-1)" })
-        public float overlayScale = 1.0F; //TODO: apply config scaling
+        public float overlayScale = 0.5F; //TODO: apply config scaling
 
         @Config.Comment({ "Overlay Position (left, right)" })
         public String overlayPos = "right";

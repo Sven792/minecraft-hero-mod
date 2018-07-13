@@ -5,7 +5,6 @@ import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.minecraft.client.MinecraftRenderHelper;
-import gr8pefish.heroreactions.minecraft.client.gui.GuiReactions;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.List;

@@ -168,7 +168,7 @@ public final class WebSocketClient {
             WEBSOCKET_CHANNEL = channel;
             GROUP = group;
 
-            //Subscribe to all relevant events //TODO: Debug/different place
+            //Subscribe to all relevant events
             MessageHelper.subscribeAll();
 
         //catch any errors and propagate them to the main log

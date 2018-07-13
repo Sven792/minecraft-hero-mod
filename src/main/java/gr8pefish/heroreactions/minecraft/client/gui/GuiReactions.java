@@ -7,14 +7,16 @@ import gr8pefish.heroreactions.hero.client.TransformationTypes;
 import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
-import gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo;
+import gr8pefish.heroreactions.minecraft.lib.ModInfo;
 import io.netty.util.internal.ConcurrentSet;
 import javafx.util.Pair;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -22,7 +24,7 @@ public class
 GuiReactions {
 
     /** Icons for the reaction emoticons */
-    private static final ResourceLocation REACTION_ICONS_TEX_PATH = new ResourceLocation(HeroReactionsInfo.MODID,"textures/gui/reaction_icons.png");
+    private static final ResourceLocation REACTION_ICONS_TEX_PATH = new ResourceLocation(ModInfo.MODID,"textures/gui/reaction_icons.png");
 
     private GuiIngameOverlay overlay;
     private ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios;
@@ -338,20 +340,6 @@ GuiReactions {
 
         //return whatever
         return overlap;
-    }
-
-    /** Helper method to get a random y position in the rendering box */
-    private int getRandomYPos() { //TODO: bias towards middle Y
-        int y = overlay.getGuiLocation().getRescaledYStart(); //min = yStart (no padding on top)
-        int yMax = y + overlay.getGuiLocation().getRescaledHeight() - ((int)(imageTextureHeight * scalingRatio * growthRatio)); //max = edge of box (yStart + height) - largest texture size - padding
-        return ThreadLocalRandom.current().nextInt(y, yMax);
-    }
-
-    //Helper test method to add a couple bubbles
-    public void addTestBubbles() {
-//        bubbles.add(new Bubble(0, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LOVE, false));
-//        bubbles.add(new Bubble(700, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.APPLAUSE, false));
-//        bubbles.add(new Bubble(1400, maxBubbleTime, scalingRatio, getRandomXPos(), getRandomYPos(), FeedbackTypes.LAUGHTER, false)); //setting base timestamp doesn't do anything?
     }
 
     //Helper method to add a temporary bubble to the render list

@@ -1,8 +1,6 @@
 package gr8pefish.heroreactions.minecraft.client.gui;
 
 import gr8pefish.heroreactions.common.Common;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 
 public enum GuiLocations {

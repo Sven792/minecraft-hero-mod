@@ -3,7 +3,6 @@ package gr8pefish.heroreactions.hero.network.http;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -84,7 +83,6 @@ public final class HttpClient {
                 request = new DefaultFullHttpRequest(
                         HttpVersion.HTTP_1_1, messageAction.httpType, uri.getRawPath());
                 request.headers().set("Authorization", "Token "+authCodeOrAccessToken);
-                //TODO: in this case no content needed.
             } else {
                 request = new DefaultFullHttpRequest(
                         HttpVersion.HTTP_1_1, messageAction.httpType, uri.getRawPath(),

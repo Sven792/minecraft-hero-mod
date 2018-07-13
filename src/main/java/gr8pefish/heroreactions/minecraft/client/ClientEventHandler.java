@@ -1,12 +1,9 @@
 package gr8pefish.heroreactions.minecraft.client;
 
-import gr8pefish.heroreactions.hero.client.elements.Bubble;
-import gr8pefish.heroreactions.hero.data.FeedbackTypes;
-import gr8pefish.heroreactions.minecraft.api.HeroReactionsInfo;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiIngameOverlay;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiLocations;
-import gr8pefish.heroreactions.minecraft.client.gui.GuiReactions;
 import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
+import gr8pefish.heroreactions.minecraft.lib.ModInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
@@ -44,7 +41,7 @@ public class ClientEventHandler {
         }
     }
 
-    public static final KeyBinding KEY_TOGGLE_OVERLAY = new KeyBinding("key." + HeroReactionsInfo.MODID + ".toggle", KeyConflictContext.IN_GAME, KeyModifier.NONE, Keyboard.KEY_H, HeroReactionsInfo.MOD_NAME);
+    public static final KeyBinding KEY_TOGGLE_OVERLAY = new KeyBinding("key." + ModInfo.MODID + ".toggle", KeyConflictContext.IN_GAME, KeyModifier.NONE, Keyboard.KEY_H, ModInfo.MOD_NAME);
 
     @SubscribeEvent
     public static void onKey(InputEvent.KeyInputEvent event) {

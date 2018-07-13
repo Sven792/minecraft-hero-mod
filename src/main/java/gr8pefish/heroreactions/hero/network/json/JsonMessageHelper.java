@@ -64,9 +64,9 @@ public class JsonMessageHelper {
         return createSerializedJsonString(msg);
     }
 
-    //Get java object from WebSocket text directly
+    //Get java object from WebSocket text directly - unused
     public static AbstractJsonMessage getMessageFromTextFrame(String string) {
-        return gson.fromJson(string, AbstractJsonMessage.class); //ToDo: Probably won't work (with nested data and whatnot)
+        return gson.fromJson(string, AbstractJsonMessage.class);
     }
 
     //Get type of message based on the contents (currently only ping supported)

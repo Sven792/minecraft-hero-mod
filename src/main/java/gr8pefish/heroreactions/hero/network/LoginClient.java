@@ -5,10 +5,6 @@ import gr8pefish.heroreactions.hero.data.FileHelper;
 import gr8pefish.heroreactions.hero.network.http.HttpClient;
 import gr8pefish.heroreactions.hero.network.websocket.WebSocketClient;
 
-import java.util.concurrent.CompletableFuture;
-
-import static java.util.concurrent.CompletableFuture.completedFuture;
-
 public class LoginClient {
 
     public static String accountID;
