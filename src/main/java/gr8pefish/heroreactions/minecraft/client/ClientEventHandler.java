@@ -30,7 +30,7 @@ public class ClientEventHandler {
         if (ConfigHandler.generalConfigSettings.enableOverlay) {
 
             //Scale the rendering location data to fit current screen size
-            GuiLocations.applyPositionScaling(ConfigHandler.overlayConfigSettings.overlayPos.toUpperCase(), event.getResolution());
+            GuiLocations.applyPositionScaling(overlay.getGuiLocation(), event.getResolution());
 
             //"reset" GL states (just in case)
             GlStateManager.enableBlend();

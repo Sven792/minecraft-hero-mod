@@ -6,6 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 /**
@@ -15,11 +17,17 @@ import java.util.ArrayList;
 public class GuiIngameOverlay extends Gui {
 
     //Fields
+    @Nonnull
     private final Minecraft mc;
+    @Nonnull
     private ScaledResolution scaledResolution;
+    @Nonnull
     private GuiLocations guiLocation;
+    @Nonnegative
     private int viewCount;
+    @Nonnull
     private GuiReactions reactions;
+    @Nonnull
     private GuiGlow glow;
 
     public long lastTime;
@@ -33,8 +41,8 @@ public class GuiIngameOverlay extends Gui {
         //scaled resolution
         this.scaledResolution = new ScaledResolution(minecraft);
         //guiLocation
-        this.guiLocation = GuiLocations.valueOf(ConfigHandler.overlayConfigSettings.overlayPos.toUpperCase()); //TODO: Error handling (will crash if config value not right)
-        GuiLocations.applyPositionScaling(ConfigHandler.overlayConfigSettings.overlayPos.toUpperCase(), scaledResolution);
+        this.guiLocation = GuiLocations.getLocationFromString(ConfigHandler.overlayConfigSettings.overlayPos.toUpperCase());
+        GuiLocations.applyPositionScaling(guiLocation, scaledResolution);
 
         //view count
         this.viewCount = 0;

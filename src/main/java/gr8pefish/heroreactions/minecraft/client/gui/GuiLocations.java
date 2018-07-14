@@ -1,11 +1,17 @@
 package gr8pefish.heroreactions.minecraft.client.gui;
 
 import gr8pefish.heroreactions.common.Common;
+import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
 import net.minecraft.client.gui.ScaledResolution;
+
+import java.util.Arrays;
+import java.util.Random;
 
 public enum GuiLocations {
     LEFT,
     RIGHT;
+
+    private static GuiLocations DEFAULT = RIGHT;
 
     private int xStart;
     private int yStart;
@@ -66,8 +72,8 @@ public enum GuiLocations {
 
     // Methods
 
-    public static void applyPositionScaling(String side, ScaledResolution scaledResolution) {
-        switch (GuiLocations.valueOf(side)){
+    public static void applyPositionScaling(GuiLocations location, ScaledResolution scaledResolution) {
+        switch (location) {
             case LEFT:
                 Common.LOGGER.error("NOT YET IMPLEMENTED");
                 break; //TODO: left side position logic
@@ -120,6 +126,14 @@ public enum GuiLocations {
 
     public int getMiddleYUnscaledToStageSize(int textureSizeY) {
         return (this.yStart + (this.height / 2)) - (textureSizeY / 2);  //middle of box, minus half the length of the texture - centered
+    }
+
+    public static GuiLocations getLocationFromString(String string) {
+        if (Arrays.asList(GuiLocations.values()).contains(string)) {
+            return GuiLocations.valueOf(string);
+        } else {
+            return DEFAULT; //RIGHT
+        }
     }
 
 }
