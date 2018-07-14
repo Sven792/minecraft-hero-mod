@@ -13,6 +13,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
@@ -30,24 +31,20 @@ import java.net.URI;
  */
 public final class WebSocketClient {
 
-    // Publicly accessible fields
+    // Fields
 
     /** A {@link Channel} that is connected to the server. */
     @Nonnull
-    public static Channel WEBSOCKET_CHANNEL;
+    private static Channel WEBSOCKET_CHANNEL;
 
     /** A {@link EventLoopGroup}, available so the connection can be fully closed. */
     @Nonnull
-    public static EventLoopGroup GROUP;
+    private static EventLoopGroup GROUP;
 
     /** A owner-id to connect to. */
-    public static final String DEFAULT_ACCOUNT_ID = "a20e92f3-e27e-4ac0-a1f3-0cd81a18850c"; //temp one
-    // "3af7fb9f-b1c6-426e-b9e5-0bf77c5bcc09"; //temp one
-    // "e1b53572-5d24-4704-9822-f83e93370c27"; //spookywaifu owner-id;
-    // offline test one -> "826d6c8b-b5f3-4cfe-b2c9-af629c361bdb";
+    public static final String DEFAULT_ACCOUNT_ID = "a20e92f3-e27e-4ac0-a1f3-0cd81a18850c"; //default one (random)
 
-
-    // Public methods
+    // Public helper methods
 
     /**
      * Establishes a WebSocket connection to a server.
@@ -66,12 +63,36 @@ public final class WebSocketClient {
     }
 
     /**
-     * Close connection (if possible)
+     * Safely checks if the connection has been established.
+     *
+     * @return - boolean
      */
-    public static void closeConnection() {
-        if (GROUP != null) {
-            GROUP.shutdownGracefully();
+    public static boolean isConnected() {
+        return (WEBSOCKET_CHANNEL != null && WEBSOCKET_CHANNEL.isOpen());
+    }
+
+    /**
+     * Send a message (if possible)
+     *
+     * @param message - the message to send
+     */
+    public static void sendMessage(Object message) {
+        if (WEBSOCKET_CHANNEL != null && WEBSOCKET_CHANNEL.isOpen()) {
+            WEBSOCKET_CHANNEL.writeAndFlush(message);
         }
+    }
+
+    /**
+     * Shuts down the connection fully
+     *
+     * @throws InterruptedException - thread interruption
+     */
+    public static void closeConnection() throws InterruptedException {
+        //close connection
+        sendMessage(new CloseWebSocketFrame());
+        if (isConnected()) WEBSOCKET_CHANNEL.closeFuture().sync();
+        //shutdown group
+        if (GROUP != null) GROUP.shutdownGracefully();
     }
 
     // Internal code

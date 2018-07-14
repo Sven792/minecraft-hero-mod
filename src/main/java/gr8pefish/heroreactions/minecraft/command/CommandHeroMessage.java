@@ -58,13 +58,13 @@ public class CommandHeroMessage extends CommandBase {
                 if (params.length == 2) { //message supplied (contained in params[1])
                     try {
                         //check if connection is open first
-                        if (!WebSocketClient.WEBSOCKET_CHANNEL.isOpen()) { //closed channel, can't do anything
+                        if (!WebSocketClient.isConnected()) { //closed channel, can't do anything
                             sender.sendMessage(new TextComponentString("Can't send message, connection not open!"));
                             Common.LOGGER.warn("Couldn't process command to send a message (closed channel)!");
                         //close - close connection
                         } else if ("close".equals(params[1].toLowerCase())) {
                             sender.sendMessage(new TextComponentString("Closing connection."));
-                            MessageHelper.closeConnection();
+                            WebSocketClient.closeConnection();
                         //ping - send ping
                         } else if ("ping".equals(params[1].toLowerCase())) {
                             sender.sendMessage(new TextComponentString("Sending ping message."));
@@ -88,7 +88,7 @@ public class CommandHeroMessage extends CommandBase {
                 if (params.length == 2) { //message supplied (contained in params[1])
                     try {
                         //check if connection is open first
-                        if (!WebSocketClient.WEBSOCKET_CHANNEL.isOpen()) { //closed channel, can't do anything
+                        if (!WebSocketClient.isConnected()) { //closed channel, can't do anything
                             sender.sendMessage(new TextComponentString("Can't send message, connection not open!"));
                             Common.LOGGER.warn("Couldn't process command to send a message (closed channel)!");
                         }

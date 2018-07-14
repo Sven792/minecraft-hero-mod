@@ -2,12 +2,10 @@ package gr8pefish.heroreactions.hero.network.message;
 
 import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
-import gr8pefish.heroreactions.hero.data.FileHelper;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.hero.network.json.variants.PingPongJsonMessage;
 import gr8pefish.heroreactions.hero.network.json.variants.SubscribeJsonMessage;
 import gr8pefish.heroreactions.hero.network.websocket.WebSocketClient;
-import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
@@ -28,7 +26,7 @@ public class MessageHelper {
     public static void sendJson(String jsonMessage) {
         Common.LOGGER.warn("Sending JSON Message: "+jsonMessage);
         WebSocketFrame frame = new TextWebSocketFrame(jsonMessage);
-        WebSocketClient.WEBSOCKET_CHANNEL.writeAndFlush(frame);
+        WebSocketClient.sendMessage(frame);
     }
 
     /**
@@ -48,7 +46,7 @@ public class MessageHelper {
      */
     public static ArrayList<String> getStreamData() {
         ArrayList<String> returnList = new ArrayList<>();
-        if (WebSocketClient.WEBSOCKET_CHANNEL.isOpen()) { //connected TODO: Helper method isConnected()
+        if (WebSocketClient.isConnected()) { //connected
             //isOnline
 //            returnList.add("ID: " + FileHelper.retreiveAccountID()); //Debug
             returnList.add("Online: "+ HeroData.Online.isOnline);
@@ -88,15 +86,6 @@ public class MessageHelper {
     public static void subscribeToEvent(SubscribeJsonMessage.SubscribeTopics topic) {
         //Json
         HeroMessages.SUBSCRIBE.send(topic);
-    }
-
-    //Helper method to close connection
-    public static void closeConnection() throws InterruptedException {
-        //close connection
-        WebSocketClient.WEBSOCKET_CHANNEL.writeAndFlush(new CloseWebSocketFrame());
-        WebSocketClient.WEBSOCKET_CHANNEL.closeFuture().sync();
-        //shutdown group
-        WebSocketClient.GROUP.shutdownGracefully();
     }
 
 }
