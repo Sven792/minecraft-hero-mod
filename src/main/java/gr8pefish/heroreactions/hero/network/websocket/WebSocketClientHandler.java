@@ -73,7 +73,7 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
         }
 
         //test (logs message received)
-        Common.LOGGER.debug("Message received from server: " + msg.toString());
+        Common.LOGGER.warn("Message received from server: " + msg.toString());
 
         //cast message to correct WebSocketFrame and perform fitting action (typically just printing for now)
         final WebSocketFrame frame = (WebSocketFrame) msg;
@@ -81,7 +81,7 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
 
             //get frame and print it
             final TextWebSocketFrame textFrame = (TextWebSocketFrame) frame;
-            Common.LOGGER.debug("Message contents: "+textFrame.text()); //uncomment to print request, but do it anyway for testing
+            Common.LOGGER.warn("Message contents: "+textFrame.text()); //uncomment to print request, but do it anyway for testing
 
             //handle message
             HeroMessages messageType = JsonMessageHelper.getMessageTypeFromJson(textFrame.text());

@@ -26,7 +26,7 @@ public class MessageHelper {
      * @param jsonMessage - correctly formatted JSON message
      */
     public static void sendJson(String jsonMessage) {
-        Common.LOGGER.debug("Sending JSON Message: "+jsonMessage);
+        Common.LOGGER.warn("Sending JSON Message: "+jsonMessage);
         WebSocketFrame frame = new TextWebSocketFrame(jsonMessage);
         WebSocketClient.WEBSOCKET_CHANNEL.writeAndFlush(frame);
     }
@@ -50,7 +50,7 @@ public class MessageHelper {
         ArrayList<String> returnList = new ArrayList<>();
         if (WebSocketClient.WEBSOCKET_CHANNEL.isOpen()) { //connected TODO: Helper method isConnected()
             //isOnline
-            returnList.add("ID: " + FileHelper.retreiveAccountID());
+//            returnList.add("ID: " + FileHelper.retreiveAccountID()); //Debug
             returnList.add("Online: "+ HeroData.Online.isOnline);
             //viewerCount
             returnList.add("Viewers [Direct/Indirect]: "+ HeroData.Viewers.direct+"/"+ HeroData.Viewers.indirect);
