@@ -7,6 +7,7 @@ import gr8pefish.heroreactions.hero.client.TransformationTypes;
 import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
+import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
 import gr8pefish.heroreactions.minecraft.lib.ModInfo;
 import io.netty.util.internal.ConcurrentSet;
 import javafx.util.Pair;
@@ -32,15 +33,15 @@ GuiReactions {
     //init bubbles
     public static ConcurrentSet<Bubble> bubbles;
 
-    private final double maxBubbleTime = 1000;
+    private final double maxBubbleTime = ConfigHandler.overlayConfigSettings.maxEmojiTime;
     private double timestampOpacity = 0;
     private double timestampSize = 0;
-    private final double maxStartTimeOffset = maxBubbleTime * 1.5; //in ms, NOT inclusive
+    private final double maxStartTimeOffset = maxBubbleTime * ConfigHandler.overlayConfigSettings.maxEmojiOffsetTimeRatio; //in ms, NOT inclusive
 
     //setup basic variables
     public static final int imageTextureWidth = 16; //16 pixel square
     public static final int imageTextureHeight = 16; //16 pixel square
-    public static double scalingRatio = 0.4; //size of bubbles
+    public static double scalingRatio = ConfigHandler.overlayConfigSettings.emojiScale; //size of bubbles
 
     public int xBase;
     public int yText;

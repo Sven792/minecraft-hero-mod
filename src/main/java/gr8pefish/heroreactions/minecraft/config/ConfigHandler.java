@@ -42,10 +42,19 @@ public class ConfigHandler {
      */
     public static class Overlay {
         @Config.Comment({ "Overlay Scale (0-1)" })
-        public float overlayScale = 0.5F; //TODO: apply config scaling
+        public double overlayScale = 0.5; //TODO: apply config scaling
+
+        @Config.Comment({ "Emoji Scale (0-1)" })
+        public double emojiScale = 0.4;
 
         @Config.Comment({ "Overlay Position (left, right)" })
         public String overlayPos = "right";
+
+        @Config.Comment({ "Maximum time an emoji appears (in milliseconds)" })
+        public double maxEmojiTime = 1000;
+
+        @Config.Comment({ "Maximum time ratio to offset emojis spawning from one another" })
+        public double maxEmojiOffsetTimeRatio = 1.5;
 
         @Config.Comment({ "Show debug data "})
         public boolean showDebug = false;
