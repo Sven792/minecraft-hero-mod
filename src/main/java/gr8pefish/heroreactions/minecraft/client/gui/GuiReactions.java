@@ -198,11 +198,13 @@ GuiReactions {
             //x
             int x = overlay.getGuiLocation().getRescaledXStart(); //min = xStart
             int xMax = x + overlay.getGuiLocation().getRescaledWidth() - additionalExpansionSizeX; //max = edge of box (xStart + width) - texture size - padding
+            if (xMax <= x) xMax = x + 1; //make sure proper bounding okay
 
 
             //y
             int y = overlay.getGuiLocation().getRescaledYStart(); //min = yStart (no padding on top)
             int yMax = y + overlay.getGuiLocation().getRescaledHeight() - additionalExpansionSizeY; //max = edge of box (yStart + height) - largest texture size - padding
+            if (yMax <= y) yMax = y + 1; //make sure proper bounding okay
 
             //return both positions
             return new Pair(ThreadLocalRandom.current().nextInt(x, xMax), ThreadLocalRandom.current().nextInt(y, yMax));
@@ -241,6 +243,7 @@ GuiReactions {
             if (!perfectChosenX) {
                 x = overlay.getGuiLocation().getRescaledXStart(); //min = xStart
                 xMax = x + overlay.getGuiLocation().getRescaledWidth() - additionalExpansionSizeX; //max = edge of box (xStart + width) - texture size - padding
+                if (xMax <= x) xMax = x + 1; //make sure proper bounding okay
                 randomPosX = ThreadLocalRandom.current().nextInt(x, xMax);
             }
 
@@ -248,6 +251,7 @@ GuiReactions {
             if (!perfectChosenY) {
                 y = overlay.getGuiLocation().getRescaledYStart(); //min = yStart (no padding on top)
                 yMax = y + overlay.getGuiLocation().getRescaledHeight() - additionalExpansionSizeY; //max = edge of box (yStart + height) - largest texture size - padding
+                if (yMax <= y) yMax = y + 1; //make sure proper bounding okay
                 randomPosY = ThreadLocalRandom.current().nextInt(y, yMax);
             }
 
