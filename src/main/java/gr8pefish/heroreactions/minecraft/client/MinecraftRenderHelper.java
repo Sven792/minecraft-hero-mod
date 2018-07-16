@@ -8,7 +8,7 @@ import gr8pefish.heroreactions.minecraft.client.gui.GuiReactions;
 
 public class MinecraftRenderHelper {
 
-    /**set by {@link HeroUtils#setStageSize()} during a viewer message event */
+    /**set by {@link HeroUtils#setStageSize()} during a viewer message event. Bound between 0 and 1 (inclusive) */
     public static double stageSize = 1; //TODO: Determine glow intensity/spawn box size/reaction count via more refined algorithm than just stageSize (i.e. viewCount)
 
     public static void renderBubble(Bubble bubble) {

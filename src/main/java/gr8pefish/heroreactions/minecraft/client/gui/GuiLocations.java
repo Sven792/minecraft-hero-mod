@@ -22,7 +22,7 @@ public enum GuiLocations {
     private int rescaledYStart;
     private int rescaledWidth;
     private int rescaledHeight;
-    public static int MIN_SIZE_X = (int)(GuiReactions.imageTextureWidth * GuiReactions.scalingRatio * GuiReactions.growthRatio);
+    public static int MIN_SIZE_X = (int)(GuiReactions.imageTextureWidth * GuiReactions.scalingRatio * GuiReactions.growthRatio); //TODO: Remove?
     public static int MIN_SIZE_Y = (int)(GuiReactions.imageTextureHeight * GuiReactions.scalingRatio * GuiReactions.growthRatio);
 
     public static final int HOTBAR_WIDTH = 91;
@@ -88,6 +88,12 @@ public enum GuiLocations {
         }
     }
 
+    /**
+     * Rescales the stage/location size depending on the scaling factor (from how many viewers watching)
+     * Note: Minimum stage size = 1/2 maximum everything (so half max width and half max height)
+     *
+     * @param scale - between 0 and 1, inclusive - the percentage to scale to
+     */
     public void applyStageSizeScaling(double scale) {
 
 //        Common.LOGGER.info("Old spawn box: " + xStart + " " + width + " - " + yStart + " " + height);
@@ -97,25 +103,26 @@ public enum GuiLocations {
 
         //get middle of render area
         int middle = this == RIGHT ? xStart + (width / 2): 0; //TODO: left side logic
-        //rescale, and reset start pos
-        rescaledWidth = (int) (width * scale); //get scaled width, and set width to that value //TODO: extreme small value error handling
-        rescaledXStart = middle - (rescaledWidth / 2); //recenter to fit correct new width
-
+        //minimum is half of total width
+        int min_x = width / 2;
+        //upscale from minimum by scaling amount
+        int upscaleValueX = (int) (scale * (min_x /2));
+        //add upscale value to base to get actual
+        rescaledWidth = min_x + upscaleValueX;
+        //get new XStart (centered)
+        rescaledXStart = middle - (rescaledWidth / 2);
 
         // y
 
-        //get scaled height
-        int scaledHeight = (int) (height * scale); //max height * scale //TODO: Borken on tiny value (too high) - just way off somehow (values don't add up)
-        if (scaledHeight < MIN_SIZE_Y) {
-            int upscaleValue = (int)(MIN_SIZE_Y * ((MIN_SIZE_Y - scaledHeight) / (double) scaledHeight)); //get percentage of difference from min as int (to add to the scaledHeight later)
-            scaledHeight = MIN_SIZE_Y + upscaleValue; //upscale depending on how tiny it is (so not always just at min height w/ small values)
-        }
-        //set values
-        rescaledHeight = scaledHeight;
-        rescaledYStart = (yStart + height) - scaledHeight; //normal height - scaledHeight
+        //minimum is half of total height
+        int min_y = height / 2;
+        //upscale from minimum by scaling amount
+        int upscaleValueY = (int) (scale * (min_y / 2));
+        //add upscale value to base to get actual
+        rescaledHeight = min_y + upscaleValueY;
+        //get new yStart
+        rescaledYStart = (yStart + height) - rescaledHeight; //normal height - scaledHeight
 
-
-        //print all (debug)
 //        Common.LOGGER.info("Scaled spawn box: " + rescaledXStart + " " + rescaledWidth + " - " + rescaledYStart + " " + rescaledHeight);
 
     }
