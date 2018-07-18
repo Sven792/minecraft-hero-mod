@@ -2,13 +2,7 @@ package gr8pefish.heroreactions.hero.network.json.variants;
 
 /**
  * Format:
- * {
- *      "type": "sub",
- *      "data": {
- *          "topic": [topic]
- *      }
- * }
- *
+ * { "type": "sub", "data": { "topic": [topic] } }
  */
 public class SubscribeJsonMessage extends AbstractJsonMessage {
 
@@ -32,7 +26,7 @@ public class SubscribeJsonMessage extends AbstractJsonMessage {
     //Enum for all the possible topics to subscribe to
     public enum SubscribeTopics {
         FEEDBACK("feedback"),
-        FEEDBACK_ACTIVITY("feedback-top"), //TODO: Change with Hero API update
+        FEEDBACK_ACTIVITY("feedback-top"), //Note: will change with Hero API update
         ONLINE("online"),
         VIEWERS("viewers");
 

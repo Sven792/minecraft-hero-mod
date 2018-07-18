@@ -11,6 +11,9 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * The different types of messages, and their respective actions to perform when sent/received
+ */
 public enum HeroMessages {
 
     PING {
@@ -21,7 +24,7 @@ public enum HeroMessages {
         }
         @Override
         public void send(Object message) {
-            Common.LOGGER.warn("Sending ping");
+            Common.LOGGER.debug("Sending ping");
             //create serialized JSON string of the ping message and send it off
             MessageHelper.sendJson(JsonMessageHelper.createSerializedPingPongMessage((PingPongJsonMessage.PingPongEnum)message));
         }
@@ -34,7 +37,7 @@ public enum HeroMessages {
 
         @Override
         public void send(Object message) {
-            Common.LOGGER.warn("Sending pong");
+            Common.LOGGER.debug("Sending pong");
             //create serialized JSON string of the pong message and send it off
             MessageHelper.sendJson(JsonMessageHelper.createSerializedPingPongMessage((PingPongJsonMessage.PingPongEnum)message));
         }
@@ -47,7 +50,7 @@ public enum HeroMessages {
 
         @Override
         public void send(Object message) {
-            Common.LOGGER.warn("Sending text message");
+            Common.LOGGER.debug("Sending text message");
             //create serialized JSON string of the text message and send it off
             MessageHelper.sendJson(JsonMessageHelper.createSerializedTextMessage((String)message));
         }
@@ -60,7 +63,7 @@ public enum HeroMessages {
 
         @Override
         public void send(Object message) {
-            Common.LOGGER.warn("Sending subscribe message");
+            Common.LOGGER.debug("Sending subscribe message");
             //create serialized JSON string of the subscribe message and send it off
             MessageHelper.sendJson(JsonMessageHelper.createSerializedSubscribeMessage((SubscribeJsonMessage.SubscribeTopics) message));
         }
@@ -71,8 +74,8 @@ public enum HeroMessages {
             //parse json, retrieving data and storing it in the appropriate location in HeroData
             JsonMessageHelper.setMessageData(message, this);
             //manipulate data uniquely
-            Common.LOGGER.warn("Got FEEDBACK message: [type] "+ HeroData.Feedback.feedbackType.toString());
-            Common.LOGGER.warn("Got FEEDBACK message: [count] "+ HeroData.Feedback.count);
+            Common.LOGGER.debug("Got FEEDBACK message: [type] "+ HeroData.Feedback.feedbackType.toString());
+            Common.LOGGER.debug("Got FEEDBACK message: [count] "+ HeroData.Feedback.count);
         }
 
         @Override
@@ -86,11 +89,11 @@ public enum HeroMessages {
             //parse json, retrieving data and storing it in the appropriate location in HeroData
             JsonMessageHelper.setMessageData(message, this);
             //manipulate data uniquely
-            Common.LOGGER.warn("Got FEEDBACK_ACTIVITY message");
+            Common.LOGGER.debug("Got FEEDBACK_ACTIVITY message");
             //get data, iterate through
             ConcurrentHashMap<FeedbackTypes, Integer> feedback = HeroData.FeedbackActivity.getFeedbackActivity();
             for (Map.Entry<FeedbackTypes, Integer> entry : feedback.entrySet()) {
-                Common.LOGGER.warn("Feedback: "+entry.getKey().toString()+" - "+entry.getValue()); //feedback type - count
+                Common.LOGGER.debug("Feedback: "+entry.getKey().toString()+" - "+entry.getValue()); //feedback type - count
             }
         }
 
@@ -105,7 +108,7 @@ public enum HeroMessages {
             //parse json, retrieving data and storing it in the appropriate location in HeroData
             JsonMessageHelper.setMessageData(message, this);
             //manipulate data uniquely
-            Common.LOGGER.warn("Got ONLINE message, is online: "+ HeroData.Online.isOnline);
+            Common.LOGGER.debug("Got ONLINE message, is online: "+ HeroData.Online.isOnline);
         }
 
         @Override
@@ -119,8 +122,8 @@ public enum HeroMessages {
             //parse json, retrieving data and storing it in the appropriate location in HeroData
             JsonMessageHelper.setMessageData(message, this);
             //manipulate data uniquely
-            Common.LOGGER.warn("Got VIEWER message: [direct] "+ HeroData.Viewers.direct);
-            Common.LOGGER.warn("Got VIEWER message: [indirect] "+ HeroData.Viewers.indirect);
+            Common.LOGGER.debug("Got VIEWER message: [direct] "+ HeroData.Viewers.direct);
+            Common.LOGGER.debug("Got VIEWER message: [indirect] "+ HeroData.Viewers.indirect);
 
         }
 

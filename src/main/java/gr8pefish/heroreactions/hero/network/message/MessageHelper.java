@@ -14,9 +14,10 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Class with more human readable method call names to delegate message related actions to their appropriate inner methods.
+ */
 public class MessageHelper {
-
-    //TODO: More error handling for if connection not perfect
 
     /**
      * Send a JSON message to the server over the websocket connection.
@@ -26,7 +27,7 @@ public class MessageHelper {
     public static void sendJson(String jsonMessage) {
         Common.LOGGER.warn("Sending JSON Message: "+jsonMessage);
         WebSocketFrame frame = new TextWebSocketFrame(jsonMessage);
-        WebSocketClient.sendMessage(frame);
+        WebSocketClient.sendMessage(frame); //safe call that ensures connection is okay before sending
     }
 
     /**
@@ -47,8 +48,9 @@ public class MessageHelper {
     public static ArrayList<String> getStreamData() {
         ArrayList<String> returnList = new ArrayList<>();
         if (WebSocketClient.isConnected()) { //connected
+            //AccountID - for debug purposes, inefficient code so commented out for production
+//            returnList.add("ID: " + FileHelper.retreiveAccountID());
             //isOnline
-//            returnList.add("ID: " + FileHelper.retreiveAccountID()); //Debug
             returnList.add("Online: "+ HeroData.Online.isOnline);
             //viewerCount
             returnList.add("Viewers [Direct/Indirect]: "+ HeroData.Viewers.direct+"/"+ HeroData.Viewers.indirect);
@@ -64,25 +66,25 @@ public class MessageHelper {
 
     //Helper methods to easily/publicly send all types of messages
 
-    //Helper method to send ping
+    /** Helper method to send ping */
     public static void sendPing() {
         //Json
         HeroMessages.PING.send(PingPongJsonMessage.PingPongEnum.PING);
     }
 
-    //Helper method to send pong
+    /** Helper method to send pong - unused */
     public static void sendPong(PingWebSocketFrame ping) {
         //Json
         HeroMessages.PONG.send(PingPongJsonMessage.PingPongEnum.PONG);
     }
 
-    //Helper method to send text
+    /** Helper method to send text */
     public static void sendText(String text) {
         //Json
         HeroMessages.TEXT.send(text);
     }
 
-    //Helper method to subscribe to an event
+    /** Helper method to subscribe to an event */
     public static void subscribeToEvent(SubscribeJsonMessage.SubscribeTopics topic) {
         //Json
         HeroMessages.SUBSCRIBE.send(topic);

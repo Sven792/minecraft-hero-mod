@@ -41,9 +41,6 @@ public final class WebSocketClient {
     @Nonnull
     private static EventLoopGroup GROUP;
 
-    /** A owner-id to connect to. */
-    public static final String DEFAULT_ACCOUNT_ID = "a20e92f3-e27e-4ac0-a1f3-0cd81a18850c"; //default one (random)
-
     // Public helper methods
 
     /**
@@ -79,6 +76,8 @@ public final class WebSocketClient {
     public static void sendMessage(Object message) {
         if (WEBSOCKET_CHANNEL != null && WEBSOCKET_CHANNEL.isOpen()) {
             WEBSOCKET_CHANNEL.writeAndFlush(message);
+        } else {
+            Common.LOGGER.error("Can't send message! Channel is null or closed.");
         }
     }
 
@@ -106,11 +105,7 @@ public final class WebSocketClient {
      */
     private static void establishWebSocketConnection(String accountID) throws Exception {
 
-
-        //URL format example: ("url", "ws://127.0.0.1:8080/websocket");
-        //final String URL = System.getProperty("url", "ws://echo.websocket.org/"); //echo server used for testing
-
-        //Hero -> wss://stream.outpostgames.com/ws/account/<account-id>
+        //URL for connecting to a specific account
         final String URL = System.getProperty("url", "wss://stream.outpostgames.com/ws/account/"+accountID);
 
         //setup base data (ws at correct host and URL)

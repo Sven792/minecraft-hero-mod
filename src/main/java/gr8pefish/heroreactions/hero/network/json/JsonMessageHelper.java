@@ -13,6 +13,9 @@ import gr8pefish.heroreactions.hero.network.message.HeroMessages;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import net.minecraft.util.JsonUtils;
 
+/**
+ * Helper class to deal with all things JSON, mostly in regards to messages send to/from the client
+ */
 public class JsonMessageHelper {
 
     //Setup tools
@@ -79,7 +82,7 @@ public class JsonMessageHelper {
                 return HeroMessages.PONG;
             case "feedback":
                 return HeroMessages.FEEDBACK;
-            case "feedback-top": //ToDo: Will change with Hero's API update
+            case "feedback-top": //Note: will change with Hero's API update
                 return HeroMessages.FEEDBACK_ACTIVITY;
             case "online":
                 return HeroMessages.ONLINE;
@@ -103,7 +106,12 @@ public class JsonMessageHelper {
 //        TODO: Re-enable when not testing!!
     }
 
-    //Helper method to set data (called direct from test method)
+    /**
+     * Helper method to set data and delegate future work to onMessageReceived methods
+     *
+     * @param dataElement - the JSON formatted message
+     * @param messageType - The {@link HeroMessages} type of message
+     */
     public static void setMessageData(JsonElement dataElement, HeroMessages messageType) {
         switch (messageType) {
             case FEEDBACK:

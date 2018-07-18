@@ -5,25 +5,35 @@ import gr8pefish.heroreactions.hero.data.FileHelper;
 import gr8pefish.heroreactions.hero.network.http.HttpClient;
 import gr8pefish.heroreactions.hero.network.websocket.WebSocketClient;
 
+/**
+ * Main class to handle the core login flow.
+ *
+ * Process:
+ * 1) Try to connect (via websocket) with account ID saved in a file
+ * 2) Try to see if an access token is saved in a file
+ *  2a) If so, get the account ID from the token and login that way (i.e. #1)
+ * 3) If none of those work, do nothing - no way to log in
+ */
 public class LoginClient {
 
+    //Stored in a field for other classes to access easily
     public static String accountID;
 
     public static void login() {
         //try with account ID first
-        Common.LOGGER.info("Checking for account ID...");
+        Common.LOGGER.debug("Checking for account ID...");
         accountID = FileHelper.retreiveAccountID();
         //if account ID exists
         if (!accountID.equals(FileHelper.NONEXISTENT)) {
             //login with correct user
-            Common.LOGGER.info("Logging in with user: "+accountID);
+            Common.LOGGER.info("Logging in with user with account ID: "+ accountID);
             WebSocketClient.establishConnection(accountID);
             return;
         }
 
         //try with token
         String token = FileHelper.retrieveToken();
-        Common.LOGGER.info("Checking for access token...");
+        Common.LOGGER.debug("Checking for access token...");
         //if token exists
         if (!token.equals(FileHelper.NONEXISTENT)) {
             //get accountID from token
@@ -31,10 +41,9 @@ public class LoginClient {
             //automatically logs in via async calls if possible
         }
 
-        //default action
-        //login with default user
-        Common.LOGGER.error("Logging in with DEFAULT user: " + WebSocketClient.DEFAULT_ACCOUNT_ID);
-        WebSocketClient.establishConnection(WebSocketClient.DEFAULT_ACCOUNT_ID);
+        //Couldn't login, tell user
+        //TODO: One time chat message - first time playing
+        Common.LOGGER.info("Couldn't log in, no information found. Run '/hero login help' to amend this.");
     }
 
     public static String getOwnerIdFromToken(String token) {
