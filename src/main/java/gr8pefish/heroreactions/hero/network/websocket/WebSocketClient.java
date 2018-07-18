@@ -159,7 +159,7 @@ public final class WebSocketClient {
                             WebSocketClientHandshakerFactory.newHandshaker(
                                     uri, WebSocketVersion.V13, null, false,
                                     new DefaultHttpHeaders()
-                                            .add("app-id", "2"))); //adds minecraft app id (required) - 2 is random TODO: Correct app id for minecraft
+                                            .add("app-id", "minecraft-hero"))); //adds minecraft app id (required)
 
             //create a Bootstrap to easily establish the connection via helper methods
             Bootstrap bootstrap = new Bootstrap();
