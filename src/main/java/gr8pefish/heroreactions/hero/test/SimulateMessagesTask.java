@@ -8,6 +8,9 @@ import gr8pefish.heroreactions.hero.test.data.TestData;
 import java.util.Map;
 import java.util.TimerTask;
 
+/**
+ * Simulated message. Sends some {@link TestData}.
+ */
 public class SimulateMessagesTask extends TimerTask {
 
     private TestData data;
@@ -20,7 +23,7 @@ public class SimulateMessagesTask extends TimerTask {
     public void run() {
         //update view count
         data.incrementViewerCount();
-        //Store the data of each type of message directly (simulated "sending", bypasses some networking code to make this test code much easier to write)
+        //"Send" the message directly (simulated sending which bypasses some networking code to make this test code much simpler)
         for (Map.Entry<HeroMessages, JsonElement> entry: data.getMessages().entrySet()){
             JsonMessageHelper.setMessageData(entry.getValue(), entry.getKey());
         }

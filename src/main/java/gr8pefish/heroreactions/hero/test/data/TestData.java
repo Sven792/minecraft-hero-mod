@@ -6,12 +6,17 @@ import gr8pefish.heroreactions.hero.network.message.HeroMessages;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * The test data used in a simulated message.
+ *
+ * Contains an incrementing view count and a feedback message.
+ * Helper classes of {@link FeedbackTopMessage} and {@link ViewersMessage} are used.
+ */
 public class TestData {
 
     private ConcurrentHashMap<HeroMessages, JsonElement> messages = new ConcurrentHashMap<>();
     private ViewersMessage viewersMessage;
     private int viewCount = 10;
-    private int incrementViewersAmount = 50;
 
     private Gson gson = new Gson();
 
@@ -22,6 +27,7 @@ public class TestData {
 
     //Private
 
+    //Alter these values manually to change the test data set
     private void setFeedbackTopData() {
         //set up data
         FeedbackTopMessage.FeedbackOptions[] feedbackOptions = new FeedbackTopMessage.FeedbackOptions[]{
@@ -46,7 +52,8 @@ public class TestData {
     }
 
     public void incrementViewerCount() {
-        //if > 100 reset, otherwise increment
+        //if > x reset, otherwise increment
+        int incrementViewersAmount = 50;
         viewCount = viewCount + incrementViewersAmount > 565 ? 0 : viewCount + incrementViewersAmount;
         viewersMessage = new ViewersMessage(viewCount, 5);
         this.messages.replace(HeroMessages.VIEWERS, gson.toJsonTree(viewersMessage));
