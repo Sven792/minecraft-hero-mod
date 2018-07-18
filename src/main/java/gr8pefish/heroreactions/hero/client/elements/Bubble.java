@@ -4,9 +4,9 @@ import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 
 public class Bubble {
 
-    /** Time counter for rendering */
+    /** Pure time counter - for rendering */
     private double timestamp;
-    /** The counter for when to render */
+    /** The counter for the offset of when to actually render */
     private double renderTimeStartOffset;
     /** Time counter for maximum rendering time */
     private double maxTime;
@@ -20,7 +20,7 @@ public class Bubble {
     private float rotationAngle;
     /** The {@link FeedbackTypes} type of feedback this bubble is */
     private FeedbackTypes type;
-    /** If this bubble will die after rendering once */
+    /** If this bubble will die after rendering once - used for testing mostly */
     private final boolean temporary;
 
     public Bubble(double timestamp, double renderTimeStartOffset, double maxTime, double sizeModifier, int xLocation, int yLocation, float rotationAngle, FeedbackTypes type, boolean temporary) {

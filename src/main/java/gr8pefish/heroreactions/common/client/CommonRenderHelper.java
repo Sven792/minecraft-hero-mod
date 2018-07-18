@@ -22,7 +22,7 @@ public class CommonRenderHelper {
     //add bubbles to render
     public static void renderAllFeedbackBubbles() {
         MinecraftRenderHelper.updateSpawnBoxForStageSize();
-        MinecraftRenderHelper.clearOldBubbles(); //TODO: Include?
+//        MinecraftRenderHelper.clearOldBubbles(); //TODO: Include?
         for (Map.Entry<FeedbackTypes, Double> entry : HeroData.FeedbackActivity.getFeedbackRatios().entrySet()) {
             //render bubbling reactions, with an amount depending on how large this is
             int renderCount = getCountToRender(entry.getValue());

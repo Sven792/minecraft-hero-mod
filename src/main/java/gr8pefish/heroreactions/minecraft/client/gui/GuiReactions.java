@@ -417,21 +417,4 @@ GuiReactions {
 //then the quads are like, {x0y0, x1y0, x1y1, x0y1} ...
 //or the other way around, since opengl is different from dx in which direction Y grows
 
-
-
-//TODO: Cleanup + multi bubble rendering via input from actual events
-//    public void renderFeedbackBubblingFromReactionRatios() {
-//        ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
-//        for (Map.Entry<FeedbackTypes, Double> entry : feedbackRatios.entrySet()) {
-//            renderBubblingReactions(xBase, yImage, imageTextureWidth * feedbackRatios.size(), imageTextureHeight + paddingVertical, entry.getKey(), entry.getValue(), HeroData.FeedbackActivity.totalFeedbackCount);
-//        }
-//    }
-//
-//    public void renderFeedbackBubbleWithTransformation(FeedbackTypes feedbackType, List<TransformationTypes> transformations, long timeDifference) {
-//        for (TransformationTypes transformation : transformations) {
-//            transformation.apply(timeDifference);
-//            renderFeedbackBubbleOnly(feedbackType);
-//        }
-//    }
-
 }

@@ -30,6 +30,7 @@ public enum FeedbackTypes {
 
     /**
      * Gets the texture's horizontal starting location from a reaction.
+     * Assumes 16 pixel width image
      *
      * @return - the x coordinate of the texture's start point
      */

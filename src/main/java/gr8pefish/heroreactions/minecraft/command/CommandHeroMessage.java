@@ -117,7 +117,6 @@ public class CommandHeroMessage extends CommandBase {
         }
     }
 
-    //ToDo: Seems like it is sending the message on tab completion, not just on enter - problematic
     @Nonnull
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {

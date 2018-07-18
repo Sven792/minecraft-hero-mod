@@ -11,6 +11,11 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Set of methods to easily retrieve data from a file.
+ *
+ * Specifically used for token/accountID data.
+ */
 public class FileHelper {
 
     /** Base dir */
@@ -24,6 +29,10 @@ public class FileHelper {
 
     /** For files that don't exist/have data*/
     public static final String NONEXISTENT = "DOES NOT EXIST";
+
+
+    // Public methods
+
 
     public static String storeToken(String token) {
 
@@ -78,6 +87,13 @@ public class FileHelper {
         return NONEXISTENT;
     }
 
+
+    // Helper methods
+
+
+    /**
+     * Ensure the files exist, and create them if they don't.
+     */
     private static void setFilepathLocations() {
         //if unchanged file from base app data dir, make subdir /minecraft/hero
         if (loginFilePath.toString().equalsIgnoreCase(System.getenv("APPDATA"))) {

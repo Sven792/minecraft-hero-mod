@@ -15,6 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class HeroUtils {
 
+    // Public helper methods
+
+    /**
+     * When a feedback message is obtained from the Hero API, do these actions
+     */
     public static void interpretFeedbackMessage() {
         //Get per sentiment ratios
         calculateRatios();
@@ -26,6 +31,9 @@ public class HeroUtils {
         CommonRenderHelper.renderAllFeedbackBubbles();
     }
 
+    /**
+     * When an activity (i.e. view count) message is obtained from Hero, do these actions
+     */
     public static void interpretViewerMessage() {
         //Set size of display based on view count
         setStageSize();
@@ -33,14 +41,27 @@ public class HeroUtils {
         CommonRenderHelper.renderViewCount(HeroData.Viewers.total);
     }
 
-    //gets the activity of the feedback as a value 0 < x < 1
+
+    // Private helper methods
+
+
+    /**
+     * Gets the activity of the feedback as a value 0 < x < 1
+     * TODO: Utilize
+     */
     private static void getActivity() {
         int totalActivity = sumMapValues(HeroData.FeedbackActivity.getFeedbackActivity());
         totalActivity = totalActivity > 100 ? 100 : totalActivity; //can't be above 100
         HeroData.FeedbackActivity.activity = totalActivity / 100f;
     }
 
-    //Add together values of feedback, weighting the primary one by .8 and the rest by .1
+    /**
+     * Helper method to add together values of feedback, weighting the primary one by .8 and the rest by .1
+     * Numbers taken from JS overlay code, code is my own though.
+     *
+     * @param map - A map containing the feedback counts as the map's values
+     * @return - A number between 0 and 100
+     */
     private static int sumMapValues(ConcurrentHashMap<FeedbackTypes, Integer> map){
         Collection<Integer> values = map.values();
         int largest = Integer.MIN_VALUE;
@@ -59,6 +80,11 @@ public class HeroUtils {
 //        double result = feedbackActivity.values().stream().map(it -> max * (it == max ? 0.8 : 0.1)).reduce((a, b) -> a + b).get();
     }
 
+    /**
+     * Gets the current top feedback, and if it is different from the previous one
+     *
+     * TODO: Utilize
+     */
     private static void getTopFeedback() {
 
 //            this.emitter.emit(EVENT_NAMES.popup, {
@@ -77,8 +103,10 @@ public class HeroUtils {
     /**
      * Calculates the ratios of reactions received of each type as a function of the total reaction obtained.
      * Stores it in a {@link Map} in {@link HeroData#feedbackRatios}
+     *
+     * Note: Not called if reactionsActivity == 0, as the feedback message never fires
      */
-    private static void calculateRatios() { //TODO: Not being called if reactionsActivity == 0, since that message never fires, so used via test data mostly
+    private static void calculateRatios() {
         ConcurrentHashMap<FeedbackTypes, Integer> feedbackActivity = HeroData.FeedbackActivity.getFeedbackActivity();
         ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios = HeroData.FeedbackActivity.getFeedbackRatios();
         for (Map.Entry<FeedbackTypes, Integer> entry : feedbackActivity.entrySet()) {
@@ -91,6 +119,10 @@ public class HeroUtils {
         Common.LOGGER.info("Feedback ratios created: "+feedbackRatios.toString());
     }
 
+    /**
+     * Sets the stage size (i.e. the render area) due to the view count.
+     * Note: Formula adopted from the JS overlay code.
+     */
     private static void setStageSize() {
         double scale = Math.min(Math.log(HeroData.Viewers.total + 1), 10) / 10; //total view count
         if (scale > 1) scale = 1;
