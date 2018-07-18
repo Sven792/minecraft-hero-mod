@@ -1,5 +1,6 @@
 package gr8pefish.heroreactions.hero.network.http;
 
+import gr8pefish.heroreactions.common.Common;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -18,14 +19,11 @@ import java.net.URI;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 
 /**
- * A simple HTTP client that prints out the content of the HTTP response to
- * {@link System#out} to test the server.
+ * A "simple" HTTP client to send messages to a server
+ *
+ * TODO: Rewrite using Apache Commons
  */
 public final class HttpClient {
-
-    //auth code
-    //access token
-    //account
 
     //ws -> account
     //account -> access token
@@ -74,16 +72,17 @@ public final class HttpClient {
             // Make the connection attempt.
             Channel ch = b.connect(host, port).sync().channel();
 
-            //data
-//            String token = "{\"code\":\"FSDM-BL7N-H5XX\"}";
+            //setup message
             ByteBuf byteMessage = wrappedBuffer(messageAction.jsonData.concat(authCodeOrAccessToken+"\"}").getBytes(CharsetUtil.UTF_8));
-
+            //different action depending on message type
             HttpRequest request;
             if (messageAction.equals(httpMessageActions.GET_ACCOUNT_ID_FROM_ACCESS_TOKEN)) {
+                //add auth token header
                 request = new DefaultFullHttpRequest(
                         HttpVersion.HTTP_1_1, messageAction.httpType, uri.getRawPath());
                 request.headers().set("Authorization", "Token "+authCodeOrAccessToken);
-            } else {
+            } else { //GET_ACCESS_TOKEN_FROM_AUTHCODE
+                //add message to body, and add content detail headers (necessary)
                 request = new DefaultFullHttpRequest(
                         HttpVersion.HTTP_1_1, messageAction.httpType, uri.getRawPath(),
                         byteMessage);
@@ -92,13 +91,11 @@ public final class HttpClient {
             }
 
             // Prepare the HTTP request with a body dependent on the message type.
-            // Note: All CONTENT_* headers here are necessary!
             request.headers().set(HttpHeaderNames.HOST, host);
             request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
 
-
-            System.out.println(request);
-            System.out.println("Message: " + messageAction.jsonData.concat(authCodeOrAccessToken+"\"}"));
+            //Debug printing
+            Common.LOGGER.debug("Message sent to server: " + messageAction.jsonData.concat(authCodeOrAccessToken+"\"}"));
 
             // Send the HTTP request.
             ch.writeAndFlush(request);
@@ -112,13 +109,19 @@ public final class HttpClient {
     }
 
 
+    /**
+     * Inner enum for determining message action
+     */
     public enum httpMessageActions {
 
         GET_ACCESS_TOKEN_FROM_AUTHCODE("https://api.outpostgames.com/api/access-token/auth-code", HttpMethod.POST, "{\"code\":\""),
         GET_ACCOUNT_ID_FROM_ACCESS_TOKEN("https://api.outpostgames.com/api/account", HttpMethod.GET, "{\"token\":\"");
 
+        /** The URL to connect to */
         private final String url;
+        /** The type of {@link HttpMethod} to use (i.e. GET/POST/etc) */
         private final HttpMethod httpType;
+        /** The static data to send */
         private final String jsonData;
 
         httpMessageActions(String url, HttpMethod type, String jsonData) {

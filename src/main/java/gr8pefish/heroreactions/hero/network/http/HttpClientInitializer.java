@@ -7,6 +7,9 @@ import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpContentDecompressor;
 import io.netty.handler.ssl.SslContext;
 
+/**
+ * Helper class to initialize the {@link HttpClient}'s data
+ */
 public class HttpClientInitializer extends ChannelInitializer<SocketChannel> {
 
     private final SslContext sslCtx;
@@ -24,14 +27,16 @@ public class HttpClientInitializer extends ChannelInitializer<SocketChannel> {
             p.addLast(sslCtx.newHandler(ch.alloc()));
         }
 
+        // Add an inbuilt codec
         p.addLast(new HttpClientCodec());
 
-        // Remove the following line if you don't want automatic content decompression.
+        // Automatic content decompression.
         p.addLast(new HttpContentDecompressor());
 
-        // Uncomment the following line if you don't want to handle HttpContents.
+        // If you don't want to handle HttpContents, uncomment this
 //        p.addLast(new HttpObjectAggregator(1048576));
 
+        // Our custom handler (for receiving messages)
         p.addLast(new HttpClientHandler());
     }
 }

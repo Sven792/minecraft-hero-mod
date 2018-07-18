@@ -13,64 +13,76 @@ import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.util.CharsetUtil;
 
+/**
+ * Class to receive a message (instantiated from {@link HttpClient} and act on what is obtained
+ */
 public class HttpClientHandler extends SimpleChannelInboundHandler<HttpObject> {
 
+    /**
+     * Called whenever a HTTP message is received on the client
+     */
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HttpObject message) {
         if (message instanceof HttpContent) {
             HttpContent content = (HttpContent) message;
 
-            //message contents
+            //message contents formatted
             String msg = content.content().toString(CharsetUtil.UTF_8);
 
-            //accountID
+            //accountID data
             String accountID = "";
             boolean useAccountID = false;
 
-            //token
+            //token data
             String token = "";
             boolean useToken = false;
 
             //accountID
             if (msg.contains("minecraft-hero")) { //authorized for MC
-                accountID = msg.substring(7, 7+36); //{"id":"cba1c1cb-1e41-4bb7-8020-72433c9f7da4"... <- example to show how it is parsed
+                accountID = msg.substring(7, 7+36); //{"id":"cba1c1cb-1e41-4bb7-8020-72433c9f7da4"... <- example: it would get the string of chars 'c...4'
                 useAccountID = true;
                 //login via websocket as well -> async at end
             }
 
             //if msg contains "token", get token
             if (msg.contains("token")) {
-                token = msg.substring(10, msg.length() - 2); //cut away beginning, cut out bracket and quotation at end
-                FileHelper.storeToken(token); //store token
+                token = msg.substring(10, msg.length() - 2); //cut away beginning, cut out bracket and quotation at end -> {"token": "12t63-hg2e7-yd9u3-ha4dg"} results in '1..g'
+                FileHelper.storeToken(token); //store token in file
                 useToken = true;
                 //login via websocket as well -> async at end
             }
 
-            System.err.print(msg);
+            //Debug printing
+            Common.LOGGER.debug("Obtained message: "+msg);
 
+            //End of message
             if (content instanceof LastHttpContent) {
 
                 //close connection
                 ChannelFuture future = ctx.channel().close();
 
-                //token
+                //token data
                 final boolean finalUseToken = useToken;
                 final String finalToken = token;
-                //accountID
+                //accountID data
                 final boolean finalUseAccountID = useAccountID;
                 final String finalAccountID = accountID;
 
-                //Async calls
+                //Async calls - for after the message is obtained
                 future.addListener((ChannelFutureListener) future1 -> {
+                    //if useToken -> get the owner id from that via a new HTTP message
                     if (finalUseToken) {
                         //get new accountID
                         LoginClient.getOwnerIdFromToken(finalToken);
                     }
+                    //if useAccountID -> log in with that data after storing it in a file
                     if (finalUseAccountID) {
                         //login with accountID
                         if (!finalAccountID.equalsIgnoreCase(FileHelper.NONEXISTENT)) {
+                            //store in file
                             FileHelper.storeAccountID(finalAccountID);
-                            Common.LOGGER.info("LOGIN with " + finalAccountID);
+                            //Debug printing
+                            Common.LOGGER.info("Logging in with account ID: " + finalAccountID);
                             //close old connection
                             WebSocketClient.closeConnection();
                             //start new one
