@@ -48,6 +48,7 @@ GuiReactions {
     public int yImage;
 
     public static double growthRatio = 1.25; //how much the bubble expands by initially (cut into quarters so 1.25)
+    private Bubble position;
 
     GuiReactions(GuiIngameOverlay overlay) {
         this.overlay = overlay;
@@ -179,6 +180,12 @@ GuiReactions {
     public void setRotation(Bubble bubble) {
         GlStateManager.rotate(bubble.getRotationAngle(), 0, 0, 1f);
     }
+
+    public void setPosition(Bubble bubble) {
+        //TODO: Eventually implement
+//        GlStateManager.translate(x, y, z);
+    }
+
 
 
     /** Helper method to get a pseudo-random x position in the rendering box.
@@ -361,7 +368,6 @@ GuiReactions {
     private double getRandomStartTime() {
         return ThreadLocalRandom.current().nextDouble(0, maxStartTimeOffset);
     }
-
 
     //==============----------------- Notes below here -------------=====================
 

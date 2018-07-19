@@ -5,41 +5,72 @@ import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.minecraft.client.MinecraftRenderHelper;
-import net.minecraft.client.renderer.GlStateManager;
 
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-/** Theoretically you just replace the Minecraft/GL specific calls with your specific rendering setup and the rest should work.*/
+/**
+ * Class for all the common rendering code, where Hero and Minecraft overlap.
+ * Theoretically you just replace the Minecraft/GL specific calls with your specific rendering setup and the rest should work.
+ */
 public class CommonRenderHelper {
 
+    // General
+
     //update view counter
+
+    /**
+     * Show the view counter.
+     *
+     * @param viewcount - the number of viewers to display
+     */
     public static void renderViewCount(int viewcount) {
         MinecraftRenderHelper.renderViewCount(viewcount);
     }
 
-    //add bubbles to render
+    /**
+     * Render all the feedback reaction bubbles.
+     * Current implementation adds them to a render list, and the Minecraft-specific implementation deals with the rest.
+     */
     public static void renderAllFeedbackBubbles() {
+        //Update stage size
         MinecraftRenderHelper.updateSpawnBoxForStageSize();
-//        MinecraftRenderHelper.clearOldBubbles(); //TODO: Include?
+        //Clear old data/bubbles TODO: Redundant?
+//        MinecraftRenderHelper.clearOldBubbles();
+        //Loop through all feedback types
         for (Map.Entry<FeedbackTypes, Double> entry : HeroData.FeedbackActivity.getFeedbackRatios().entrySet()) {
-            //render bubbling reactions, with an amount depending on how large this is
+            //get how many of each type to display
             int renderCount = getCountToRender(entry.getValue());
+            //loop through that amount
             for (int i = 0; i < renderCount; i++) {
+                //add each to a render list to display next render tick
                 MinecraftRenderHelper.addBubble(entry.getKey());
             }
         }
     }
 
-    //render 10x the proportion (e.g. 0.5 -> 5), multiplied by the stage size (usually hovers around 50%), so should be ~5 total rendered at one time //TODO: refine a lot
+    /**
+     * Render a single bubble.
+     *
+     * @param bubble - the feedback emoji bubble to render
+     */
+    public static void renderBubble(Bubble bubble) {
+        MinecraftRenderHelper.renderBubble(bubble);
+    }
+
+    /**
+     * Get the amount of each feedback type to render
+     * TODO: Refine - a lot
+     *
+     * @param feedbackRatio - the proportion of this feedback type as a ratio of all current feedback types (0 - 1, inclusive)
+     * @return - the count of how many bubbles of this type to display
+     */
     private static int getCountToRender(double feedbackRatio) {
         return (int) Math.floor(feedbackRatio * 10 * (MinecraftRenderHelper.stageSize * 1.75 > 1 ? 1 : MinecraftRenderHelper.stageSize * 1.75));
     }
 
-    //---------------------------------------
+    // Transformations
 
-    //apply all transformation effects
+    //apply all transformation effects to a given bubble
     public static void applyEffects(TransformationTypes[] transformationTypes, Bubble bubble) {
         for (TransformationTypes type : transformationTypes) {
             type.apply(bubble);
@@ -63,50 +94,7 @@ public class CommonRenderHelper {
 
     //set position
     public static void applySlide(Bubble bubble) {
-        //TODO
+        MinecraftRenderHelper.applyMove(bubble);
     }
-
-    //render bubble
-    public static void renderBubble(Bubble bubble) {
-        MinecraftRenderHelper.renderBubble(bubble);
-    }
-
-
-    //---------------------------------------- USELESS? BELOW HERE? --------------------------------------
-
-    public static void renderAllFeedbackBubblesWithTransformations(ConcurrentHashMap<FeedbackTypes, Double> feedbackRatios, List<TransformationTypes> transformationTypes, long timeDifference) {
-
-        //push matrix
-        GlStateManager.pushMatrix();
-
-        //loop through each entry
-        for (Map.Entry<FeedbackTypes, Double> entry : feedbackRatios.entrySet()) {
-            renderFeedbackBubbleWithTransformations(entry.getKey(), entry.getValue(), transformationTypes, timeDifference);
-        }
-
-        //pop matrix
-        GlStateManager.popMatrix();
-    }
-
-
-    private static void renderFeedbackBubbleWithTransformations(FeedbackTypes feedbackType, double feedbackRatio, List<TransformationTypes> transformationTypes, long timeDifference) {
-
-        //loop through each transformation type and apply it
-        for (TransformationTypes transformationType : transformationTypes) {
-//            transformationType.apply(timeDifference);
-        }
-
-        //render the bubble
-        renderFeedbackBubble(feedbackType, feedbackRatio);
-    }
-
-    private static void renderFeedbackBubble(FeedbackTypes feedbackType, double feedbackRatio) {
-        //render bubbling reactions, with an amount depending on how large this is
-        int renderCount = getCountToRender(feedbackRatio);
-        for (int i = 0; i < renderCount; i++) {
-//            MinecraftRenderHelper.renderFeedbackBubble(feedbackType);
-        }
-    }
-
 
 }

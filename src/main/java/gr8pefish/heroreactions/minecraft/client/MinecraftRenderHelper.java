@@ -27,6 +27,10 @@ public class MinecraftRenderHelper {
         getReactionOverlay().setRotation(bubble);
     }
 
+    public static void applyMove(Bubble bubble) {
+        getReactionOverlay().setPosition(bubble);
+    }
+
     public static void renderViewCount(int viewCount) {
         //update the data to show, will automatically render new info next view tick
         ClientEventHandler.overlay.setViewCount(viewCount);
