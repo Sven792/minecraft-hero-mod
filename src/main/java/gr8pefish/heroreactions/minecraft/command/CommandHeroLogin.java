@@ -25,6 +25,8 @@ import java.util.List;
  * Format: `hero login [token]`
  *
  * The default (no token) gives you the url, the token logs you in
+ *
+ * TODO: localize messages
  */
 public class CommandHeroLogin extends CommandBase {
 
@@ -59,7 +61,7 @@ public class CommandHeroLogin extends CommandBase {
                 TextComponentString preLink = new TextComponentString("Login at ");
                 TextComponentString link = new TextComponentString("https://www.hero.tv/connect/minecraft-hero");
                 link.setStyle(link.getStyle().setColor(TextFormatting.BLUE).setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.hero.tv/connect/minecraft-hero")));
-                TextComponentString postLink = new TextComponentString(", then paste the token you get here by running '/hero login [token_here]'. You only have to do this once, every time after it will remember you!"); //TODO: localize;
+                TextComponentString postLink = new TextComponentString(", then paste the token you get here by running '/hero login [token_here]'. You only have to do this once, every time after it will remember you!");
                 TextComponentString helpMsg = (TextComponentString) preLink.appendSibling(link).appendSibling(postLink);
 
                 if (params.length == 2) { //message supplied (contained in params[1])

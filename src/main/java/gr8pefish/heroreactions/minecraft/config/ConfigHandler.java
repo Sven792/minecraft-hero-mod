@@ -56,6 +56,9 @@ public class ConfigHandler {
         @Config.Comment({ "Maximum time ratio to offset emojis spawning from one another" })
         public double maxEmojiOffsetTimeRatio = 1.5;
 
+        @Config.Comment({ "How intense the glow effect is (0-255)" })
+        public int maxGlowIntensity = 50;
+
         @Config.Comment({ "Show debug data "})
         public boolean showDebug = false;
     }

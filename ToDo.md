@@ -24,6 +24,7 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [ ] Fix commands to give correct message on feedback
 - [ ] Test clearOldBubbles method in main logic loop doing anything
 - [ ] Add command to retry connection w/ optional ID
+- [ ] Officially make it a client side only mod
 
 
 #### Beta

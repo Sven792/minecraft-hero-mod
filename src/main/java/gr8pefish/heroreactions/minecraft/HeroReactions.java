@@ -56,6 +56,7 @@ public class HeroReactions {
         proxy.postInit(event);
 
         //run test code
+        //TODO: Disable in production
         MainTest.mainTest();
     }
 }

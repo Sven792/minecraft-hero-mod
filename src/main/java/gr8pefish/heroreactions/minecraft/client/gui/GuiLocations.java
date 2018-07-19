@@ -7,26 +7,31 @@ import net.minecraft.client.gui.ScaledResolution;
 import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * The location to render the overlay in, on the screen. Choices are bottom [left] or [right].
+ */
 public enum GuiLocations {
     LEFT,
     RIGHT;
 
+    //Default location is the right
     private static GuiLocations DEFAULT = RIGHT;
 
+    //The boundings of the box
     private int xStart;
     private int yStart;
     private int width;
     private int height;
 
+    //The box boundings rescaled to fit the screen size and stage/view count-modified size
     private int rescaledXStart;
     private int rescaledYStart;
     private int rescaledWidth;
     private int rescaledHeight;
-    public static int MIN_SIZE_X = (int)(GuiReactions.imageTextureWidth * GuiReactions.scalingRatio * GuiReactions.growthRatio); //TODO: Remove?
-    public static int MIN_SIZE_Y = (int)(GuiReactions.imageTextureHeight * GuiReactions.scalingRatio * GuiReactions.growthRatio);
 
+    //The width of the vanilla hotbar, in pixels, for placement purposes
     public static final int HOTBAR_WIDTH = 91;
-
+    //Other fields for static data
     public static int paddingHorizontal = 4; //padding from sides of screen and in-between elements
     public static int paddingVertical = 4; //padding in-between elements
     private static final int FONT_HEIGHT = 9; //Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT;
@@ -72,6 +77,12 @@ public enum GuiLocations {
 
     // Methods
 
+    /**
+     * Apply the position to the actual screen, instantiating all the requisite data.
+     *
+     * @param location - the location (left/right) to display on
+     * @param scaledResolution - the screen's scaled resolution
+     */
     public static void applyPositionScaling(GuiLocations location, ScaledResolution scaledResolution) {
         switch (location) {
             case LEFT:
@@ -127,14 +138,12 @@ public enum GuiLocations {
 
     }
 
+    /** Unscaled center, useful for static text (i.e. view count) */
     public int getMiddleXUnscaledToStageSize(int textureSizeX) {
         return (this.xStart + (this.width / 2)) - (textureSizeX / 2); //middle of box, minus half the length of the texture - centered
     }
 
-    public int getMiddleYUnscaledToStageSize(int textureSizeY) {
-        return (this.yStart + (this.height / 2)) - (textureSizeY / 2);  //middle of box, minus half the length of the texture - centered
-    }
-
+    /** Safe way to access the location from a string (obtained via config) */
     public static GuiLocations getLocationFromString(String string) {
         if (Arrays.asList(GuiLocations.values()).contains(string)) {
             return GuiLocations.valueOf(string);

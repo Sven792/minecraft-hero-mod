@@ -26,6 +26,8 @@ import java.util.List;
  *  ping - sends a ping to the server
  *  close - closes the connection
  *  {message} - sends a text message to the server containing whatever {message} is
+ *
+ *  TODO: Localize messages
  */
 public class CommandHeroMessage extends CommandBase {
 
@@ -72,7 +74,7 @@ public class CommandHeroMessage extends CommandBase {
                         //pong - send pong
                         } else if ("pong".equals(params[1].toLowerCase())) {
                             sender.sendMessage(new TextComponentString("Sending pong message."));
-                            //MessageHelper.sendPong(new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}))); //causes loop
+                            //MessageHelper.sendPong(new PingWebSocketFrame(Unpooled.wrappedBuffer(new byte[]{8, 1, 8, 1}))); //causes loop, no need to send a pong from client realistically
                         //message - send text (whatever was contained in the message)
                         } else {
                             sender.sendMessage(new TextComponentString("Sending text message."));

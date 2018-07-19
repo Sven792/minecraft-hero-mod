@@ -12,7 +12,6 @@ public class CommonProxy {
 
     public void init(FMLInitializationEvent event) {
         //No-op
-        //Register messages here if needed
     }
 
     public void postInit(FMLPostInitializationEvent event) {
