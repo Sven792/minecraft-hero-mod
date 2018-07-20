@@ -20,7 +20,7 @@ public class Bubble {
     private float rotationAngle;
     /** The {@link FeedbackTypes} type of feedback this bubble is */
     private FeedbackTypes type;
-    /** If this bubble will die after rendering once - used for testing mostly */
+    /** If this bubble will die after rendering once - false case used for testing purposes */
     private final boolean temporary;
 
     public Bubble(double timestamp, double renderTimeStartOffset, double maxTime, double sizeModifier, int xLocation, int yLocation, float rotationAngle, FeedbackTypes type, boolean temporary) {

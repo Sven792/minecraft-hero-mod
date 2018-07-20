@@ -43,7 +43,7 @@ public class CommonRenderHelper {
             //loop through that amount
             for (int i = 0; i < renderCount; i++) {
                 //add each to a render list to display next render tick
-                MinecraftRenderHelper.addBubble(entry.getKey());
+                MinecraftRenderHelper.addBubbleToRenderList(entry.getKey());
             }
         }
     }

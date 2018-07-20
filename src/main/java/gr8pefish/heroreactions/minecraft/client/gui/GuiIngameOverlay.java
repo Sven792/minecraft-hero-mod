@@ -11,7 +11,9 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 /**
- * A custom overlay for the Hero data.
+ * The main class for rendering the feedback overlay.
+ *
+ * Has helper classes to render the activity glow ({@link GuiGlow} and the individual emoji bubbles ({@link GuiReactions}.
  * Note: Only one overlay created/rendered (in {@link gr8pefish.heroreactions.minecraft.client.ClientEventHandler}), the data is just updated as needed.
  */
 public class GuiIngameOverlay extends Gui {
@@ -99,7 +101,7 @@ public class GuiIngameOverlay extends Gui {
         glow.renderOverlay();
 
         //render reactions
-        reactions.renderOverlay();
+        reactions.renderAllBubbles();
 
         //draw debug data (hardcoded to top left)
         if (ConfigHandler.overlayConfigSettings.showDebug) {

@@ -35,7 +35,7 @@ public enum GuiLocations {
     public static int paddingHorizontal = 4; //padding from sides of screen and in-between elements
     public static int paddingVertical = 4; //padding in-between elements
     private static final int FONT_HEIGHT = 9; //Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT;
-    public static int verticalFiller = paddingVertical + GuiReactions.imageTextureWidth + paddingVertical + FONT_HEIGHT; //4 (padding) + 16 (texture size) + 4 (padding) + 9 (font size)
+    public static int verticalFiller = paddingVertical + GuiReactions.imageTextureHeight + paddingVertical + FONT_HEIGHT; //4 (padding) + 16 (texture size) + 4 (padding) + 9 (font size)
 
     GuiLocations() {
         //empty constructor (data set during applyScaling)
