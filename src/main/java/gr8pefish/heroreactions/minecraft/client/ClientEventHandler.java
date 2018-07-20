@@ -16,17 +16,19 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
 
+/**
+ * Deals with client code, specifically the main logic loop of rendering the overlay and the keybinding handler to toggle the overlay.
+ */
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class ClientEventHandler {
 
-    //=============================================================Rendering In-World for 1st Person Perspective==================================================
+    //Main overlay rendering code
 
     //The overlay to render (one instance, with internal data changed depending)
     public static final GuiIngameOverlay overlay = new GuiIngameOverlay(Minecraft.getMinecraft());
 
-    //ToDo: Data caching locally as small optimization?
     @SubscribeEvent
-    public void onRenderOverlayGUI(RenderGameOverlayEvent.Text event) { //can do pre/post also
+    public void onRenderOverlayGUI(RenderGameOverlayEvent.Text event) { //can do pre/post also //TODO: Ensure correct event
         if (ConfigHandler.generalConfigSettings.enableOverlay) {
 
             //Scale the rendering location data to fit current screen size
@@ -40,6 +42,8 @@ public class ClientEventHandler {
             overlay.renderOverlay(event.getResolution());
         }
     }
+
+    //Keybinding for toggling the overlay
 
     public static final KeyBinding KEY_TOGGLE_OVERLAY = new KeyBinding("key." + ModInfo.MODID + ".toggle", KeyConflictContext.IN_GAME, KeyModifier.NONE, Keyboard.KEY_H, ModInfo.MOD_NAME);
 
