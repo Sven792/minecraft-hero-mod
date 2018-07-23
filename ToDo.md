@@ -25,6 +25,7 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [ ] Test clearOldBubbles method in main logic loop doing anything
 - [ ] Add command to retry connection w/ optional ID
 - [ ] Officially make it a client side only mod
+- [ ] Fix command autofill
 
 
 #### Beta

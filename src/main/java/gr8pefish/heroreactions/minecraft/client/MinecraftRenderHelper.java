@@ -90,7 +90,7 @@ public class MinecraftRenderHelper {
     //==============----------------- Notes below here -------------=====================
 
     //TODO: More advanced time tracking for bubble lifespans
-    
+
 // Misc notes/values (converted to Java from JS):
 
 //    private final int MAX_RANDOM_MS = 500;
