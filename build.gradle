@@ -1,25 +1,23 @@
 buildscript {
     repositories {
-        jcenter()
-        maven {
-            name = "forge"
-            url = "https://files.minecraftforge.net/maven"
-        }
+        mavenCentral()
+        maven { url "http://files.minecraftforge.net/maven" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'com.matthewprenger:CurseGradle:1.0-SNAPSHOT'
     }
 }
 
-plugins {
-    id 'com.matthewprenger.cursegradle' version '1.0.9'
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.matthewprenger.cursegradle'
+
+//Require java 8
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8 // Need this here so task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 }
-
-apply plugin: "net.minecraftforge.gradle.forge"
-
-//Require Java 8
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 //Set base data
 group = package_group
@@ -28,7 +26,7 @@ version = "${mc_version}-${major_version}.${minor_version}.${patch_number}"
 
 //Any additional repositories needed to pull from
 repositories {
-    mavenCentral()
+    maven { url "http://dvs1.progwml6.com/files/maven" }
 }
 
 //Any dependencies (JEI is a common one)
@@ -42,9 +40,12 @@ minecraft {
     //Run directory (stuff other mods in here for integration testing in dev)
     runDir = "run"
 
+    //use dependencies' access transformers
+    useDepAts = true
+
     //Update version in code
     replace "@VERSION@", project.version
-    replaceIn "HeroReactions.java"
+    replaceIn "gr8pefish.heroreactions.minecraft.lib.ModInfo.java"
 
     //Mappings for minecraft source
     // the mappings can be changed at any time, and must be in the following format.
@@ -52,7 +53,8 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = project.mappings_version
+    if (project.hasProperty('mappings_version'))
+        mappings = project.mappings_version
     // makeObfSourceJar = false //A Srg named sources jar is made by default. Uncomment this to disable.
 }
 
@@ -71,7 +73,7 @@ processResources {
         expand 'version': project.version, 'mcversion': project.minecraft.version
     }
 
-    //Cope everything else
+    //Copy everything else
     from(sourceSets.main.resources.srcDirs) {
         exclude '**/*.info'
         exclude '**/*.properties'
@@ -85,7 +87,7 @@ jar {
             "Built-By": System.getProperty('user.name'),
             "Created-By": "${System.getProperty('java.vm.version')} + (${System.getProperty('java.vm.vendor')})",
             "Implementation-Title": project.name,
-            "Implementation-Version": project.version
+            "Implementation-Version": project.version,
     )
 }
 
@@ -97,9 +99,25 @@ task apiJar(type: Jar) {
     classifier = 'api'
 }
 
+// Javadoc jar
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+
+
 //Ensure correct encoding explicitly
 tasks.withType(JavaCompile) { task ->
     task.options.encoding = 'UTF-8'
+}
+
+//Remove linting for J8 javadocs
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
 }
 
 //Get text from the changelog
@@ -134,13 +152,13 @@ curseforge {
     project {
         id = "${curse_id}"
         changelog = getChangelogText()
-        releaseType = "${release_type}"
+        releaseType = release_type.toString()
     }
 }
 
 //Increment patch number
 task incrementVersionNumber {
-    ant.replace(file: "gradle.properties", token: "patch_number=${patch_number}", value: "patch_number=${patch_number.toString().toInteger() + 1}")
+    ant.replace(file: "gradle.properties", token: "patch_number = ${patch_number}", value: "patch_number = ${patch_number.toString().toInteger() + 1}")
 }
 
 //Populate a new blank changelog for the next version

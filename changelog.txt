@@ -1,9 +1,23 @@
 ------------------------------------------------------
-Version 1.12 - 0.1.0
+Version 1.12 - 0.1.2
 ------------------------------------------------------
-
 Additions
 - None
+
+Changes
+- None
+
+Bug Fixes
+- None
+------------------------------------------------------
+Version 1.12 - 0.1.1
+------------------------------------------------------
+First working build!
+
+Additions
+- Custom overlay
+- Authorization flow
+- Backend infrastructure for all of the above
 
 Changes
 - None

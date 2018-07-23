@@ -2,19 +2,15 @@
   {
     "modid": "heroreactions",
     "name": "Hero Reactions",
-    "description": "Hero Feedback/Reactions in Minecraft!",
+    "description": "Hero Feedback overlay displayed inside of Minecraft!",
     "version": "${version}",
-    "mcversion": "${mcversion}",
+    "mcversion": "[1.12,1.13)",
     "url": "",
     "updateUrl": "",
-    "authorList": [
-      "gr8pefish"
-    ],
+    "authorList": ["gr8pefish"],
     "credits": "Outpost Games",
     "logoFile": "",
     "screenshots": [],
-    "dependencies": [
-      ""
-    ]
+    "dependencies": []
   }
 ]

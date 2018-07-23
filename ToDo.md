@@ -12,8 +12,8 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [X] Command to clear login data
 - [X] Redo sprites to be more "minecraft-y"
 - [X] Add correct app-id for Minecraft
-- [ ] Fix localizations
-- [ ] Fix (in-game) config reloading
+- [X] Fix localizations
+- [X] Fix (in-game) config reloading
 - [ ] Add error checking for connections - timeouts
 - [ ] Add error checking for rendering
 - [ ] Improve getCountToRender
@@ -26,6 +26,7 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [ ] Add command to retry connection w/ optional ID
 - [ ] Officially make it a client side only mod
 - [ ] Fix command autofill
+- [ ] Disable overlay showing with first login
 
 
 #### Beta
