@@ -12,8 +12,6 @@ public class GuiGlow {
 
     /** The parent overlay */
     private GuiIngameOverlay overlay;
-    /** The maximum intensity of the glow effect */
-    private final int MAX_INTENSITY = ConfigHandler.overlayConfigSettings.maxGlowIntensity; //255 opaque, 0 transparent
 
     public GuiGlow(GuiIngameOverlay overlay) {
         this.overlay = overlay;
@@ -23,9 +21,11 @@ public class GuiGlow {
     public void renderOverlay() {
         //get location
         GuiLocations guiLocation = overlay.getGuiLocation();
-        //set intensity based on stage size
+        //get maximum intensity
+        int max_intensity = ConfigHandler.overlayConfigSettings.maxGlowIntensity; //255 opaque, 0 transparent
+        //set actual intensity based on stage size
         //TODO: Intensity calculation more refined - e.g. based on changes over time
-        int intensity = (int) (MinecraftRenderHelper.stageSize * MAX_INTENSITY);
+        int intensity = (int) (MinecraftRenderHelper.stageSize * max_intensity);
         //set top color
         //TODO: Multiple colors
         int topColor = new Color(255, 0, 0, 0).getRGB(); //fully transparent red

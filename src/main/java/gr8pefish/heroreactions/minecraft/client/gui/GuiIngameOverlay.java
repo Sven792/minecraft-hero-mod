@@ -104,7 +104,7 @@ public class GuiIngameOverlay extends Gui {
         reactions.renderAllBubbles();
 
         //draw debug data (hardcoded to top left)
-        if (ConfigHandler.overlayConfigSettings.showDebug) {
+        if (ConfigHandler.generalConfigSettings.showDebug) {
             ArrayList<String> msgArray = MessageHelper.getStreamData();
             int top = 2;
             for (String msg : msgArray) {

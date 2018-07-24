@@ -13,9 +13,9 @@ import static gr8pefish.heroreactions.minecraft.lib.ModInfo.MOD_NAME;
 @Mod.EventBusSubscriber(modid = MODID)
 public class ConfigHandler {
 
-    public static General generalConfigSettings = new General();
+    public static OverlayMain generalConfigSettings = new OverlayMain();
     public static Auth authConfigSettings = new Auth();
-    public static Overlay overlayConfigSettings = new Overlay();
+    public static OverlaySpecifics overlayConfigSettings = new OverlaySpecifics();
 
     //Add config reloading
     @SubscribeEvent
@@ -28,19 +28,18 @@ public class ConfigHandler {
     /**
      * General config tweaks
      */
-    public static class General {
-        @Config.RequiresMcRestart
-        @Config.Comment({ "Enables the mod" })
-        public boolean enableMod = false;
-
+    public static class OverlayMain {
         @Config.Comment({ "Enables the overlay" })
         public boolean enableOverlay = true;
+
+        @Config.Comment({ "Show debug data "})
+        public boolean showDebug = false;
     }
 
     /**
      *  Overlay config tweaks
      */
-    public static class Overlay {
+    public static class OverlaySpecifics {
         @Config.Comment({ "Overlay Scale (0-1)" })
         public double overlayScale = 0.5; //TODO: apply config scaling
 
@@ -57,10 +56,7 @@ public class ConfigHandler {
         public double maxEmojiOffsetTimeRatio = 1.5;
 
         @Config.Comment({ "How intense the glow effect is (0-255)" })
-        public int maxGlowIntensity = 50;
-
-        @Config.Comment({ "Show debug data "})
-        public boolean showDebug = false;
+        public int maxGlowIntensity = 150;
     }
 
     /**

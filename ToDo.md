@@ -30,7 +30,7 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 
 
 #### Beta
-- [ ] Test from blank install w/ config
+- [ ] Test from blank install w/ config - does login via authcode have too much delay so it sends message before WS connection valid?
 - [ ] Profiling for performance
 - [ ] Cleanup Trello board
 - [ ] Create Curseforge page
