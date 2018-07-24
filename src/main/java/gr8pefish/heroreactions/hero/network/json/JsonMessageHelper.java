@@ -102,7 +102,7 @@ public class JsonMessageHelper {
      */
     public static void setMessageData(TextWebSocketFrame message, HeroMessages messageType) {
         JsonElement dataElement = parser.parse(message.text()).getAsJsonObject().get("data");
-//        setMessageData(dataElement, messageType);
+        setMessageData(dataElement, messageType);
 //        TODO: Re-enable when not testing!!
     }
 
