@@ -22,9 +22,7 @@ public class ClientProxy extends CommonProxy {
     public void init(FMLInitializationEvent event) {
         super.init(event);
 
-        if (ConfigHandler.generalConfigSettings.enableMod) {
-            LoginClient.login();
-        }
+        LoginClient.login();
 
     }
 

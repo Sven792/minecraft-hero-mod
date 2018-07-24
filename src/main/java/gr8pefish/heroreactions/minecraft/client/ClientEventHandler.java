@@ -1,5 +1,6 @@
 package gr8pefish.heroreactions.minecraft.client;
 
+import gr8pefish.heroreactions.hero.network.websocket.WebSocketClient;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiIngameOverlay;
 import gr8pefish.heroreactions.minecraft.client.gui.GuiLocations;
 import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
@@ -29,7 +30,7 @@ public class ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderOverlayGUI(RenderGameOverlayEvent.Text event) { //can do pre/post also //TODO: Ensure correct event
-        if (ConfigHandler.generalConfigSettings.enableOverlay) {
+        if (ConfigHandler.generalConfigSettings.enableOverlay && WebSocketClient.isConnected()) {
 
             //Scale the rendering location data to fit current screen size
             GuiLocations.applyPositionScaling(overlay.getGuiLocation(), event.getResolution());
