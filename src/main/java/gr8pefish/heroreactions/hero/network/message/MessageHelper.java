@@ -25,7 +25,7 @@ public class MessageHelper {
      * @param jsonMessage - correctly formatted JSON message
      */
     public static void sendJson(String jsonMessage) {
-        Common.LOGGER.warn("Sending JSON Message: "+jsonMessage);
+        Common.LOGGER.info("Sending JSON Message: "+jsonMessage);
         WebSocketFrame frame = new TextWebSocketFrame(jsonMessage);
         WebSocketClient.sendMessage(frame); //safe call that ensures connection is okay before sending
     }

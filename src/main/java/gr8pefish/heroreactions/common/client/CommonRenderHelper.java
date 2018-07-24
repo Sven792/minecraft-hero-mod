@@ -65,7 +65,9 @@ public class CommonRenderHelper {
      * @return - the count of how many bubbles of this type to display
      */
     private static int getCountToRender(double feedbackRatio) {
-        return (int) Math.floor(feedbackRatio * 10 * (MinecraftRenderHelper.stageSize * 1.75 > 1 ? 1 : MinecraftRenderHelper.stageSize * 1.75));
+        double x = MinecraftRenderHelper.stageSize * 1.75 > 1 ? 1 : MinecraftRenderHelper.stageSize * 1.75;
+        double y = Math.floor(feedbackRatio * 10 * x);
+        return (int) y;
     }
 
     // Transformations

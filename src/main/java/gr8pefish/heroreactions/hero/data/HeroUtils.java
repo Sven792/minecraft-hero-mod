@@ -124,11 +124,12 @@ public class HeroUtils {
      * Note: Formula adopted from the JS overlay code.
      */
     private static void setStageSize() {
-        double scale = Math.min(Math.log(HeroData.Viewers.total + 1), 10) / 10; //total view count
+        int viewCount = HeroData.Viewers.total < 10 ? HeroData.Viewers.total : HeroData.Viewers.total * 10; //TODO: Debug production
+        double scale = Math.min(Math.log(viewCount + 1), 10) / 10; //total view count
         if (scale > 1) scale = 1;
         if (scale < 0) scale = 0;
         MinecraftRenderHelper.stageSize = scale;
-//        Common.LOGGER.info("Stage size: "+Math.floor(MinecraftRenderHelper.stageSize * 100)+"%");
+        Common.LOGGER.info("Stage size: "+Math.floor(MinecraftRenderHelper.stageSize * 100)+"%");
     }
 
 

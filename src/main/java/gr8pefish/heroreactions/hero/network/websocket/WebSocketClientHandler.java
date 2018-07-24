@@ -81,7 +81,7 @@ public class WebSocketClientHandler extends SimpleChannelInboundHandler<Object> 
 
             //get frame message (and print it if debugging)
             final TextWebSocketFrame textFrame = (TextWebSocketFrame) frame;
-            Common.LOGGER.debug("Message contents: "+textFrame.text()); //uncomment to display request, but do it anyway for testing
+            Common.LOGGER.info("Message contents: "+textFrame.text()); //uncomment to display request, but do it anyway for testing
 
             //handle message, delegating to the appropriate method
             HeroMessages messageType = JsonMessageHelper.getMessageTypeFromJson(textFrame.text());
