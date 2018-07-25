@@ -1,5 +1,6 @@
 package gr8pefish.heroreactions.common.client;
 
+import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.hero.client.TransformationTypes;
 import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
@@ -39,7 +40,8 @@ public class CommonRenderHelper {
         //Loop through all feedback types
         for (Map.Entry<FeedbackTypes, Double> entry : HeroData.FeedbackActivity.getFeedbackRatios().entrySet()) {
             //get how many of each type to display
-            int renderCount = getCountToRender(entry.getValue());
+            int renderCount = getCountToRender(entry.getValue(), entry.getValue() * HeroData.FeedbackActivity.totalFeedbackCount);
+            Common.LOGGER.debug(entry.getKey()+ " -> " +renderCount);
             //loop through that amount
             for (int i = 0; i < renderCount; i++) {
                 //add each to a render list to display next render tick
@@ -59,15 +61,24 @@ public class CommonRenderHelper {
 
     /**
      * Get the amount of each feedback type to render
-     * TODO: Refine - a lot
+     * Complex algorithm that takes into account the percentage of each as a fraction of the total, the count of each inputted, and the stage size.
      *
-     * @param feedbackRatio - the proportion of this feedback type as a ratio of all current feedback types (0 - 1, inclusive)
+     * @param percent - the proportion of this feedback type as a ratio of all current feedback types (0 - 1, inclusive)
+     * @param countInput - the count of how many time this bubble would appear with no modifications
      * @return - the count of how many bubbles of this type to display
      */
-    private static int getCountToRender(double feedbackRatio) {
-        double x = MinecraftRenderHelper.stageSize * 1.75 > 1 ? 1 : MinecraftRenderHelper.stageSize * 1.75;
-        double y = Math.floor(feedbackRatio * 10 * x);
-        return (int) y;
+    private static int getCountToRender(double percent, double countInput) {
+
+        //minimum and maximum boundings for the bubble count (recommended: no less/more than 1-10)
+        int totalMaxBubbles = 6; //TODO: Config values
+        int totalMinBubbles = 1;
+
+        // get the maximum number of bubbles to show at one time, bound to the max and min, and multiplied slightly by the stage size
+        int maxBubblesAtOnce = (int) Math.ceil(totalMaxBubbles - ((1 - MinecraftRenderHelper.stageSize) * totalMinBubbles)); //constant multiplied slightly by stage size factor (bound totalMin -> totalMax)
+        // take into account the actual inputted count, and modify that by it's percentage, limiting it to the value obtained before
+        int countOutput = (countInput * percent) > maxBubblesAtOnce ? maxBubblesAtOnce : (int) Math.ceil(countInput * percent);
+        // finally, take the count and multiply it by the percentage as a proportion of the total bubbles to get the end result (useful mostly in the case when the maxBubblesAtOnce are used)
+        return (int)(percent * countOutput);
     }
 
     // Transformations

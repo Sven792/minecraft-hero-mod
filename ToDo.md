@@ -21,7 +21,7 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [X] Fix command autofill
 - [X] Fix commands to give correct message on feedback
 - [X] Add command to retry connection w/ optional ID
-- [ ] Improve getCountToRender
+- [X] Improve getCountToRender
 - [ ] Test clearOldBubbles method in main logic loop doing anything
 - [ ] Officially make it a client side only mod
 - [ ] Documentation of features

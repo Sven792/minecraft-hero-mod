@@ -113,6 +113,12 @@ public class HeroUtils {
             if (HeroData.FeedbackActivity.totalFeedbackCount == 0) {
                 feedbackRatios.put(entry.getKey(), 0d);
             } else {
+                //Debug printing
+                Common.LOGGER.debug("Activity: "+feedbackActivity.toString());
+                Common.LOGGER.debug("Ratios: "+feedbackRatios.toString());
+                Common.LOGGER.debug("Total: "+HeroData.FeedbackActivity.totalFeedbackCount);
+                Common.LOGGER.debug("Adding: "+entry.getKey() + ": " +(entry.getValue().doubleValue() / HeroData.FeedbackActivity.totalFeedbackCount));
+                //Actual executing code
                 feedbackRatios.put(entry.getKey(), entry.getValue().doubleValue() / HeroData.FeedbackActivity.totalFeedbackCount);
             }
         }

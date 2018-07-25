@@ -122,6 +122,9 @@ public class JsonMessageHelper {
             case FEEDBACK_ACTIVITY:
                 //parse message `data` for "feedback-activity" format
                 JsonArray jsonArray = JsonUtils.getJsonArray(dataElement.getAsJsonObject(), "options");
+                //clear old data (can remove on Hero API update with all 5 types)
+                HeroData.FeedbackActivity.getFeedbackActivity().clear();
+                HeroData.FeedbackActivity.getFeedbackRatios().clear();
                 //get total (for eventual use in feedback ratios)
                 int total = 0;
                 //get the top feedback (first element in array)
