@@ -19,7 +19,7 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [X] Disable overlay showing with first login
 - [X] Refactor code with redundant classes
 - [X] Fix command autofill
-- [ ] Fix commands to give correct message on feedback
+- [X] Fix commands to give correct message on feedback
 - [X] Add command to retry connection w/ optional ID
 - [ ] Improve getCountToRender
 - [ ] Test clearOldBubbles method in main logic loop doing anything
