@@ -14,19 +14,17 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [X] Add correct app-id for Minecraft
 - [X] Fix localizations
 - [X] Fix (in-game) config reloading
-- [ ] Add error checking for connections - timeouts
-- [ ] Add error checking for rendering
-- [ ] Improve getCountToRender
-- [ ] Refactor code with slide animation/redundant classes
-- [ ] Documentation of features
-- [ ] Add more config values where appropriate (e.g. glow intensity)
-- [ ] Scaling of entire gui via config value
+- [X] Add error checking for connections - timeouts
+- [X] Add error checking for rendering
+- [X] Disable overlay showing with first login
+- [X] Refactor code with redundant classes
+- [X] Fix command autofill
 - [ ] Fix commands to give correct message on feedback
+- [X] Add command to retry connection w/ optional ID
+- [ ] Improve getCountToRender
 - [ ] Test clearOldBubbles method in main logic loop doing anything
-- [ ] Add command to retry connection w/ optional ID
 - [ ] Officially make it a client side only mod
-- [ ] Fix command autofill
-- [ ] Disable overlay showing with first login
+- [ ] Documentation of features
 
 
 #### Beta
@@ -39,7 +37,7 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 
 #### Post-Beta Refinement
 - [ ] Switch to Apache commons for networking http://hc.apache.org/
-- [ ] Code cleanup
+- [ ] Code cleanup v2
 - [ ] Make open source
 - [ ] Left side screen render location
 - [ ] Implement refined bubble lifespan from Hero's code
@@ -47,9 +45,12 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [ ] Refine glow intensity/spawn box size to be more than just stageSize modifier
 - [ ] Main sentiment moment - i.e. big emoji? - uses already written renderTopFeedback field in HeroData
 - [ ] Other more advanced things like HeroData.activity that were obtained via rewriting complex JS code - keyword "Utilize" for ctr+f
-- [ ] Profiling for performance
+- [ ] Profiling for performance v2
+- [ ] Add more config values where appropriate (e.g. glow intensity)
+- [ ] Scaling of entire gui via config value
 
 
 #### Maybe
 - [ ] Jar in jar w/ Maven build (see laptop for details)?
+- [ ] Slide animation
 

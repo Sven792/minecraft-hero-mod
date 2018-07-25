@@ -1,6 +1,7 @@
 package gr8pefish.heroreactions.minecraft.command;
 
 import gr8pefish.heroreactions.common.Common;
+import gr8pefish.heroreactions.hero.data.FileHelper;
 import gr8pefish.heroreactions.hero.network.json.variants.SubscribeJsonMessage;
 import gr8pefish.heroreactions.hero.network.message.MessageHelper;
 import gr8pefish.heroreactions.hero.network.websocket.WebSocketClient;
@@ -34,8 +35,9 @@ public class CommandHeroMessage extends CommandBase {
     // The strings used for the command, all in one place
     private final String HERO = "heromsg";
     private final String SEND = "[send|sub]";
-    private final String MESSAGE = "[ping|close|message|subtype|help]";
-    private final String MESSAGE_COMMAND = "/"+HERO+" "+SEND+" "+MESSAGE;
+    private final String MESSAGE = "[ping|open|close|message|subscriptionType|help]";
+    private final String OTHER = "[accountID]";
+    private final String MESSAGE_COMMAND = "/"+HERO+" "+SEND+" "+MESSAGE+" "+OTHER;
 
     @Override
     public String getName() {
@@ -54,7 +56,7 @@ public class CommandHeroMessage extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] params) throws CommandException {
-        if (params.length > 0 && params.length <= 2) {
+        if (params.length > 0 && params.length <= 3) {
             //Send message
             if (params[0].equalsIgnoreCase("send")) {
                 if (params.length == 2) { //message supplied (contained in params[1])
@@ -63,6 +65,12 @@ public class CommandHeroMessage extends CommandBase {
                         if (!WebSocketClient.isConnected()) { //closed channel, can't do anything
                             sender.sendMessage(new TextComponentString("Can't send message, connection not open!"));
                             Common.LOGGER.warn("Couldn't process command to send a message (closed channel)!");
+                        //open - open connection
+                        if ("open".equals(params[1].toLowerCase())) {
+                            String accountID = FileHelper.retreiveAccountID();
+                            sender.sendMessage(new TextComponentString("Opening connection to account: "+accountID));
+                            WebSocketClient.establishConnection(accountID);
+                        }
                         //close - close connection
                         } else if ("close".equals(params[1].toLowerCase())) {
                             sender.sendMessage(new TextComponentString("Closing connection."));
@@ -83,6 +91,12 @@ public class CommandHeroMessage extends CommandBase {
                     } catch (Exception e) {
                         sender.sendMessage(new TextComponentString("Invalid message!"));
                         Common.LOGGER.warn("Couldn't process command to send a message!");
+                    }
+                } else if (params.length  == 3) {
+                    //open connection with given ID
+                    if ("open".equals(params[1].toLowerCase())) {
+                        sender.sendMessage(new TextComponentString("Opening connection to account: "+params[2]));
+                        WebSocketClient.establishConnection(params[2].toLowerCase());
                     }
                 }
             //Subscribe message
@@ -125,8 +139,10 @@ public class CommandHeroMessage extends CommandBase {
         List<String> tabCompletion = new ArrayList<String>();
         if (args.length <= 1) //no name, match string
             tabCompletion.addAll(getListOfStringsMatchingLastWord(args, "send", "sub"));
-        else //match name
-            tabCompletion.addAll(getListOfStringsMatchingLastWord(args, "ping", "close", "text message", "subscription type", "help"));
+        else if (args.length <= 2) //match name
+            tabCompletion.addAll(getListOfStringsMatchingLastWord(args, "ping", "open", "close", "textMessage", "subscriptionType", "help"));
+        else
+            tabCompletion.addAll(getListOfStringsMatchingLastWord(args, "accountID"));
         return tabCompletion;
     }
 
