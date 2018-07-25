@@ -63,7 +63,8 @@ public class MinecraftRenderHelper {
         getReactionOverlay().addBubbleToRenderList(type);
     }
 
-    //TODO: Test how necessary this is
+    //Not currently necessary, but keeping in case that changes
+    //At one point is was called inside CommonRenderHelper#renderAllFeedbackBubbles to clear old data before adding the new
     public static void clearOldBubbles() {
         //clear bubbles from render list
         //update time

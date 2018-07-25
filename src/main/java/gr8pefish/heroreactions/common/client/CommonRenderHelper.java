@@ -36,8 +36,6 @@ public class CommonRenderHelper {
     public static void renderAllFeedbackBubbles() {
         //Update stage size
         MinecraftRenderHelper.updateSpawnBoxForStageSize();
-        //Clear old data/bubbles TODO: Redundant?
-//        MinecraftRenderHelper.clearOldBubbles();
         //Loop through all feedback types
         for (Map.Entry<FeedbackTypes, Double> entry : HeroData.FeedbackActivity.getFeedbackRatios().entrySet()) {
             //get how many of each type to display

@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import static gr8pefish.heroreactions.minecraft.lib.ModInfo.MODID;
 import static gr8pefish.heroreactions.minecraft.lib.ModInfo.MOD_NAME;
 
-@Mod(modid = MODID, name = MOD_NAME, version = ModInfo.VERSION, acceptedMinecraftVersions = "[1.12,1.13)")
+@Mod(modid = MODID, name = MOD_NAME, version = ModInfo.VERSION, acceptedMinecraftVersions = "[1.12,1.13)") //clientSideOnly = true -> not explicitly necessary
 public class HeroReactions {
 
     //Proxies

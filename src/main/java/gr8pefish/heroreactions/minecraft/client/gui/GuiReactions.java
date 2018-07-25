@@ -104,7 +104,7 @@ public class GuiReactions {
         bubbleRenderList.add(new Bubble(0, getRandomStartTime(), maxBubbleTime, scalingRatio, positions.getKey(), positions.getValue(), getRandomRotationAngle(), type, true));
     }
 
-    /** Clear bubbles from render list if they shouldn't appear */
+    /** Clear bubbles from render list if they shouldn't appear. Currently unused. */
     public void removeOldBubbles() {
         //loop through bubbles
         for (Bubble bubble : bubbleRenderList) {

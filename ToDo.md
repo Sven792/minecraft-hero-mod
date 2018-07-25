@@ -22,20 +22,22 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [X] Fix commands to give correct message on feedback
 - [X] Add command to retry connection w/ optional ID
 - [X] Improve getCountToRender
-- [ ] Test clearOldBubbles method in main logic loop doing anything
-- [ ] Officially make it a client side only mod
-- [ ] Documentation of features
+- [X] Officially make it a client side only mod
+- [X] Test clearOldBubbles method in main logic loop doing anything
+- [X] Documentation of features
 
 
 #### Beta
+- [X] Profiling for performance
+- [X] Create Curseforge page
+- [ ] Fill out Curseforge page
 - [ ] Test from blank install w/ config - does login via authcode have too much delay so it sends message before WS connection valid?
-- [ ] Profiling for performance
 - [ ] Cleanup Trello board
-- [ ] Create Curseforge page
 - [ ] License
 
 
 #### Post-Beta Refinement
+- [ ] Further improve getCountToRender (specifically with small values)
 - [ ] Switch to Apache commons for networking http://hc.apache.org/
 - [ ] Code cleanup v2
 - [ ] Make open source
