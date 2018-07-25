@@ -6,6 +6,7 @@ import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.minecraft.client.MinecraftRenderHelper;
+import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
 
 import java.util.Map;
 
@@ -70,8 +71,8 @@ public class CommonRenderHelper {
     private static int getCountToRender(double percent, double countInput) {
 
         //minimum and maximum boundings for the bubble count (recommended: no less/more than 1-10)
-        int totalMaxBubbles = 6; //TODO: Config values
-        int totalMinBubbles = 1;
+        int totalMaxBubbles = ConfigHandler.overlayConfigSettings.maxBubblesOfEachType;
+        int totalMinBubbles = ConfigHandler.overlayConfigSettings.minBubblesOfEachType;
 
         // get the maximum number of bubbles to show at one time, bound to the max and min, and multiplied slightly by the stage size
         int maxBubblesAtOnce = (int) Math.ceil(totalMaxBubbles - ((1 - MinecraftRenderHelper.stageSize) * totalMinBubbles)); //constant multiplied slightly by stage size factor (bound totalMin -> totalMax)

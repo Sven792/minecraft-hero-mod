@@ -40,6 +40,12 @@ public class ConfigHandler {
      *  Overlay config tweaks
      */
     public static class OverlaySpecifics {
+        @Config.Comment({ "The maximum number of emojis of each type you will see visually at a time" })
+        public int maxBubblesOfEachType = 6;
+
+        @Config.Comment({ "The minimum number of emojis of each type you will see visually at a time" })
+        public int minBubblesOfEachType = 1;
+
         @Config.Comment({ "Overlay Scale (0-1)" })
         public double overlayScale = 0.5; //TODO: apply config scaling
 
