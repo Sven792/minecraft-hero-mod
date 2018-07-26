@@ -6,7 +6,7 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 * Way to set the interval of subscriptions? Or a 1-time ping? Way to trigger it once, whenever you want?
 
 
-#### Pre-Beta
+#### Completed
 - [X] Split hero logic into packages to keep MC-only and hero-only stuff separate
 - [X] Testing for logic not bound to minecraft (pure hero messaging)
 - [X] Command to clear login data
@@ -27,19 +27,31 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [X] Documentation of features
 
 
-#### Beta
+#### Release
 - [X] Profiling for performance
 - [X] Create Curseforge page
-- [ ] Fill out Curseforge page
-- [ ] Test from blank install w/ config - does login via authcode have too much delay so it sends message before WS connection valid?
+- [X] License
+Logistics
 - [ ] Cleanup Trello board
-- [ ] License
+- [ ] Fill out Curseforge page (Link to API docs - describe potential with mod and that it is OS)
+
+Testing
+- [ ] Test from blank install w/ config - does login via authcode have too much delay so it sends message before WS connection valid?
+- [ ] Code review with Ryan
+
+Additions
+- [ ] Create UI for login
+- [ ] Add in Hero branding url every x seconds
+- [?] Alter bubbling as per Wright's request
+
+Minor
+- [ ] Ensure fade out time is configurable
+- [ ] Change config names to be more readable
 
 
-#### Post-Beta Refinement
+#### Potential future additions
 - [ ] Further improve getCountToRender (specifically with small values)
 - [ ] Switch to Apache commons for networking http://hc.apache.org/
-- [ ] Code cleanup v2
 - [ ] Make open source
 - [ ] Left side screen render location
 - [ ] Implement refined bubble lifespan from Hero's code
