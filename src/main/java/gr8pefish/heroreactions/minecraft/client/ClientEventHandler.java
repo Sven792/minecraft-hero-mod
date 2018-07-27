@@ -10,6 +10,7 @@ import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
 import gr8pefish.heroreactions.minecraft.lib.ModInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
@@ -72,12 +73,18 @@ public class ClientEventHandler {
             int y = currentGui.height / 4 + 48 + 72 + 12;
             event.getButtonList().add(new GuiButtonLogin(LOGIN_BUTTON_ID, x, y)); //place to the right of cancel, mirroring lang
         }
-        //TODO: Add to options screen
+        if (currentGui instanceof GuiOptions) {
+            int i = 1; //oh vanilla code (these ridiculous numbers taken from it)
+            int x = currentGui.width / 2 - 155 + i % 2 * 160 + 155;
+            int y = currentGui.height / 6 - 12 + 24 * (i >> 1);
+            event.getButtonList().add(new GuiButtonLogin(LOGIN_BUTTON_ID, x, y)); //place to the right of realms notifications, out of the way
+
+        }
     }
 
     @SubscribeEvent
     public static void onActionPerformed(GuiScreenEvent.ActionPerformedEvent.Post event) {
-        if (event.getGui() instanceof GuiMainMenu) {
+        if (event.getGui() instanceof GuiMainMenu || event.getGui() instanceof GuiOptions) {
             if (event.getButton().id == LOGIN_BUTTON_ID) {
                 event.getGui().mc.displayGuiScreen(new GuiLogin(event.getGui()));
             }

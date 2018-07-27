@@ -25,14 +25,14 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [X] Officially make it a client side only mod
 - [X] Test clearOldBubbles method in main logic loop doing anything
 - [X] Documentation of features
-
-
-#### Release
 - [X] Profiling for performance
 - [X] Create Curseforge page
 - [X] License
+
+
+#### Release
+
 Logistics
-- [ ] Cleanup Trello board
 - [ ] Fill out Curseforge page (Link to API docs - describe potential with mod and that it is OS)
 
 Testing
@@ -40,7 +40,7 @@ Testing
 - [ ] Code review with Ryan
 
 Additions
-- [ ] Create UI for login
+- [X] Create UI for login
 - [ ] Add in Hero branding url every x seconds
 - [?] Alter bubbling as per Wright's request
 
