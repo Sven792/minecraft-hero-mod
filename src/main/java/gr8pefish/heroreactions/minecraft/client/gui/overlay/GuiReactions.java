@@ -1,4 +1,4 @@
-package gr8pefish.heroreactions.minecraft.client.gui;
+package gr8pefish.heroreactions.minecraft.client.gui.overlay;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -7,7 +7,7 @@ import gr8pefish.heroreactions.common.client.CommonRenderHelper;
 import gr8pefish.heroreactions.hero.client.TransformationTypes;
 import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
-import gr8pefish.heroreactions.hero.data.HeroData;
+import gr8pefish.heroreactions.minecraft.client.gui.overlay.GuiIngameOverlay;
 import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
 import gr8pefish.heroreactions.minecraft.lib.ModInfo;
 import io.netty.util.internal.ConcurrentSet;
@@ -29,8 +29,8 @@ public class GuiReactions {
 
     // Fields
 
-    /** Icons' location for the reaction emoticons */
-    private static final ResourceLocation REACTION_ICONS_TEX_PATH = new ResourceLocation(ModInfo.MODID,"textures/gui/reaction_icons.png");
+    /** Icons' location for the reaction emoticons + more */
+    public static final ResourceLocation REACTION_ICONS_TEX_PATH = new ResourceLocation(ModInfo.MODID,"textures/gui/reaction_icons.png");
 
     //Main overlay
     private GuiIngameOverlay overlay;

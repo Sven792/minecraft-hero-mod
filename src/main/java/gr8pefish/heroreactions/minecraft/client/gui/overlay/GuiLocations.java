@@ -1,11 +1,9 @@
-package gr8pefish.heroreactions.minecraft.client.gui;
+package gr8pefish.heroreactions.minecraft.client.gui.overlay;
 
 import gr8pefish.heroreactions.common.Common;
-import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
 import net.minecraft.client.gui.ScaledResolution;
 
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  * The location to render the overlay in, on the screen. Choices are bottom [left] or [right].

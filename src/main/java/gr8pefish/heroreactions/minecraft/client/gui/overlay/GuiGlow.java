@@ -1,4 +1,4 @@
-package gr8pefish.heroreactions.minecraft.client.gui;
+package gr8pefish.heroreactions.minecraft.client.gui.overlay;
 
 import gr8pefish.heroreactions.minecraft.client.MinecraftRenderHelper;
 import gr8pefish.heroreactions.minecraft.config.ConfigHandler;

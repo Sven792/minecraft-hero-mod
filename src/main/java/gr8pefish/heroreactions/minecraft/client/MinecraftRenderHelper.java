@@ -2,9 +2,8 @@ package gr8pefish.heroreactions.minecraft.client;
 
 import gr8pefish.heroreactions.hero.client.elements.Bubble;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
-import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.hero.data.HeroUtils;
-import gr8pefish.heroreactions.minecraft.client.gui.GuiReactions;
+import gr8pefish.heroreactions.minecraft.client.gui.overlay.GuiReactions;
 
 /**
  * Helper class to delegate all the common calls to the internal rendering methods.
