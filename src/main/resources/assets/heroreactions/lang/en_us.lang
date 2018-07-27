@@ -12,6 +12,9 @@ login.instructions3=You only ever have to do this process once.
 login.tokenLabel=Authorization Code (paste here)
 login.tokenExample=Example: KLX2-7V3D-PMNS
 
+login.tokenAlreadyPresent=Login info already stored! You're good to go.
+login.clearInfo=Clear info
+
 login.successToken=Account info saved successfully!
 login.failToken=Error, please try again.
 

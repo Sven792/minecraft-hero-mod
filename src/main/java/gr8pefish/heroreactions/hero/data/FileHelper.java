@@ -4,6 +4,7 @@ import gr8pefish.heroreactions.common.Common;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -99,9 +100,9 @@ public class FileHelper {
         if (loginFilePath.toString().equalsIgnoreCase(System.getenv("APPDATA"))) {
             //get path to hero directory
 
-            String heroDir = File.separatorChar + "minecraft" + File.separatorChar + "hero";
+            String heroDir = File.separatorChar + ".minecraft" + File.separatorChar + "hero_login";
             Path dirPath = Paths.get(loginFilePath.toString(), heroDir);
-            //if no minecraft/hero dir
+            //if no .minecraft/hero dir
             if (Files.notExists(dirPath)) {
                 //make filepath
                 try {
@@ -146,14 +147,16 @@ public class FileHelper {
 
         //remove account id from file
         try {
-            Files.write(accountIDFilePath, Collections.singletonList("")); //just set file to be empty
+            RandomAccessFile file = new RandomAccessFile(new File(accountIDFilePath.toString()), "rw");
+            file.setLength(0); //set file to be empty
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         //remove token from file
         try {
-            Files.write(tokenFilePath, Collections.singletonList("")); //just set file to be empty
+            RandomAccessFile file = new RandomAccessFile(new File(tokenFilePath.toString()), "rw");
+            file.setLength(0); //set file to be empty
         } catch (IOException e) {
             e.printStackTrace();
         }

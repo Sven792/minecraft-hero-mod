@@ -38,6 +38,7 @@ Logistics
 Testing
 - [ ] Test from blank install w/ config - does login via authcode have too much delay so it sends message before WS connection valid?
 - [ ] Code review with Ryan
+- [ ] Remove debug log spam
 
 Additions
 - [X] Create UI for login
