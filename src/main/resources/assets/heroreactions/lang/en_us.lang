@@ -1,28 +1,28 @@
 # Localizations
 
-# Login UI
-login.title=Log In To Hero (for streamers)
+# Login GUI
+gui.heroreactions.login.title=Log In To Hero (for streamers)
 
-login.heroButton=Redirect to Hero.tv
+gui.heroreactions.login.heroButton=Redirect to Hero.tv
 
-login.instructions1=Click the button to be redirected to Hero.tv.
-login.instructions2=You will get a token, which you can copy and paste here.
-login.instructions3=You only ever have to do this process once.
+gui.heroreactions.login.instructions1=Click the button to be redirected to Hero.tv.
+gui.heroreactions.login.instructions2=You will get a token, which you can copy and paste here.
+gui.heroreactions.login.instructions3=You only ever have to do this process once.
 
-login.tokenLabel=Authorization Code (paste here)
-login.tokenExample=Example: KLX2-7V3D-PMNS
+gui.heroreactions.login.tokenLabel=Authorization Code (paste here)
+gui.heroreactions.login.tokenExample=Example: KLX2-7V3D-PMNS
 
-login.tokenAlreadyPresent=Login info already stored! You're good to go.
-login.clearInfo=Clear info
+gui.heroreactions.login.tokenAlreadyPresent=Login info already stored! You're good to go.
+gui.heroreactions.login.clearInfo=Clear info
 
-login.successToken=Account info saved successfully!
-login.failToken=Error, please try again.
+gui.heroreactions.login.successToken=Account info saved successfully!
+gui.heroreactions.login.failToken=Error, please try again.
 
-login.submit=Submit Token
-login.help=Help/More Info
+gui.heroreactions.login.submit=Submit Token
+gui.heroreactions.login.help=Help/More Info
 
-login.cancel=Cancel
-login.goBack=Go Back
+gui.heroreactions.login.cancel=Cancel
+gui.heroreactions.login.goBack=Go Back
 
 # Keybindings
 key.heroreactions.toggle=Toggle Overlay

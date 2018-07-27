@@ -54,16 +54,13 @@ public class GuiLogin extends GuiScreen {
         String accountID = FileHelper.retreiveAccountID();
         String token = FileHelper.retrieveToken();
 
-        Common.LOGGER.info("T: "+token);
-        Common.LOGGER.info("AID: "+accountID);
-
         if (!token.equals(FileHelper.NONEXISTENT)) { //token exists
             hasTokenAlready = true;
             if (accountID.equals(FileHelper.NONEXISTENT)) { //no owner id, but has token - try to log in again
                 LoginClient.login();
             }
-            this.goBack = this.addButton(new GuiButton(0, this.width / 2 - 75, 115, 150, 20, I18n.format("login.goBack")));
-            this.clearInfo = this.addButton(new GuiButton(5, this.width / 2 - 75, 145, 150, 20, I18n.format("login.clearInfo")));
+            this.goBack = this.addButton(new GuiButton(0, this.width / 2 - 75, 115, 150, 20, I18n.format("gui.heroreactions.login.goBack")));
+            this.clearInfo = this.addButton(new GuiButton(5, this.width / 2 - 75, 145, 150, 20, I18n.format("gui.heroreactions.login.clearInfo")));
         } else { //no info, full login flow
             //token text field present but disabled until you redirect
             this.tokenField = new GuiTextField(9, this.fontRenderer, this.width / 2 - 100, 60, 200, 20);
@@ -72,22 +69,22 @@ public class GuiLogin extends GuiScreen {
             this.tokenField.setVisible(false);
 
             //submit token button likewise disabled for now
-            this.submitToken = this.addButton(new GuiButton(3, this.width / 2 - 75, 115, 150, 20, I18n.format("login.submit")));
+            this.submitToken = this.addButton(new GuiButton(3, this.width / 2 - 75, 115, 150, 20, I18n.format("gui.heroreactions.login.submit")));
             this.submitToken.enabled = false;
             this.submitToken.visible = false;
 
             //go back button also disabled
-            this.goBack = this.addButton(new GuiButton(0, this.width / 2 - 75, 95, 150, 20, I18n.format("login.goBack")));
+            this.goBack = this.addButton(new GuiButton(0, this.width / 2 - 75, 95, 150, 20, I18n.format("gui.heroreactions.login.goBack")));
             this.goBack.enabled = false;
             this.goBack.visible = false;
 
             //her redirect button enabled
-            this.heroRedirect = this.addButton(new GuiButton(4, this.width / 2 - 75, 115, 150, 20, I18n.format("login.heroButton")));
+            this.heroRedirect = this.addButton(new GuiButton(4, this.width / 2 - 75, 115, 150, 20, I18n.format("gui.heroreactions.login.heroButton")));
         }
 
         //help and cancel always present
-        this.buttonList.add(new GuiButton(1, this.width / 2 + 5, this.height - 28, 150, 20, I18n.format("login.cancel")));
-        this.buttonList.add(new GuiButton(2, this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("login.help")));
+        this.buttonList.add(new GuiButton(1, this.width / 2 + 5, this.height - 28, 150, 20, I18n.format("gui.heroreactions.login.cancel")));
+        this.buttonList.add(new GuiButton(2, this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("gui.heroreactions.login.help")));
     }
 
     /**
@@ -96,25 +93,25 @@ public class GuiLogin extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 
         this.drawDefaultBackground();
-        this.drawCenteredString(this.fontRenderer, I18n.format("login.title"), this.width / 2, 20, -1);
+        this.drawCenteredString(this.fontRenderer, I18n.format("gui.heroreactions.login.title"), this.width / 2, 20, -1);
 
         //already logged in
         if (hasTokenAlready) {
-            this.drawString(this.fontRenderer, I18n.format("login.tokenAlreadyPresent"), this.width / 2 - 120, 94, -6250336);
+            this.drawString(this.fontRenderer, I18n.format("gui.heroreactions.login.tokenAlreadyPresent"), this.width / 2 - 120, 94, -6250336);
         //first screen - instructions
         } else if (heroRedirect.enabled) {
             int yStart = 70;
-            this.drawString(this.fontRenderer, I18n.format("login.instructions1"), this.width / 2 - 120, yStart, -6250336);
-            this.drawString(this.fontRenderer, I18n.format("login.instructions2"), this.width / 2 - 120, yStart + 12, -6250336);
-            this.drawString(this.fontRenderer, I18n.format("login.instructions3"), this.width / 2 - 120, yStart + 24, -6250336);
+            this.drawString(this.fontRenderer, I18n.format("gui.heroreactions.login.instructions1"), this.width / 2 - 120, yStart, -6250336);
+            this.drawString(this.fontRenderer, I18n.format("gui.heroreactions.login.instructions2"), this.width / 2 - 120, yStart + 12, -6250336);
+            this.drawString(this.fontRenderer, I18n.format("gui.heroreactions.login.instructions3"), this.width / 2 - 120, yStart + 24, -6250336);
         //second screen - token info
         } else if (tokenField.getVisible()){
-            this.drawString(this.fontRenderer, I18n.format("login.tokenLabel"), this.width / 2 - 100, 47, -6250336);
-            this.drawString(this.fontRenderer, I18n.format("login.tokenExample"), this.width / 2 - 100, 85, -6250336);
+            this.drawString(this.fontRenderer, I18n.format("gui.heroreactions.login.tokenLabel"), this.width / 2 - 100, 47, -6250336);
+            this.drawString(this.fontRenderer, I18n.format("gui.heroreactions.login.tokenExample"), this.width / 2 - 100, 85, -6250336);
             this.tokenField.drawTextBox();
         //third screen - results
         } else if (goBack.enabled && !hasTokenAlready) {
-            String displayText = tokenSuccess ? I18n.format("login.successToken") : I18n.format("login.failToken");
+            String displayText = tokenSuccess ? I18n.format("gui.heroreactions.login.successToken") : I18n.format("gui.heroreactions.login.failToken");
             this.drawString(this.fontRenderer, displayText, this.width / 2 - 85, 75, -6250336);
         }
 
