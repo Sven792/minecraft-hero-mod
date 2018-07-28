@@ -41,11 +41,6 @@ public class HeroReactions {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-
-        //register client commands
-        ClientCommandHandler.instance.registerCommand(new CommandHeroMessage());
-        ClientCommandHandler.instance.registerCommand(new CommandHeroLogin());
-
         proxy.init(event);
     }
 

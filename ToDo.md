@@ -28,6 +28,11 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [X] Profiling for performance
 - [X] Create Curseforge page
 - [X] License
+- [X] Test with server
+- [X] Change config names to be more readable
+- [X] Test from blank install w/ config
+- [X] Create UI for login
+- [X] Ensure fade out time is configurable (fade out amount, and bubble render time is)
 
 
 #### Release
@@ -36,18 +41,12 @@ Logistics
 - [ ] Fill out Curseforge page (Link to API docs - describe potential with mod and that it is OS)
 
 Testing
-- [ ] Test from blank install w/ config - does login via authcode have too much delay so it sends message before WS connection valid?
 - [ ] Code review with Ryan
 - [ ] Remove debug log spam
 
 Additions
-- [X] Create UI for login
 - [ ] Add in Hero branding url every x seconds
 - [?] Alter bubbling as per Wright's request
-
-Minor
-- [ ] Ensure fade out time is configurable
-- [ ] Change config names to be more readable
 
 
 #### Potential future additions
@@ -63,9 +62,6 @@ Minor
 - [ ] Profiling for performance v2
 - [ ] Add more config values where appropriate (e.g. glow intensity)
 - [ ] Scaling of entire gui via config value
-
-
-#### Maybe
 - [ ] Jar in jar w/ Maven build (see laptop for details)?
 - [ ] Slide animation
 
