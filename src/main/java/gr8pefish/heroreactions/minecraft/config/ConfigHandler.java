@@ -41,7 +41,7 @@ public class ConfigHandler {
      */
     public static class OverlaySpecifics {
         @Config.Comment({ "The maximum number of emojis of each type you will see visually at a time" })
-        public int maxBubblesOfEachType = 6;
+        public int maxBubblesOfEachType = 5;
 
         @Config.Comment({ "The minimum number of emojis of each type you will see visually at a time" })
         public int minBubblesOfEachType = 1;
