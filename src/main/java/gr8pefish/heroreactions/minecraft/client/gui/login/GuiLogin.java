@@ -1,7 +1,8 @@
 package gr8pefish.heroreactions.minecraft.client.gui.login;
 
+import com.google.common.base.Strings;
 import gr8pefish.heroreactions.common.Common;
-import gr8pefish.heroreactions.hero.data.FileHelper;
+import gr8pefish.heroreactions.hero.data.UserData;
 import gr8pefish.heroreactions.hero.network.LoginClient;
 import gr8pefish.heroreactions.hero.network.http.HttpClient;
 import net.minecraft.client.gui.GuiButton;
@@ -51,12 +52,12 @@ public class GuiLogin extends GuiScreen {
         this.buttonList.clear();
 
         //check for preexisting info
-        String accountID = FileHelper.retreiveAccountID();
-        String token = FileHelper.retrieveToken();
+        String accountID = UserData.ACCOUNT_ID.retrieve();
+        String token = UserData.TOKEN.retrieve();
 
-        if (!token.equals(FileHelper.NONEXISTENT)) { //token exists
+        if (!Strings.isNullOrEmpty(token)) { //token exists
             hasTokenAlready = true;
-            if (accountID.equals(FileHelper.NONEXISTENT)) { //no owner id, but has token - try to log in again
+            if (Strings.isNullOrEmpty(accountID)) { //no owner id, but has token - try to log in again
                 LoginClient.login();
             }
             this.goBack = this.addButton(new GuiButton(0, this.width / 2 - 75, 115, 150, 20, I18n.format("gui.heroreactions.login.goBack")));
@@ -170,7 +171,8 @@ public class GuiLogin extends GuiScreen {
                 this.buttonList.remove(heroRedirect);
 
             } else if (button.id == 5) { //clear info
-                FileHelper.clearData();
+                UserData.TOKEN.clear();
+                UserData.ACCOUNT_ID.clear();
                 this.hasTokenAlready = false;
                 this.initGui();
             }
