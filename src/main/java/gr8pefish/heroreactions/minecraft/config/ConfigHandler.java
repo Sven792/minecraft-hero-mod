@@ -1,5 +1,6 @@
 package gr8pefish.heroreactions.minecraft.config;
 
+import gr8pefish.heroreactions.minecraft.client.gui.overlay.GuiLocations;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -7,14 +8,16 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import static gr8pefish.heroreactions.minecraft.lib.ModInfo.MODID;
-import static gr8pefish.heroreactions.minecraft.lib.ModInfo.MOD_NAME;
 
-@Config(modid = MODID, name = MOD_NAME + "/" + MODID)
+@Config(modid = MODID, name = MODID + "/" + MODID, category = "")
 @Mod.EventBusSubscriber(modid = MODID)
 public class ConfigHandler {
 
+    @Config.Name("general")
     public static OverlayMain generalConfigSettings = new OverlayMain();
+    @Config.Name("auth")
     public static Auth authConfigSettings = new Auth();
+    @Config.Name("overlay")
     public static OverlaySpecifics overlayConfigSettings = new OverlaySpecifics();
 
     //Add config reloading
@@ -32,7 +35,7 @@ public class ConfigHandler {
         @Config.Comment({ "Enables the overlay" })
         public boolean enableOverlay = true;
 
-        @Config.Comment({ "Show debug data "})
+        @Config.Comment({ "Show debug data"})
         public boolean showDebug = false;
     }
 
@@ -47,13 +50,15 @@ public class ConfigHandler {
         public int minBubblesOfEachType = 1;
 
         @Config.Comment({ "Overlay Scale (0-1)" })
+        @Config.RangeDouble(min = 0, max = 1)
         public double overlayScale = 0.5; //TODO: apply config scaling
 
         @Config.Comment({ "Emoji Scale (0-1)" })
+        @Config.RangeDouble(min = 0, max = 1)
         public double emojiScale = 0.4;
 
         @Config.Comment({ "Overlay Position (left, right)" })
-        public String overlayPos = "right";
+        public GuiLocations overlayPos = GuiLocations.RIGHT;
 
         @Config.Comment({ "Maximum time an emoji appears (in milliseconds)" })
         public double maxEmojiTime = 1000;
@@ -62,6 +67,7 @@ public class ConfigHandler {
         public double maxEmojiOffsetTimeRatio = 1.5;
 
         @Config.Comment({ "How intense the glow effect is (0-255)" })
+        @Config.RangeInt(min = 0, max = 255)
         public int maxGlowIntensity = 150;
     }
 
