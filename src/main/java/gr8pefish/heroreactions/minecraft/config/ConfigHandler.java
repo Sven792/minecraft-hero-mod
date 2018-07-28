@@ -63,6 +63,10 @@ public class ConfigHandler {
 
         @Config.Comment({ "How intense the glow effect is (0-255)" })
         public int maxGlowIntensity = 150;
+
+        @Config.Comment({ "Percentage of the minimum transparency an emoji should have when fading away. Default is 10%."})
+        @Config.RangeDouble(min = 0, max = 1)
+        public double minOpacity = 0.1;
     }
 
     /**

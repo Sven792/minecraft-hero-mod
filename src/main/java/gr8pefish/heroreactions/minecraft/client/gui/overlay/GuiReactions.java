@@ -39,8 +39,9 @@ public class GuiReactions {
     private static ConcurrentSet<Bubble> bubbleRenderList;
 
     //Variables set by config data
-    public final double maxBubbleTime = ConfigHandler.overlayConfigSettings.maxEmojiTime; //maximum time the bubble can appear
-    public final double maxStartTimeOffset = maxBubbleTime * ConfigHandler.overlayConfigSettings.maxEmojiOffsetTimeRatio; //in ms, NOT inclusive
+    public double maxBubbleTime = ConfigHandler.overlayConfigSettings.maxEmojiTime; //maximum time the bubble can appear
+    public double maxStartTimeOffset = maxBubbleTime * ConfigHandler.overlayConfigSettings.maxEmojiOffsetTimeRatio; //in ms, NOT inclusive
+    public double minOpacity = ConfigHandler.overlayConfigSettings.minOpacity;
 
     //Basic variables
     public static final int imageTextureWidth = 16; //16 pixel square
@@ -160,7 +161,7 @@ public class GuiReactions {
         double maxBubbleTime = bubble.getMaxTimeWithOffset();
 
         //simply progress over lifespan ratio
-        opacity = (float) MathHelper.clamp(timestampSize / maxBubbleTime, 0, 0.9); // clamp to limit min transparency to be at least 10% opaque
+        opacity = (float) MathHelper.clamp(timestampSize / maxBubbleTime, 0, 1 - minOpacity); // clamp to limit min transparency to be at least x opaque
         opacity = 1 - opacity; //inverse, make more transparent over time
 
         //set transparency
