@@ -20,7 +20,7 @@ import java.util.List;
 public class FileHelper {
 
     /** Base dir */
-    private static Path loginFilePath = Common.loginPathFromConfig;
+    private static Path loginFilePath = Common.LOGIN_PATH_FROM_CONFIG;
     /** Token file dir */
     private static final String tokenName = File.separatorChar+"token.txt";
     private static Path tokenFilePath = Paths.get(loginFilePath.toString(), tokenName);
