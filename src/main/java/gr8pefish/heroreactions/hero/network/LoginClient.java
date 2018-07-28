@@ -26,7 +26,7 @@ public class LoginClient {
         //if account ID exists
         if (!accountID.equals(FileHelper.NONEXISTENT)) {
             //login with correct user
-            Common.LOGGER.info("Logging in with user with account ID: "+ accountID);
+            Common.LOGGER.debug("Logging in with user with account ID: "+ accountID);
             WebSocketClient.establishConnection(accountID);
             return;
         }
@@ -42,7 +42,6 @@ public class LoginClient {
         }
 
         //Couldn't login, tell user
-        //TODO: One time chat message - first time playing
         Common.LOGGER.info("Couldn't log in, no information found. Run '/hero login help' to amend this.");
     }
 

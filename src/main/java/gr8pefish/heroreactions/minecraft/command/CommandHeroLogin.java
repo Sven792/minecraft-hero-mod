@@ -73,7 +73,7 @@ public class CommandHeroLogin extends CommandBase {
                     } else {
                         //token login
                         //exchange for correct token
-                        Common.LOGGER.info("Exchanging token...");
+                        Common.LOGGER.debug("Exchanging token...");
                         try {
                             HttpClient.sendHttpMessage(HttpClient.httpMessageActions.GET_ACCESS_TOKEN_FROM_AUTHCODE, params[1]);
                             sender.sendMessage(new TextComponentString("Storing token and logging you in..."));

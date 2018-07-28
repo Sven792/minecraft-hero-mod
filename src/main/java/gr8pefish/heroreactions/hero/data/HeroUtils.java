@@ -122,7 +122,7 @@ public class HeroUtils {
                 feedbackRatios.put(entry.getKey(), entry.getValue().doubleValue() / HeroData.FeedbackActivity.totalFeedbackCount);
             }
         }
-        Common.LOGGER.info("Feedback ratios created: "+feedbackRatios.toString());
+        Common.LOGGER.debug("Feedback ratios created: "+feedbackRatios.toString());
     }
 
     /**
@@ -135,7 +135,7 @@ public class HeroUtils {
         if (scale > 1) scale = 1;
         if (scale < 0) scale = 0;
         MinecraftRenderHelper.stageSize = scale;
-        Common.LOGGER.info("Stage size: "+Math.floor(MinecraftRenderHelper.stageSize * 100)+"%");
+        Common.LOGGER.debug("Stage size: "+Math.floor(MinecraftRenderHelper.stageSize * 100)+"%");
     }
 
 

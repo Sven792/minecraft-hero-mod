@@ -129,7 +129,7 @@ public final class WebSocketClient {
 
         //confirm websocket connections only
         if (!"ws".equalsIgnoreCase(scheme) && !"wss".equalsIgnoreCase(scheme)) {
-            System.err.println("Only WS(S) is supported.");
+            Common.LOGGER.error("Only WS(S) is supported.");
             return;
         }
 

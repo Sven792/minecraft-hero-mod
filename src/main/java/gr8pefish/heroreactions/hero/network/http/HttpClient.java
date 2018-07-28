@@ -43,7 +43,7 @@ public final class HttpClient {
         }
 
         if (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)) {
-            System.err.println("Only HTTP(S) is supported.");
+            Common.LOGGER.error("Only HTTP(S) is supported.");
             return;
         }
 

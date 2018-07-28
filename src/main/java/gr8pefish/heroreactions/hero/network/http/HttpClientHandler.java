@@ -82,7 +82,7 @@ public class HttpClientHandler extends SimpleChannelInboundHandler<HttpObject> {
                             //store in file
                             FileHelper.storeAccountID(finalAccountID);
                             //Debug printing
-                            Common.LOGGER.info("Logging in with account ID: " + finalAccountID);
+                            Common.LOGGER.debug("Logging in with account ID: " + finalAccountID);
                             //close old connection
                             WebSocketClient.closeConnection();
                             //start new one

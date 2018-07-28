@@ -33,6 +33,7 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [X] Test from blank install w/ config
 - [X] Create UI for login
 - [X] Ensure fade out time is configurable (fade out amount, and bubble render time is)
+- [X] Remove debug log spam
 
 
 #### Release
@@ -42,10 +43,10 @@ Logistics
 
 Testing
 - [ ] Code review with Ryan
-- [ ] Remove debug log spam
 
 Additions
 - [ ] Add in Hero branding url every x seconds
+- [ ] Make it so file saving works on different OS's
 - [?] Alter bubbling as per Wright's request
 
 
