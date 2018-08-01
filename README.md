@@ -1,23 +1,28 @@
-# Hero Reactions
+# Hero Reactions [![Downloads](http://cf.way2muchnoise.eu/full_hero-reactions_downloads.svg) ![Available](http://cf.way2muchnoise.eu/versions/hero-reactions.svg)](https://minecraft.curseforge.com/projects/hero-reactions)
+
+For all the juicy information (and downloads) see the CurseForge page [here](https://minecraft.curseforge.com/projects/hero-reactions). Enjoy!
 
 ### Description
 
-Think Facebook live reactions, in Minecraft, via your streaming service of choice (e.g. Twitch). There are 5 reactions users can click at any time: shock, laughter, applause, love, and anger. Instead of trying to do the impossible (playing the game while constantly scanning Twitch chat to understand the sentiment of your crowd), streamers can now simply glance at the bottom of your screen and get an impression for how many people are watching, how people generally feel, and how people feel at specific moments. This has profound effects, ranging from greatly increasing retention to data analytics that show what actions lead up to moments that make viewers feel engaged. It allows for more transparent revenue cuts via Hero, making everyone feel better about donations/purchases. Essentially, by creating engagement to the audience (at any scale), you can have more information about what works and what doesn’t, allowing for the creation of the best possible streams (benefiting everyone involved)!
+This mod uses [Hero.tv](https://www.hero.tv/) to allow viewers to react to a stream with emoticons.
 
-Because of the above, I am making a mod to integrate these live reactions into Minecraft.
+![](https://i.imgur.com/PZWWdM9.png)
 
-### Further Documentation
+This closes the gap between the streamer and the viewer, making it more interactive and thereby more enjoyable for everyone.
 
-https://docs.google.com/document/d/1528iFO5U9Mi8379oDrzrlxgvYxmy_EmyzHAejXu-XYU/edit?usp=sharing
+Hero Reactions is a mod that simply integrates this functionality into Minecraft. This occurs with the addition of an overlay in the bottom corner of the screen, and when reactions occur the streamer will see them pop up in-game!
 
-### Technical Details
+![](https://i.imgur.com/GcTml1r.png)
 
-[Coming soon]
+## Support/Issues
 
+### 1.12 ![](https://img.shields.io/badge/Status-Fully%20supported-green.svg)
 
-### Setup
+This version will receive bug-fixes and new content until further notice.
+
+### Setup/Contributing
 
 1) Clone
 2) Run `gradlew setupDecompWorkspace`
-3) Enjoy
+3) View the contribution document for guidelines [TODO]
 
