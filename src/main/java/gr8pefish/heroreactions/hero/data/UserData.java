@@ -17,15 +17,26 @@ public class UserData {
     public static final UserData TOKEN = new UserData("token");
     public static final UserData ACCOUNT_ID = new UserData("accountID");
 
-    private static final String DEFAULT_DIR = System.getenv("APPDATA"); // TODO Change to something system agnostic
-    private static Path dataDir = Common.LOGIN_PATH_FROM_CONFIG;
+    private static final String DEFAULT_DIR = getDefaultDirectory();
+
+    /** Set the file path to something valid - depends on the operating system */
+    private static String getDefaultDirectory() {
+        String OS = System.getProperty("os.name").toUpperCase();
+        if (OS.contains("WIN"))
+            return System.getenv("APPDATA");
+        else if (OS.contains("MAC"))
+            return System.getProperty("user.home") + File.separatorChar + "Library" + File.separatorChar + "Application Support";
+        else if (OS.contains("NUX"))
+            return System.getProperty("user.home") + File.separatorChar + ".config";
+        return System.getProperty("user.dir");
+    }
 
     private final String name;
     private Path path;
 
     UserData(String name) {
         this.name = File.separatorChar + name + ".txt";
-        this.path = Paths.get(Common.LOGIN_PATH_FROM_CONFIG.toString(), name);
+        this.path = Paths.get(DEFAULT_DIR, name);
     }
 
     public String retrieve() {
@@ -71,12 +82,12 @@ public class UserData {
         Path filePath = Paths.get(dataDir.toString(), name);
         try {
             Files.createFile(filePath);
-            this.path = filePath;
         } catch (FileAlreadyExistsException e) {
             Common.LOGGER.debug("File {} already exists.", filePath.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.path = filePath;
     }
 
     public String getName() {
@@ -88,23 +99,18 @@ public class UserData {
     }
 
     private static Path getFilePath() {
-        if (dataDir.toString().equalsIgnoreCase(DEFAULT_DIR)) {
-            //get path to hero directory
-
-            String heroDir = File.separatorChar + ".minecraft" + File.separatorChar + "hero_login";
-            Path dirPath = Paths.get(dataDir.toString(), heroDir);
-            //if no .minecraft/hero dir
-            if (Files.notExists(dirPath)) {
-                //make filepath
-                try {
-                    Files.createDirectories(dirPath);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        //get path to hero directory
+        String heroDir = File.separatorChar + ".minecraft" + File.separatorChar + "hero";
+        Path dirPath = Paths.get(DEFAULT_DIR, heroDir);
+        //if no .minecraft/hero dir
+        if (Files.notExists(dirPath)) {
+            //make filepath
+            try {
+                Files.createDirectories(dirPath);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            dataDir = dirPath;
         }
-
-        return dataDir;
+        return dirPath;
     }
 }

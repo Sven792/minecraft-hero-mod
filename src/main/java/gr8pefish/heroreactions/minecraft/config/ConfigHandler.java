@@ -15,8 +15,6 @@ public class ConfigHandler {
 
     @Config.Name("general")
     public static OverlayMain generalConfigSettings = new OverlayMain();
-    @Config.Name("auth")
-    public static Auth authConfigSettings = new Auth();
     @Config.Name("overlay")
     public static OverlaySpecifics overlayConfigSettings = new OverlaySpecifics();
 
@@ -73,14 +71,6 @@ public class ConfigHandler {
         @Config.Comment({ "Percentage of the minimum transparency an emoji should have when fading away. Default is 10%."})
         @Config.RangeDouble(min = 0, max = 1)
         public double minOpacity = 0.1;
-    }
-
-    /**
-     * Authorization config tweaks
-     */
-    public static class Auth {
-        @Config.Comment({ "The filepath to store login data at" })
-        public String loginFilePath = System.getenv("APPDATA");
     }
 
 }
