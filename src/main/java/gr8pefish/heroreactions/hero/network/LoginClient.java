@@ -1,7 +1,8 @@
 package gr8pefish.heroreactions.hero.network;
 
+import com.google.common.base.Strings;
 import gr8pefish.heroreactions.common.Common;
-import gr8pefish.heroreactions.hero.data.FileHelper;
+import gr8pefish.heroreactions.hero.data.UserData;
 import gr8pefish.heroreactions.hero.network.http.HttpClient;
 import gr8pefish.heroreactions.hero.network.websocket.WebSocketClient;
 
@@ -22,9 +23,9 @@ public class LoginClient {
     public static void login() {
         //try with account ID first
         Common.LOGGER.debug("Checking for account ID...");
-        accountID = FileHelper.retreiveAccountID();
+        accountID = UserData.ACCOUNT_ID.retrieve();
         //if account ID exists
-        if (!accountID.equals(FileHelper.NONEXISTENT)) {
+        if (!Strings.isNullOrEmpty(accountID)) {
             //login with correct user
             Common.LOGGER.debug("Logging in with user with account ID: "+ accountID);
             WebSocketClient.establishConnection(accountID);
@@ -32,10 +33,10 @@ public class LoginClient {
         }
 
         //try with token
-        String token = FileHelper.retrieveToken();
+        String token = UserData.TOKEN.retrieve();
         Common.LOGGER.debug("Checking for access token...");
         //if token exists
-        if (!token.equals(FileHelper.NONEXISTENT)) {
+        if (!Strings.isNullOrEmpty(token)) {
             //get accountID from token
             accountID = getOwnerIdFromToken(token);
             //automatically logs in via async calls if possible
@@ -52,7 +53,7 @@ public class LoginClient {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return FileHelper.NONEXISTENT;
+        return "";
     }
 
 }

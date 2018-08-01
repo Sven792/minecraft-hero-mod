@@ -1,7 +1,7 @@
 package gr8pefish.heroreactions.minecraft.command;
 
 import gr8pefish.heroreactions.common.Common;
-import gr8pefish.heroreactions.hero.data.FileHelper;
+import gr8pefish.heroreactions.hero.data.UserData;
 import gr8pefish.heroreactions.hero.network.json.variants.SubscribeJsonMessage;
 import gr8pefish.heroreactions.hero.network.message.MessageHelper;
 import gr8pefish.heroreactions.hero.network.websocket.WebSocketClient;
@@ -67,7 +67,7 @@ public class CommandHeroMessage extends CommandBase {
                             Common.LOGGER.warn("Couldn't process command to send a message (closed channel)!");
                         //open - open connection
                         if ("open".equals(params[1].toLowerCase())) {
-                            String accountID = FileHelper.retreiveAccountID();
+                            String accountID = UserData.ACCOUNT_ID.retrieve();
                             sender.sendMessage(new TextComponentString("Opening connection to account: "+accountID));
                             WebSocketClient.establishConnection(accountID);
                         }

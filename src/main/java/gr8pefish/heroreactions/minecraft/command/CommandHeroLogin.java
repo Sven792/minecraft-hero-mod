@@ -1,7 +1,7 @@
 package gr8pefish.heroreactions.minecraft.command;
 
 import gr8pefish.heroreactions.common.Common;
-import gr8pefish.heroreactions.hero.data.FileHelper;
+import gr8pefish.heroreactions.hero.data.UserData;
 import gr8pefish.heroreactions.hero.network.http.HttpClient;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -68,7 +68,8 @@ public class CommandHeroLogin extends CommandBase {
                     if (params[1].equalsIgnoreCase("help")) {
                         sender.sendMessage(helpMsg);
                     } else if (params[1].equalsIgnoreCase("clear")) {
-                        FileHelper.clearData();
+                        UserData.TOKEN.clear();
+                        UserData.ACCOUNT_ID.clear();
                         sender.sendMessage(new TextComponentString("Cleared data"));
                     } else {
                         //token login

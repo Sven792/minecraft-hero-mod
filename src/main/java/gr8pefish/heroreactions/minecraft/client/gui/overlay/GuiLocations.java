@@ -12,9 +12,6 @@ public enum GuiLocations {
     LEFT,
     RIGHT;
 
-    //Default location is the right
-    private static GuiLocations DEFAULT = RIGHT;
-
     //The boundings of the box
     private int xStart;
     private int yStart;
@@ -140,14 +137,4 @@ public enum GuiLocations {
     public int getMiddleXUnscaledToStageSize(int textureSizeX) {
         return (this.xStart + (this.width / 2)) - (textureSizeX / 2); //middle of box, minus half the length of the texture - centered
     }
-
-    /** Safe way to access the location from a string (obtained via config) */
-    public static GuiLocations getLocationFromString(String string) {
-        if (Arrays.asList(GuiLocations.values()).contains(string)) {
-            return GuiLocations.valueOf(string);
-        } else {
-            return DEFAULT; //RIGHT
-        }
-    }
-
 }

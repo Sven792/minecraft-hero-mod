@@ -1,7 +1,8 @@
 package gr8pefish.heroreactions.hero.network.http;
 
+import com.google.common.base.Strings;
 import gr8pefish.heroreactions.common.Common;
-import gr8pefish.heroreactions.hero.data.FileHelper;
+import gr8pefish.heroreactions.hero.data.UserData;
 import gr8pefish.heroreactions.hero.network.LoginClient;
 import gr8pefish.heroreactions.hero.network.websocket.WebSocketClient;
 import io.netty.channel.ChannelFuture;
@@ -47,7 +48,8 @@ public class HttpClientHandler extends SimpleChannelInboundHandler<HttpObject> {
             //if msg contains "token", get token
             if (msg.contains("token")) {
                 token = msg.substring(10, msg.length() - 2); //cut away beginning, cut out bracket and quotation at end -> {"token": "12t63-hg2e7-yd9u3-ha4dg"} results in '1..g'
-                FileHelper.storeToken(token); //store token in file
+                if (!UserData.TOKEN.store(token)) //store token in file
+                    Common.LOGGER.warn("Failed to store the token");
                 useToken = true;
                 //login via websocket as well -> async at end
             }
@@ -78,9 +80,10 @@ public class HttpClientHandler extends SimpleChannelInboundHandler<HttpObject> {
                     //if useAccountID -> log in with that data after storing it in a file
                     if (finalUseAccountID) {
                         //login with accountID
-                        if (!finalAccountID.equalsIgnoreCase(FileHelper.NONEXISTENT)) {
+                        if (!Strings.isNullOrEmpty(finalAccountID)) {
                             //store in file
-                            FileHelper.storeAccountID(finalAccountID);
+                            if (!UserData.ACCOUNT_ID.store(finalAccountID))
+                                Common.LOGGER.warn("Failed to store the account ID");
                             //Debug printing
                             Common.LOGGER.debug("Logging in with account ID: " + finalAccountID);
                             //close old connection

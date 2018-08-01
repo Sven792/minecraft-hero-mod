@@ -1,6 +1,5 @@
 package gr8pefish.heroreactions.minecraft;
 
-import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.hero.test.MainTest;
 import gr8pefish.heroreactions.minecraft.command.CommandHeroLogin;
 import gr8pefish.heroreactions.minecraft.command.CommandHeroMessage;
@@ -30,9 +29,6 @@ public class HeroReactions {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-
-        //init logger
-        Common.LOGGER = event.getModLog();
 
         //init other
         proxy.preInit(event);

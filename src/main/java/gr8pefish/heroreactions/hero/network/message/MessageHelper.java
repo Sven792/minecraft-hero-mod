@@ -3,6 +3,7 @@ package gr8pefish.heroreactions.hero.network.message;
 import gr8pefish.heroreactions.common.Common;
 import gr8pefish.heroreactions.hero.data.FeedbackTypes;
 import gr8pefish.heroreactions.hero.data.HeroData;
+import gr8pefish.heroreactions.hero.data.UserData;
 import gr8pefish.heroreactions.hero.network.json.variants.PingPongJsonMessage;
 import gr8pefish.heroreactions.hero.network.json.variants.SubscribeJsonMessage;
 import gr8pefish.heroreactions.hero.network.websocket.WebSocketClient;
@@ -49,7 +50,7 @@ public class MessageHelper {
         ArrayList<String> returnList = new ArrayList<>();
         if (WebSocketClient.isConnected()) { //connected
             //AccountID - for debug purposes, inefficient code so commented out for production
-//            returnList.add("ID: " + FileHelper.retreiveAccountID());
+//            returnList.add("ID: " + UserData.ACCOUNT_ID.retrieve());
             //isOnline
             returnList.add("Online: "+ HeroData.Online.isOnline);
             //viewerCount
