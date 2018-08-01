@@ -5,5 +5,5 @@ gradle/
 *.iml
 run/
 out/
-
+src-js/
 *.psd
