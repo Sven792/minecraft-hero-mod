@@ -56,4 +56,14 @@ public class LoginClient {
         return "";
     }
 
+    public static String getHashIdFromAccount(String accountID) {
+        //send REST request with JSON token
+        try {
+            HttpClient.sendHttpMessage(HttpClient.httpMessageActions.GET_URL_HASH_FOR_USER, accountID); //send request
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
 }

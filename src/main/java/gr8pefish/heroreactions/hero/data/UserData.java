@@ -16,6 +16,7 @@ public class UserData {
 
     public static final UserData TOKEN = new UserData("token");
     public static final UserData ACCOUNT_ID = new UserData("accountID");
+    public static final UserData HASH_ID = new UserData("hashID");
 
     private static final String DEFAULT_DIR = getDefaultDirectory();
 

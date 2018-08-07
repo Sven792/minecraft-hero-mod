@@ -1,11 +1,11 @@
 package gr8pefish.heroreactions.minecraft.client;
 
-import gr8pefish.heroreactions.common.Common;
+import gr8pefish.heroreactions.hero.data.HeroData;
 import gr8pefish.heroreactions.hero.network.websocket.WebSocketClient;
 import gr8pefish.heroreactions.minecraft.client.gui.login.GuiButtonLogin;
+import gr8pefish.heroreactions.minecraft.client.gui.login.GuiLogin;
 import gr8pefish.heroreactions.minecraft.client.gui.overlay.GuiIngameOverlay;
 import gr8pefish.heroreactions.minecraft.client.gui.overlay.GuiLocations;
-import gr8pefish.heroreactions.minecraft.client.gui.login.GuiLogin;
 import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
 import gr8pefish.heroreactions.minecraft.lib.ModInfo;
 import net.minecraft.client.Minecraft;
@@ -38,6 +38,9 @@ public class ClientEventHandler {
     @SubscribeEvent
     public void onRenderOverlayGUI(RenderGameOverlayEvent.Text event) { //can do pre/post also //TODO: Ensure correct event
         if (ConfigHandler.generalConfigSettings.enableOverlay && WebSocketClient.isConnected()) {
+
+            //Don't show anything unless the stream is online
+            if (!HeroData.Online.isOnline) return;
 
             //Scale the rendering location data to fit current screen size
             GuiLocations.applyPositionScaling(overlay.getGuiLocation(), event.getResolution());

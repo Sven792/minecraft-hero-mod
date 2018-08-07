@@ -54,6 +54,13 @@ public class HttpClientHandler extends SimpleChannelInboundHandler<HttpObject> {
                 //login via websocket as well -> async at end
             }
 
+            //if msg contains "hash-id", get hash_id
+            if (msg.contains("hash-id")) {
+                String hash = msg.substring(12, msg.length() - 2); //cut away beginning, cut out bracket and quotation at end -> {"hash-id": "gh5y"} results in '1..g'
+                if (!UserData.HASH_ID.store(hash)) //store token in file
+                    Common.LOGGER.warn("Failed to store the hash_id");
+            }
+
             //Debug printing
             Common.LOGGER.debug("Obtained message: "+msg);
 
@@ -90,6 +97,8 @@ public class HttpClientHandler extends SimpleChannelInboundHandler<HttpObject> {
                             WebSocketClient.closeConnection();
                             //start new one
                             WebSocketClient.establishConnection(finalAccountID);
+                            //get hash-id
+                            LoginClient.getHashIdFromAccount(finalAccountID);
                         }
                     }
                 });

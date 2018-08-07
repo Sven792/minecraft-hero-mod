@@ -1,6 +1,7 @@
 package gr8pefish.heroreactions.hero.network.http;
 
 import gr8pefish.heroreactions.common.Common;
+import gr8pefish.heroreactions.hero.data.UserData;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -14,6 +15,8 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.util.CharsetUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.net.URI;
 
 import static io.netty.buffer.Unpooled.wrappedBuffer;
@@ -25,12 +28,16 @@ import static io.netty.buffer.Unpooled.wrappedBuffer;
  */
 public final class HttpClient {
 
-    //ws -> account
-    //account -> access token
-    //store: access token, account info
-
-    public static void sendHttpMessage(httpMessageActions messageAction, String authCodeOrAccessToken) throws Exception {
-        URI uri = new URI(System.getProperty("url", messageAction.url));
+    /**
+     * Send a basic HTTP message to the server
+     *
+     * @param messageAction - one of the {@link httpMessageActions}
+     * @param extraData - authorization code, access token, or account ID
+     * @throws Exception - if connection is not successful
+     */
+    public static void sendHttpMessage(@Nonnull httpMessageActions messageAction, @Nullable String extraData) throws Exception {
+        String URL = messageAction.equals(httpMessageActions.GET_URL_HASH_FOR_USER) ? messageAction.url + extraData + "/hash-id" : messageAction.url;
+        URI uri = new URI(System.getProperty("url", URL));
         String scheme = uri.getScheme() == null? "http" : uri.getScheme();
         String host = uri.getHost() == null? "127.0.0.1" : uri.getHost();
         int port = uri.getPort();
@@ -72,22 +79,25 @@ public final class HttpClient {
             // Make the connection attempt.
             Channel ch = b.connect(host, port).sync().channel();
 
-            //setup message
-            ByteBuf byteMessage = wrappedBuffer(messageAction.jsonData.concat(authCodeOrAccessToken+"\"}").getBytes(CharsetUtil.UTF_8));
             //different action depending on message type
             HttpRequest request;
             if (messageAction.equals(httpMessageActions.GET_ACCOUNT_ID_FROM_ACCESS_TOKEN)) {
                 //add auth token header
                 request = new DefaultFullHttpRequest(
                         HttpVersion.HTTP_1_1, messageAction.httpType, uri.getRawPath());
-                request.headers().set("Authorization", "Token "+authCodeOrAccessToken);
-            } else { //GET_ACCESS_TOKEN_FROM_AUTHCODE
+                request.headers().set("Authorization", "Token "+extraData);
+            } else if (messageAction.equals(httpMessageActions.GET_ACCESS_TOKEN_FROM_AUTHCODE)){
+                //setup message
+                ByteBuf byteMessage = wrappedBuffer(messageAction.jsonData.concat(extraData+"\"}").getBytes(CharsetUtil.UTF_8));
                 //add message to body, and add content detail headers (necessary)
                 request = new DefaultFullHttpRequest(
                         HttpVersion.HTTP_1_1, messageAction.httpType, uri.getRawPath(),
                         byteMessage);
                 request.headers().add(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON);
                 request.headers().set(HttpHeaderNames.CONTENT_LENGTH, byteMessage.readableBytes());
+            } else { // GET_URL_HASH_FROM_USER
+                request = new DefaultFullHttpRequest(
+                        HttpVersion.HTTP_1_1, messageAction.httpType, uri.getRawPath());
             }
 
             // Prepare the HTTP request with a body dependent on the message type.
@@ -95,7 +105,7 @@ public final class HttpClient {
             request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
 
             //Debug printing
-            Common.LOGGER.debug("Message sent to server: " + messageAction.jsonData.concat(authCodeOrAccessToken+"\"}"));
+            Common.LOGGER.debug("Message sent to server: " + messageAction.jsonData.concat(extraData+"\"}"));
 
             // Send the HTTP request.
             ch.writeAndFlush(request);
@@ -115,7 +125,8 @@ public final class HttpClient {
     public enum httpMessageActions {
 
         GET_ACCESS_TOKEN_FROM_AUTHCODE("https://api.outpostgames.com/api/access-token/auth-code", HttpMethod.POST, "{\"code\":\""),
-        GET_ACCOUNT_ID_FROM_ACCESS_TOKEN("https://api.outpostgames.com/api/account", HttpMethod.GET, "{\"token\":\"");
+        GET_ACCOUNT_ID_FROM_ACCESS_TOKEN("https://api.outpostgames.com/api/account", HttpMethod.GET, "{\"token\":\""),
+        GET_URL_HASH_FOR_USER("https://api.outpostgames.com/api/account/", HttpMethod.GET, "");
 
         /** The URL to connect to */
         private final String url;
