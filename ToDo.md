@@ -36,14 +36,12 @@ See Trello board [here](https://trello.com/b/XwNjGwyC).
 - [X] Remove debug log spam
 - [X] Make it so file saving works on different OS's
 - [X] Fill out Curseforge page (Link to API docs - describe potential with mod and that it is OS)
+- [X] Add in Hero branding url every x seconds
 
 
 #### Release
 Testing
 - [ ] Code review with Ryan
-
-Additions
-- [ ] Add in Hero branding url every x seconds
 
 
 #### Potential future additions
