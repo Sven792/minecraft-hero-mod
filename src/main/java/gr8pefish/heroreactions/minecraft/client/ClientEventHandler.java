@@ -21,6 +21,7 @@ import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
 
@@ -52,6 +53,35 @@ public class ClientEventHandler {
             //Render the overlay
             overlay.renderOverlay(event.getResolution());
         }
+    }
+
+    //Counter for rendering popup URL
+
+    private static int tickCounter;
+    private static int secondCounter; //20 ticks in a game second
+    private static int displayStartTime = ConfigHandler.overlayConfigSettings.urlPopupSpacing;
+    private static int displayEndTime = displayStartTime + ConfigHandler.overlayConfigSettings.urlPopupDuration;
+
+    @SubscribeEvent
+    public static void onTick(TickEvent.ClientTickEvent event) {
+        //increment tick counter
+        tickCounter++;
+
+        //increment second counter
+        if (tickCounter >= 20) {
+            secondCounter++;
+            tickCounter = 0;
+        }
+
+        //reset if over total time
+        if (secondCounter >= displayEndTime) {
+            overlay.setRenderPopupURL(false);
+            secondCounter = 0;
+        //otherwise, check if should draw info
+        } else if (secondCounter >= displayStartTime) {
+            overlay.setRenderPopupURL(true);
+        }
+
     }
 
     //Keybinding for toggling the overlay

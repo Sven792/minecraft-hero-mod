@@ -1,5 +1,6 @@
 package gr8pefish.heroreactions.minecraft.client.gui.overlay;
 
+import gr8pefish.heroreactions.hero.data.UserData;
 import gr8pefish.heroreactions.hero.network.message.MessageHelper;
 import gr8pefish.heroreactions.minecraft.config.ConfigHandler;
 import net.minecraft.client.Minecraft;
@@ -31,6 +32,9 @@ public class GuiIngameOverlay extends Gui {
     private GuiReactions reactions;
     @Nonnull
     private GuiGlow glow;
+
+    private boolean renderPopupURL;
+    private String url = "hero.tv/"+ UserData.HASH_ID.retrieve();
 
     public long lastTime;
     public long currentTime;
@@ -84,6 +88,10 @@ public class GuiIngameOverlay extends Gui {
         this.viewCount = viewCount;
     }
 
+    public void setRenderPopupURL(boolean renderPopupURL) {
+        this.renderPopupURL = renderPopupURL;
+    }
+
     //Render
 
     public void renderOverlay(ScaledResolution scaledResolution) {
@@ -112,6 +120,20 @@ public class GuiIngameOverlay extends Gui {
                 Gui.drawRect(1, top - 1, 2 + mc.fontRenderer.getStringWidth(msg) + 1, top + mc.fontRenderer.FONT_HEIGHT - 1, -1873784752);
                 mc.fontRenderer.drawString(msg, 2, top, 14737632);
                 top += mc.fontRenderer.FONT_HEIGHT;
+            }
+        }
+
+        //draw popup URL string
+        if (renderPopupURL) {
+            switch (ConfigHandler.overlayConfigSettings.urlPopupLocation) {
+                case 1: //bottom right
+                    int padding = 2;
+                    int x = scaledResolution.getScaledWidth() - mc.fontRenderer.getStringWidth(url) - padding;
+                    int y = scaledResolution.getScaledHeight() - mc.fontRenderer.FONT_HEIGHT - padding;
+                    mc.fontRenderer.drawString(url, x, y, 14737632);
+                    break;
+                case 2: //above view count
+                    drawString(mc.fontRenderer, url, guiLocation.getMiddleXUnscaledToStageSize(mc.fontRenderer.getStringWidth(url)), guiLocation.getStaticYStart() - mc.fontRenderer.FONT_HEIGHT - 2, 14737632);
             }
         }
 

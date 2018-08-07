@@ -68,9 +68,19 @@ public class ConfigHandler {
         @Config.RangeInt(min = 0, max = 255)
         public int maxGlowIntensity = 150;
 
-        @Config.Comment({ "Percentage of the minimum transparency an emoji should have when fading away. Default is 10%."})
+        @Config.Comment({ "Percentage of the minimum transparency an emoji should have when fading away. Default is 10%." })
         @Config.RangeDouble(min = 0, max = 1)
         public double minOpacity = 0.1;
+
+        @Config.Comment({ "Number of seconds in-between the URL popup" })
+        public int urlPopupSpacing = 60;
+
+        @Config.Comment({ "How long the URL should stay visible" })
+        public int urlPopupDuration = 7;
+
+        @Config.Comment({ "Location of URL. 1 = bottom right, 2 = above view count"})
+        @Config.RangeInt(min = 1, max = 2)
+        public int urlPopupLocation = 1;
     }
 
 }
