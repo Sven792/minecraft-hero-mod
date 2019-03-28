@@ -1,0 +1,28 @@
+# Localizations
+
+# Login GUI
+gui.heroreactions.login.title=Bei Hero anmelden
+
+gui.heroreactions.login.heroButton=Weiterleiten zu Hero.tv
+
+gui.heroreactions.login.instructions1=Klicke auf die Schaltfläche um auf Hero.tv weitergeleitet zu werden.
+gui.heroreactions.login.instructions2=Du wirst eine Sitzungsnummer bekommen, welches du kopieren und hier einfügen kannst.
+gui.heroreactions.login.instructions3=Du muss diesen Vorgang nur einmal machen.
+
+gui.heroreactions.login.tokenLabel=Autorisierungskode (hier einfügen)
+gui.heroreactions.login.tokenExample=Beispiel: KLX2-7V3D-PMNS
+
+gui.heroreactions.login.tokenAlreadyPresent=Anmeldeinformation bereits gespeichert! Du bist bereit.
+gui.heroreactions.login.clearInfo=Eindeutige Information
+
+gui.heroreactions.login.successToken=Kontoinformation erfolgreich gespeichert!
+gui.heroreactions.login.failToken=Fehler, versuche es erneut.
+
+gui.heroreactions.login.submit=Sitzungsnummer absenden
+gui.heroreactions.login.help=Hilfe/Mehr Information
+
+gui.heroreactions.login.cancel=Abbrechen
+gui.heroreactions.login.goBack=Zurückgehen
+
+# Keybindings
+key.heroreactions.toggle=Einblendung umschalten
